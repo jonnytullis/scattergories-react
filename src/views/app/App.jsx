@@ -1,12 +1,12 @@
 import react from 'react'
-import './styles/App.css'
+import '../../styles/App.css'
+
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
-import Colors from './styles/colors.js'
-import DiceGroup from './components/DiceGroup'
-import TopAppBar from './components/TopAppBar'
-
 import { Container, Card } from '@material-ui/core'
+
+import TopAppBar from '../../components/TopAppBar'
+import DieRoller from '../../components/DieRoller'
 
 const theme = createMuiTheme({
     palette: {
@@ -35,9 +35,9 @@ export default class App extends react.Component {
             <ThemeProvider theme={theme}>
                 <div className='App'>
                     <TopAppBar />
-                    <Container>
-                        <Card className='Center'>
-                            <DiceGroup color={ Colors.attacker } numDice={3} />
+                    <Container style={{ paddingTop: '36px', paddingBottom: '36px' }}>
+                        <Card className='Center' raised={true} style={{ padding: '18px' }}>
+                            <DieRoller />
                         </Card>
                     </Container>
                 </div>
