@@ -1,4 +1,7 @@
 import React, { Suspense } from 'react'
+import { ThemeProvider } from '@material-ui/styles'
+import { createMuiTheme } from '@material-ui/core'
+import { colors } from './theme'
 import {
     BrowserRouter as Router,
     Switch,
@@ -16,6 +19,16 @@ function getRoutes() {
         {
             component: React.lazy(() => import('./views/GamesPage/GamesPage')),
             path: '/games',
+        },
+        // Games View - Shows all games available to join
+        {
+            component: React.lazy(() => import('./views/CreateGamePage/CreateGamePage')),
+            path: '/games/create',
+        },
+        // Games View - Shows all games available to join
+        {
+            component: React.lazy(() => import('./views/JoinGamePage/JoinGamePage')),
+            path: '/games/join',
         },
         // 404 Not Found
         {
@@ -42,13 +55,28 @@ export default class App extends React.Component {
 
     render() {
         return (
-            <Router>
-                <Suspense fallback={<div>Loading...</div>}>
-                    <Switch>
-                        {getRoutes()}
-                    </Switch>
-                </Suspense>
-            </Router>
+            <ThemeProvider theme={getTheme()}>
+                <Router>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <Switch>
+                            {getRoutes()}
+                        </Switch>
+                    </Suspense>
+                </Router>
+            </ThemeProvider>
         )
     }
+}
+
+function getTheme() {
+    return createMuiTheme({
+        palette: {
+            primary: {
+                main: colors.primary,
+            },
+            secondary: {
+                main: colors.secondary,
+            },
+        },
+    })
 }
