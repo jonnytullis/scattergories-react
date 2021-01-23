@@ -1,0 +1,8 @@
+.Button-Large {
+    height: 90px;
+    width: 280px;
+    border-radius: 45px !important;
+    font-size: 1.5em !important;
+    font-weight: bold !important;
+    color: white !important;
+}
