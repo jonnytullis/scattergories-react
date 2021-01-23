@@ -26,60 +26,62 @@ export default function NotFound() {
         }
 
         const cordCanvas = document.getElementById('cord');
-        const ctx = cordCanvas.getContext('2d');
+        if (cordCanvas) {
+            const ctx = cordCanvas.getContext('2d');
 
-        let y1 = 160;
-        let y2 = 100;
-        let y3 = 100;
+            let y1 = 160;
+            let y2 = 100;
+            let y3 = 100;
 
-        let y1Forward = true;
-        let y2Forward = false;
-        let y3Forward = true;
+            let y1Forward = true;
+            let y2Forward = false;
+            let y3Forward = true;
 
-        function animate() {
-            requestAnimationFrame(animate);
-            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            function animate() {
+                requestAnimationFrame(animate);
+                ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-            ctx.beginPath();
-            ctx.moveTo(130, 170);
-            ctx.bezierCurveTo(250, y1, 345, y2, 400, y3);
+                ctx.beginPath();
+                ctx.moveTo(130, 170);
+                ctx.bezierCurveTo(250, y1, 345, y2, 400, y3);
 
-            ctx.strokeStyle = 'white';
-            ctx.lineWidth = 8;
-            ctx.stroke();
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 8;
+                ctx.stroke();
 
 
-            if (y1 === 100) {
-                y1Forward = true;
+                if (y1 === 100) {
+                    y1Forward = true;
+                }
+
+                if (y1 === 300) {
+                    y1Forward = false;
+                }
+
+                if (y2 === 100) {
+                    y2Forward = true;
+                }
+
+                if (y2 === 310) {
+                    y2Forward = false;
+                }
+
+                if (y3 === 100) {
+                    y3Forward = true;
+                }
+
+                if (y3 === 317) {
+                    y3Forward = false;
+                }
+
+                y1Forward ? y1 += 1 : y1 -= 1;
+                y2Forward ? y2 += 1 : y2 -= 1;
+                y3Forward ? y3 += 1 : y3 -= 1;
             }
 
-            if (y1 === 300) {
-                y1Forward = false;
-            }
-
-            if (y2 === 100) {
-                y2Forward = true;
-            }
-
-            if (y2 === 310) {
-                y2Forward = false;
-            }
-
-            if (y3 === 100) {
-                y3Forward = true;
-            }
-
-            if (y3 === 317) {
-                y3Forward = false;
-            }
-
-            y1Forward ? y1 += 1 : y1 -= 1;
-            y2Forward ? y2 += 1 : y2 -= 1;
-            y3Forward ? y3 += 1 : y3 -= 1;
+            drawVisor();
+            animate();
         }
-
-        drawVisor();
-        animate();
     })
 
     return (
@@ -99,37 +101,40 @@ export default function NotFound() {
                 <div className="error__title">404</div>
                 <div className="error__subtitle">Hmmm...</div>
                 <div className="error__description">It looks like you're lost in space</div>
-                {/*<button className="error__button error__button--active">Back to Home</button>*/}
+                <button className="error__button error__button--active" onClick={() => { window.history.back() }}>Go Back</button>
                 {/*<button className="error__button">CONTACT</button>*/}
             </div>
 
-            <div className="astronaut">
-                <div className="astronaut__backpack" />
-                <div className="astronaut__body" />
-                <div className="astronaut__body__chest" />
-                <div className="astronaut__arm-left1" />
-                <div className="astronaut__arm-left2" />
-                <div className="astronaut__arm-right1" />
-                <div className="astronaut__arm-right2" />
-                <div className="astronaut__arm-thumb-left" />
-                <div className="astronaut__arm-thumb-right" />
-                <div className="astronaut__leg-left" />
-                <div className="astronaut__leg-right" />
-                <div className="astronaut__foot-left" />
-                <div className="astronaut__foot-right" />
-                <div className="astronaut__wrist-left" />
-                <div className="astronaut__wrist-right" />
+            {window.innerWidth > 500 ?
+                <div className="astronaut">
+                    <div className="astronaut__backpack" />
+                    <div className="astronaut__body" />
+                    <div className="astronaut__body__chest" />
+                    <div className="astronaut__arm-left1" />
+                    <div className="astronaut__arm-left2" />
+                    <div className="astronaut__arm-right1" />
+                    <div className="astronaut__arm-right2" />
+                    <div className="astronaut__arm-thumb-left" />
+                    <div className="astronaut__arm-thumb-right" />
+                    <div className="astronaut__leg-left" />
+                    <div className="astronaut__leg-right" />
+                    <div className="astronaut__foot-left" />
+                    <div className="astronaut__foot-right" />
+                    <div className="astronaut__wrist-left" />
+                    <div className="astronaut__wrist-right" />
 
-                <div className="astronaut__cord">
-                    <canvas id="cord" height="500px" width="500px" />
-                </div>
+                    <div className="astronaut__cord">
+                        <canvas id="cord" height="500px" width="500px" />
+                    </div>
 
-                <div className="astronaut__head">
-                    <canvas id="visor" width="60px" height="60px" />
-                    <div className="astronaut__head-visor-flare1" />
-                    <div className="astronaut__head-visor-flare2" />
-                </div>
-            </div>
+                    <div className="astronaut__head">
+                        <canvas id="visor" width="60px" height="60px" />
+                        <div className="astronaut__head-visor-flare1" />
+                        <div className="astronaut__head-visor-flare2" />
+                    </div>
+                </div> : ''
+            }
+
         </div>
     )
 }
