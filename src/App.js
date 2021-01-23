@@ -2,13 +2,8 @@ import React, { Suspense } from 'react'
 import {
     BrowserRouter as Router,
     Switch,
-    Route,
-    Link
+    Route
 } from "react-router-dom"
-
-import { createMuiTheme } from '@material-ui/core/styles'
-import { ThemeProvider } from '@material-ui/styles'
-import { Container, Card } from '@material-ui/core'
 
 function getRoutes() {
     const routes = [
@@ -47,26 +42,13 @@ export default class App extends React.Component {
 
     render() {
         return (
-            <ThemeProvider theme={theme}>
-                <Router>
-                    <Suspense fallback={<div>Loading...</div>}>
-                        <Switch>
-                            {getRoutes()}
-                        </Switch>
-                    </Suspense>
-                </Router>
-            </ThemeProvider>
+            <Router>
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Switch>
+                        {getRoutes()}
+                    </Switch>
+                </Suspense>
+            </Router>
         )
     }
 }
-
-const theme = createMuiTheme({
-    palette: {
-        primary: {
-            main: '#363636'
-        },
-        secondary: {
-            main: '#828282',
-        },
-    },
-})
