@@ -15,20 +15,10 @@ function getRoutes() {
             component: React.lazy(() => import('./views/HomePage/HomePage')),
             path: '/',
         },
-        // Games View - Shows all games available to join
+        // Home Page
         {
-            component: React.lazy(() => import('./views/GamesPage/GamesPage')),
-            path: '/games',
-        },
-        // Games View - Shows all games available to join
-        {
-            component: React.lazy(() => import('./views/CreateGamePage/CreateGamePage')),
-            path: '/games/create',
-        },
-        // Games View - Shows all games available to join
-        {
-            component: React.lazy(() => import('./views/JoinGamePage/JoinGamePage')),
-            path: '/games/join',
+            component: React.lazy(() => import('./views/GamePage/GamePage')),
+            path: '/game/:gameId',
         },
         // 404 Not Found
         {
