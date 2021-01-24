@@ -4,7 +4,7 @@ import PasswordTextField from './PasswordTextField'
 
 export default function CreateGameForm({onCancel, onGameCreated}) {
     if (typeof onCancel !== 'function' || typeof onGameCreated !== 'function') {
-        throw new Error('Invalid props in CreateGameForm. "onCancel" and "onSuccess" are required and must be of type Function.')
+        throw new Error('Invalid props in CreateGameForm. "onCancel" and "onGameCreated" are required and must be of type Function.')
     }
 
     const [hostName, setHostName] = useState('')
@@ -14,14 +14,7 @@ export default function CreateGameForm({onCancel, onGameCreated}) {
 
     function onSubmit(event) {
         event.preventDefault()
-
-        // TODO call server to create game here
-        console.log({
-            hostName,
-            gameTitle,
-            passwordRequired,
-            password
-        })
+        console.log('Making an API call to create the game') // TODO
         onGameCreated()
     }
 

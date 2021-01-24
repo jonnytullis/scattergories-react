@@ -3,7 +3,8 @@ import './HomePage.css'
 import {Grid, Container, Box, Button, Dialog, DialogTitle, DialogContent} from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
 import {colors} from '../../theme'
-import Logo from '../../assets/images/scattergories-logo.png'
+import LogoImage from '../../assets/images/logo-image.png'
+import LogoText from '../../assets/images/logo-text.gif'
 import { useHistory } from 'react-router-dom'
 import { CreateGameForm, JoinGameForm } from '../../components'
 
@@ -27,21 +28,21 @@ export default function HomePage() {
     }
 
     function goToGame(gameId) {
-        history.push(`/game/${gameId}`)
+        console.log('Going to game ' + gameId)
+        // history.push(`/game/${gameId}`)
     }
 
     const history = useHistory()
     return (
         <Container style={{ padding: `${window.innerHeight / 16}px 12px`, maxHeight: `${window.innerHeight}px` }}>
-            <Box display="flex">
-                <Box m="auto" style={{ boxShadow: '5px 8px 18px #888888', borderRadius: 50 }}>
-                    <img src={Logo} style={{ marginBottom: -5, height: 300 }}  alt="Logo" />
-                </Box>
-            </Box>
-            <Box display="flex" style={{ margin: '24px 0' }}>
-                <Box m="auto">
-                    <Typography variant="h4">
-                        Let's play Scattergories!
+            <Box display="flex" style={{ marginBottom: 36}}>
+                <Box m="auto" style={{ textAlign: 'center' }}>
+                    <img src={LogoText} className="logo-text" alt="Scattergories" />
+                    <Box className="logo-image-wrapper">
+                        <img src={LogoImage} style={{ height: '100%' }}  alt="Logo" />
+                    </Box>
+                    <Typography variant="h5">
+                        Keep your family and friends close from a distance ❤️
                     </Typography>
                 </Box>
             </Box>
@@ -69,14 +70,16 @@ export default function HomePage() {
             </Grid>
             <Dialog open={dialog} onClose={() => {setDialog(false)}}>
                 <DialogTitle>{dialogTitle}</DialogTitle>
-                <DialogContent style={{ height: 350 }}>
-                    {dialogType === options.create ?
+                {dialogType === options.create ?
+                    <DialogContent style={{ height: 350 }}>
                         <CreateGameForm onCancel={() => {setDialog(false)}} onGameCreated={goToGame} />
-                        :
-                        <JoinGameForm />
-                    }
+                    </DialogContent>
+                    :
+                    <DialogContent style={{ height: 225 }}>
+                        <JoinGameForm onCancel={() => {setDialog(false)}} onGameJoined={goToGame} />
+                    </DialogContent>
+                }
 
-                </DialogContent>
             </Dialog>
         </Container>
     )
