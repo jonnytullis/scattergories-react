@@ -10,7 +10,7 @@ export default function JoinGameForm({onCancel, onGameJoined}) {
 
     function onSubmit(event) {
         event.preventDefault()
-        console.log('Making an API call to join the game') // TODO
+        console.log('Making an GQL call to join the game') // TODO
         onGameJoined()
     }
 

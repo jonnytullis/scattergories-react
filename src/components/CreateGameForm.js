@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import {Container, Button, Grid, Checkbox, TextField} from '@material-ui/core'
 import PasswordTextField from './PasswordTextField'
+import {useMutation} from '@apollo/client'
+import {CREATE_USER, CREATE_GAME} from '../GQL/mutations'
 
 export default function CreateGameForm({onCancel, onGameCreated}) {
     if (typeof onCancel !== 'function' || typeof onGameCreated !== 'function') {
@@ -11,11 +13,18 @@ export default function CreateGameForm({onCancel, onGameCreated}) {
     const [gameTitle, setGameTitle] = useState('')
     const [passwordRequired, setPasswordRequired] = useState(false)
     const [password, setPassword] = useState('')
+    const [createUser] = useMutation(CREATE_USER)
+    const [createGame] = useMutation(CREATE_GAME)
 
-    function onSubmit(event) {
+    async function onSubmit(event) {
         event.preventDefault()
-        console.log('Making an API call to create the game') // TODO
-        onGameCreated()
+        try {
+            const userData = await createUser({ variables: { name: hostName }})
+            const gameData = await createGame({ variables: { userId: userData.data.createUser.id}})
+            onGameCreated(gameData.data.createGame.id)
+        } catch(e) {
+            // TODO tell the user something went wrong creating the game
+        }
     }
 
     return (

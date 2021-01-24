@@ -29,7 +29,7 @@ export default function HomePage() {
 
     function goToGame(gameId) {
         console.log('Going to game ' + gameId)
-        // history.push(`/game/${gameId}`)
+        history.push(`/game/${gameId}`)
     }
 
     const history = useHistory()
