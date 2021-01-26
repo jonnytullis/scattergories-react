@@ -1,25 +1,9 @@
 import React from 'react'
-import {makeStyles} from '@material-ui/styles'
+import useStyles from './ParticipantsDrawer.styles'
 import {Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, Toolbar} from '@material-ui/core'
-import {colors} from '../theme'
 import InboxIcon from '@material-ui/icons/MoveToInbox'
 import MailIcon from '@material-ui/icons/Mail'
-import ParticipantItem from './ParticipantItem'
-
-const drawerWidth = 240
-const useStyles = makeStyles(() => ({
-    drawer: {
-        width: drawerWidth,
-        flexShrink: 0
-    },
-    drawerPaper: {
-        width: drawerWidth,
-        backgroundColor: colors.light
-    },
-    drawerContainer: {
-        overflow: 'auto',
-    }
-}));
+import ParticipantItem from '../ParticipantItem/ParticipantItem'
 
 export default function ParticipantsDrawer({ participants, open }) {
     const classes = useStyles()

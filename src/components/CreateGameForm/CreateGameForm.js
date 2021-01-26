@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
+import useStyles from './CreateGameForm.styles'
 import {Container, Button, Grid, Checkbox, TextField} from '@material-ui/core'
-import PasswordTextField from './PasswordTextField'
+import PasswordTextField from '../PasswordTextField/PasswordTextField'
 import {useMutation} from '@apollo/client'
-import {CREATE_USER, CREATE_GAME} from '../GQL/mutations'
+import {CREATE_USER, CREATE_GAME} from '../../GQL/mutations'
 
 export default function CreateGameForm({onCancel, onGameCreated}) {
+    const styles = useStyles()
+
     if (typeof onCancel !== 'function' || typeof onGameCreated !== 'function') {
         throw new Error('Invalid props in CreateGameForm. "onCancel" and "onGameCreated" are required and must be of type Function.')
     }
@@ -28,7 +31,7 @@ export default function CreateGameForm({onCancel, onGameCreated}) {
     }
 
     return (
-        <Container style={{ padding: 0, maxWidth: 600 }}>
+        <Container className={styles.container}>
             <form onSubmit={onSubmit}>
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
@@ -79,7 +82,7 @@ export default function CreateGameForm({onCancel, onGameCreated}) {
                             }
                         />
                     </Grid>
-                    <Grid container spacing={3} direction="row" style={{ textAlign: 'center', marginTop: 24 }}>
+                    <Grid container spacing={3} direction="row" className={styles.buttonRow}>
                         <Grid item xs={6}>
                             <Button variant="contained" size="large" onClick={() => (onCancel())} >
                                 Cancel

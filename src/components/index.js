@@ -1,14 +1,15 @@
-const requireContext = require.context('./', false, /.*\.(js)$/)
+import CreateGameForm from './CreateGameForm/CreateGameForm'
+import InviteFriendsView from './InviteFriendsView/InviteFriendsView'
+import JoinGameForm from './JoinGameForm/JoinGameForm'
+import ParticipantItem from './ParticipantItem/ParticipantItem'
+import ParticipantsDrawer from './ParticipantsDrawer/ParticipantsDrawer'
+import PasswordTextField from './PasswordTextField/PasswordTextField'
 
-let components = {};
-
-requireContext.keys().forEach(fileName => {
-
-    if (fileName === './index.js') return
-
-    let name = fileName.replace(/(\.\/|\.js)/g, '')
-
-    components[name] = requireContext(fileName).default
-})
-
-module.exports = components
+export {
+    CreateGameForm,
+    InviteFriendsView,
+    JoinGameForm,
+    ParticipantItem,
+    ParticipantsDrawer,
+    PasswordTextField
+}

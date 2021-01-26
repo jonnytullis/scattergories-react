@@ -17,7 +17,7 @@ export default function PasswordTextField({ value, disabled, fullWidth, onChange
             onChange={onChange}
             InputProps={{
                 endAdornment: disabled ? null : (
-                    <InputAdornment
+                    <InputAdornment // Eyeball button to show password
                         position="start"
                         style={{
                             cursor: disabled ? '': 'pointer',

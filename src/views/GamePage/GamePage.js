@@ -5,7 +5,7 @@ import {
     Toolbar,
     Typography,
 } from '@material-ui/core'
-import ParticipantsDrawer from '../../components/ParticipantsDrawer'
+import ParticipantsDrawer from '../../components/ParticipantsDrawer/ParticipantsDrawer'
 
 const useStyles = makeStyles((theme) => ({
     root: {

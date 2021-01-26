@@ -1,7 +1,10 @@
 import React, {useState} from 'react'
+import useStyles from './JoinGameForm.styles'
 import {Button, Grid, TextField, Typography} from '@material-ui/core'
 
 export default function JoinGameForm({onCancel, onGameJoined}) {
+    const styles = useStyles()
+
     if (typeof onCancel !== 'function' || typeof onGameJoined !== 'function') {
         throw new Error('Invalid props in JoinGameForm. "onCancel" and "onGameJoined" are required and must be of type Function.')
     }
@@ -15,7 +18,7 @@ export default function JoinGameForm({onCancel, onGameJoined}) {
     }
 
     return (
-        <form onSubmit={onSubmit} style={{ textAlign: 'center' }}>
+        <form onSubmit={onSubmit} className={styles.center}>
             <Typography variant="subtitle1">
                 Enter a Game ID
             </Typography>
@@ -23,15 +26,7 @@ export default function JoinGameForm({onCancel, onGameJoined}) {
                 value={gameId}
                 variant="outlined"
                 type="text"
-                inputProps={{
-                    style: {
-                        fontSize: 50,
-                        textAlign: 'center'
-                    }
-                }}
-                style={{
-                    maxWidth: 250
-                }}
+                inputProps={{ className: styles.input }}
                 autoFocus
                 onChange={(e) => {
                     const text = e.target.value
@@ -42,7 +37,7 @@ export default function JoinGameForm({onCancel, onGameJoined}) {
                     }
                 }}
             />
-            <Grid container spacing={3} direction="row" style={{ textAlign: 'center', marginTop: 24 }}>
+            <Grid container spacing={3} direction="row" className={styles.buttonRow}>
                 <Grid item xs={6}>
                     <Button variant="contained" size="large" onClick={onCancel} >
                         Cancel

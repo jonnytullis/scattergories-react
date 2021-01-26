@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
-import './HomePage.css'
+import useStyles from './HomePage.styles'
 import {Grid, Container, Box, Button, Dialog, DialogTitle, DialogContent} from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
-import {colors} from '../../theme'
 import LogoImage from '../../assets/images/logo-image.png'
 import LogoText from '../../assets/images/logo-text.gif'
 import { useHistory } from 'react-router-dom'
 import { CreateGameForm, JoinGameForm } from '../../components'
 
 export default function HomePage() {
+    const styles = useStyles()
     const [dialog, setDialog] = useState(false)
     const [dialogTitle, setDialogTitle] = useState('')
     const [dialogType, setDialogType] = useState('')
@@ -34,24 +34,24 @@ export default function HomePage() {
 
     const history = useHistory()
     return (
-        <Container style={{ padding: `${window.innerHeight / 16}px 12px`, maxHeight: `${window.innerHeight}px` }}>
-            <Box display="flex" style={{ marginBottom: 36}}>
-                <Box m="auto" style={{ textAlign: 'center' }}>
-                    <img src={LogoText} className="logo-text" alt="Scattergories" />
-                    <Box className="logo-image-wrapper">
-                        <img src={LogoImage} style={{ height: '100%' }}  alt="Logo" />
+        <Container className={styles.container}>
+            <Box>
+                <Box m="auto" className={styles.center}>
+                    <img src={LogoText} className={styles.logoText} alt="Scattergories" />
+                    <Box className={styles.logoImage}>
+                        <img src={LogoImage} className={styles.logoImageWrapper}  alt="Logo" />
                     </Box>
                     <Typography variant="h5">
                         Keep your family and friends close from a distance ❤️
                     </Typography>
                 </Box>
             </Box>
-            <Grid container alignItems="center" spacing={3} style={{ textAlign: 'center' }}>
+            <Grid container spacing={5} className={`${styles.center} ${styles.buttonRow}`}>
                 <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
                     <Button
                         variant="contained"
-                        className="Button-Large"
-                        style={{ backgroundColor: colors.secondary }}
+                        className={styles.buttonLarge}
+                        color="secondary"
                         onClick={() => {createGameClicked()}}
                     >
                         Create Game
@@ -60,8 +60,8 @@ export default function HomePage() {
                 <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
                     <Button
                         variant="contained"
-                        className="Button-Large"
-                        style={{ backgroundColor: colors.primary }}
+                        className={styles.buttonLarge}
+                        color="primary"
                         onClick={() => {joinGameClicked()}}
                     >
                         Join Game
@@ -71,11 +71,11 @@ export default function HomePage() {
             <Dialog open={dialog} onClose={() => {setDialog(false)}}>
                 <DialogTitle>{dialogTitle}</DialogTitle>
                 {dialogType === options.create ?
-                    <DialogContent style={{ height: 350 }}>
+                    <DialogContent className={styles.dialogContentCreate}>
                         <CreateGameForm onCancel={() => {setDialog(false)}} onGameCreated={goToGame} />
                     </DialogContent>
                     :
-                    <DialogContent style={{ height: 225 }}>
+                    <DialogContent className={styles.dialogContentJoin}>
                         <JoinGameForm onCancel={() => {setDialog(false)}} onGameJoined={goToGame} />
                     </DialogContent>
                 }
