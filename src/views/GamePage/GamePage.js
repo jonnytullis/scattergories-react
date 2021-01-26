@@ -1,40 +1,60 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import useStyles from './GamePage.styles'
+import clsx from 'clsx'
 import {
+    CssBaseline,
     AppBar,
     Toolbar,
     Typography,
+    IconButton
 } from '@material-ui/core'
-import ParticipantsDrawer from '../../components/ParticipantsDrawer/ParticipantsDrawer'
+import Group from '@material-ui/icons/Group'
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        display: 'flex',
-    },
-    appBar: {
-        zIndex: theme.zIndex.drawer + 1,
-    },
-    content: {
-        flexGrow: 1,
-        padding: theme.spacing(3),
-    },
-}))
+import {ParticipantsDrawer} from '../../components'
 
-export default function GamePage() {
+export default function PersistentDrawerLeft() {
     const classes = useStyles()
+    const [open, setOpen] = React.useState(true)
+
+    const handleDrawerOpen = () => {
+        setOpen(true)
+    }
+
+    const handleDrawerClose = () => {
+        setOpen(false)
+    }
 
     return (
         <div className={classes.root}>
-            <AppBar position="fixed" className={classes.appBar}>
+            <CssBaseline />
+            <AppBar
+                position="fixed"
+                className={clsx(classes.appBar, {
+                    [classes.appBarShift]: open,
+                })}
+            >
                 <Toolbar>
+                    <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleDrawerOpen}
+                        edge="start"
+                        className={clsx(classes.menuButton, open && classes.hide)}
+                    >
+                        <Group />
+                    </IconButton>
                     <Typography variant="h6" noWrap>
-                        Game Name
+                        Persistent drawer
                     </Typography>
                 </Toolbar>
             </AppBar>
-            <ParticipantsDrawer />
-            <main className={classes.content}>
-                <Toolbar />
+            <ParticipantsDrawer open={open} onClose={handleDrawerClose} />
+            <main
+                className={clsx(classes.content, {
+                    [classes.contentShift]: open,
+                })}
+            >
+                <div className={classes.contentHeader} />
                 <Typography paragraph>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
                     ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum

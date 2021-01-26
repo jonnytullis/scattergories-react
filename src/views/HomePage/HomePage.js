@@ -8,7 +8,7 @@ import { useHistory } from 'react-router-dom'
 import { CreateGameForm, JoinGameForm } from '../../components'
 
 export default function HomePage() {
-    const styles = useStyles()
+    const classes = useStyles()
     const [dialog, setDialog] = useState(false)
     const [dialogTitle, setDialogTitle] = useState('')
     const [dialogType, setDialogType] = useState('')
@@ -34,23 +34,23 @@ export default function HomePage() {
 
     const history = useHistory()
     return (
-        <Container className={styles.container}>
+        <Container className={classes.container}>
             <Box>
-                <Box m="auto" className={styles.center}>
-                    <img src={LogoText} className={styles.logoText} alt="Scattergories" />
-                    <Box className={styles.logoImage}>
-                        <img src={LogoImage} className={styles.logoImageWrapper}  alt="Logo" />
+                <Box m="auto" className={classes.center}>
+                    <img src={LogoText} className={classes.logoText} alt="Scattergories" />
+                    <Box className={classes.logoImage}>
+                        <img src={LogoImage} className={classes.logoImageWrapper}  alt="Logo" />
                     </Box>
                     <Typography variant="h5">
                         Keep your family and friends close from a distance ❤️
                     </Typography>
                 </Box>
             </Box>
-            <Grid container spacing={5} className={`${styles.center} ${styles.buttonRow}`}>
+            <Grid container spacing={5} className={`${classes.center} ${classes.buttonRow}`}>
                 <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
                     <Button
                         variant="contained"
-                        className={styles.buttonLarge}
+                        className={classes.buttonLarge}
                         color="secondary"
                         onClick={() => {createGameClicked()}}
                     >
@@ -60,7 +60,7 @@ export default function HomePage() {
                 <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
                     <Button
                         variant="contained"
-                        className={styles.buttonLarge}
+                        className={classes.buttonLarge}
                         color="primary"
                         onClick={() => {joinGameClicked()}}
                     >
@@ -71,11 +71,11 @@ export default function HomePage() {
             <Dialog open={dialog} onClose={() => {setDialog(false)}}>
                 <DialogTitle>{dialogTitle}</DialogTitle>
                 {dialogType === options.create ?
-                    <DialogContent className={styles.dialogContentCreate}>
+                    <DialogContent className={classes.dialogContentCreate}>
                         <CreateGameForm onCancel={() => {setDialog(false)}} onGameCreated={goToGame} />
                     </DialogContent>
                     :
-                    <DialogContent className={styles.dialogContentJoin}>
+                    <DialogContent className={classes.dialogContentJoin}>
                         <JoinGameForm onCancel={() => {setDialog(false)}} onGameJoined={goToGame} />
                     </DialogContent>
                 }

@@ -6,7 +6,7 @@ import {useMutation} from '@apollo/client'
 import {CREATE_USER, CREATE_GAME} from '../../GQL/mutations'
 
 export default function CreateGameForm({onCancel, onGameCreated}) {
-    const styles = useStyles()
+    const classes = useStyles()
 
     if (typeof onCancel !== 'function' || typeof onGameCreated !== 'function') {
         throw new Error('Invalid props in CreateGameForm. "onCancel" and "onGameCreated" are required and must be of type Function.')
@@ -31,7 +31,7 @@ export default function CreateGameForm({onCancel, onGameCreated}) {
     }
 
     return (
-        <Container className={styles.container}>
+        <Container className={classes.container}>
             <form onSubmit={onSubmit}>
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
@@ -82,7 +82,7 @@ export default function CreateGameForm({onCancel, onGameCreated}) {
                             }
                         />
                     </Grid>
-                    <Grid container spacing={3} direction="row" className={styles.buttonRow}>
+                    <Grid container spacing={3} direction="row" className={classes.buttonRow}>
                         <Grid item xs={6}>
                             <Button variant="contained" size="large" onClick={() => (onCancel())} >
                                 Cancel
