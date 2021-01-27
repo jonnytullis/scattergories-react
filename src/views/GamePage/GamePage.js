@@ -12,10 +12,7 @@ import {
 } from '@material-ui/core'
 import Group from '@material-ui/icons/Group'
 
-import {ParticipantsDrawer} from '../../components'
-import LetterView from '../../components/LetterView/LetterView'
-import TimerView from '../../components/TimerView/TimerView'
-import PromptsView from '../../components/PromptsView/PromptsView'
+import {LetterView, TimerView, PromptsView, ParticipantsDrawer} from '../../components'
 
 export default function PersistentDrawerLeft() {
     const classes = useStyles()
