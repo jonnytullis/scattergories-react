@@ -1,5 +1,6 @@
+import {createMuiTheme} from '@material-ui/core'
 
-module.exports.colors = {
+const colors = {
     primary: '#111d5e',
     secondary: '#c70039',
     accent: '#f37121',
@@ -16,4 +17,20 @@ module.exports.colors = {
         '#790c5a',
         '#7e7474'
     ]
+}
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: colors.primary,
+        },
+        secondary: {
+            main: colors.secondary,
+        },
+    }
+})
+
+export {
+    colors,
+    theme
 }

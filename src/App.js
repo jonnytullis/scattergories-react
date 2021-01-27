@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react'
 import { ThemeProvider } from '@material-ui/styles'
-import { createMuiTheme } from '@material-ui/core'
-import { colors } from './theme'
+import { theme } from './theme'
 import {
     BrowserRouter as Router,
     Switch,
@@ -45,7 +44,7 @@ export default class App extends React.Component {
 
     render() {
         return (
-            <ThemeProvider theme={getTheme()}>
+            <ThemeProvider theme={theme}>
                 <Router>
                     <Suspense fallback={<div>Loading...</div>}>
                         <Switch>
@@ -56,17 +55,4 @@ export default class App extends React.Component {
             </ThemeProvider>
         )
     }
-}
-
-function getTheme() {
-    return createMuiTheme({
-        palette: {
-            primary: {
-                main: colors.primary,
-            },
-            secondary: {
-                main: colors.secondary,
-            },
-        },
-    })
 }

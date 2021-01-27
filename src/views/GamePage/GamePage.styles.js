@@ -46,4 +46,7 @@ export default makeStyles((theme) => ({
         // necessary for content to be below app bar
         ...theme.mixins.toolbar,
     },
+    card: {
+        padding: 24,
+    }
 }))

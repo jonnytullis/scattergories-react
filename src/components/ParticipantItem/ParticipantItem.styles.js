@@ -1,12 +1,14 @@
 import { makeStyles } from '@material-ui/core/styles'
 
-export default makeStyles((theme ) => ({
+export default makeStyles(() => ({
     avatar: {
-        marginRight: 12
+        marginRight: 12,
+        width: 45,
+        height: 45
     },
     container: {
         display: 'flex',
-        height: 36
+        height: 40
     },
     text: {
         paddingTop: '9px'
