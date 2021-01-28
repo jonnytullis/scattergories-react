@@ -1,8 +1,8 @@
 import React from 'react'
-import useStyles from './ParticipantItem.styles'
+import useStyles from './PlayerItem.styles'
 import {Typography, Avatar} from '@material-ui/core'
 
-export default function ParticipantItem({ person, color }) {
+export default function PlayerItem({ person, color }) {
     const classes = useStyles()
 
     return (
@@ -10,7 +10,7 @@ export default function ParticipantItem({ person, color }) {
             <Avatar className={classes.avatar} style={{ backgroundColor: color }}>
                 {getInitials(person.name)}
             </Avatar>
-            <Typography variant="subtitle2" className={classes.text}>
+            <Typography variant="subtitle1" className={classes.text}>
                 {person.name}
             </Typography>
         </div>

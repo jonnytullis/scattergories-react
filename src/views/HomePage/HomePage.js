@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import useStyles from './HomePage.styles'
-import {Grid, Container, Box, Button, Dialog, DialogTitle, DialogContent} from '@material-ui/core'
+import { Grid, Container, Box, Button, Dialog, DialogTitle, DialogContent } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
 import LogoImage from '../../assets/images/logo-image.png'
 import LogoText from '../../assets/images/logo-text.gif'

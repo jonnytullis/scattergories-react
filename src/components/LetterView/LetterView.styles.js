@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/styles'
 export default makeStyles(() => {
     return {
         container: {
-            height: 150,
+            height: 232,
             width: '100%',
             textAlign: 'center'
         },
@@ -11,7 +11,8 @@ export default makeStyles(() => {
             width: '100%'
         },
         letter: {
-            fontFamily: 'Georgia, Times New Roman, Serif'
+            fontFamily: 'Georgia, Times New Roman, Serif',
+            fontSize: '150px'
         }
     }
 })

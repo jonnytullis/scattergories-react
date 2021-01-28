@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import useStyles from './GamePage.styles'
 import clsx from 'clsx'
 import {
@@ -12,11 +12,12 @@ import {
 } from '@material-ui/core'
 import Group from '@material-ui/icons/Group'
 
-import {LetterView, TimerView, PromptsView, ParticipantsDrawer} from '../../components'
+import {LetterView, TimerView, PromptsView, PlayersDrawer} from '../../components'
 
-export default function PersistentDrawerLeft() {
+export default function GamePage({ match }) {
     const classes = useStyles()
-    const [open, setOpen] = React.useState(true)
+    const gameId = match.params.gameId
+    const [open, setOpen] = useState(true)
 
     const handleDrawerOpen = () => {
         setOpen(true)
@@ -50,7 +51,7 @@ export default function PersistentDrawerLeft() {
                     </Typography>
                 </Toolbar>
             </AppBar>
-            <ParticipantsDrawer open={open} onClose={handleDrawerClose} />
+            <PlayersDrawer gameId={gameId} open={open} onClose={handleDrawerClose} />
             <main
                 className={clsx(classes.content, {
                     [classes.contentShift]: open,
@@ -76,18 +77,18 @@ export default function PersistentDrawerLeft() {
                         <Card className={classes.card}>
                             <PromptsView
                                 prompts={[
-                                    'Test',
-                                    'test',
-                                    'test',
-                                    'test',
-                                    'Test',
-                                    'test',
-                                    'test',
-                                    'test',
-                                    'Test',
-                                    'test',
-                                    'test',
-                                    'test'
+                                    'Test1',
+                                    'test2',
+                                    'test3',
+                                    'test4',
+                                    'Test5',
+                                    'test6',
+                                    'test7',
+                                    'test8',
+                                    'Test9',
+                                    'test10',
+                                    'test11',
+                                    'test12'
                                 ]} />
                         </Card>
                     </Grid>

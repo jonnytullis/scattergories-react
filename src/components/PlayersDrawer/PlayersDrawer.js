@@ -1,31 +1,18 @@
 import React from 'react'
-import useStyles from './ParticipantsDrawer.styles'
+import useStyles from './PlayersDrawer.styles'
 import { colors } from '../../theme'
 import {Divider, Drawer, IconButton, List, ListItem, Typography} from '@material-ui/core'
-import ParticipantItem from '../ParticipantItem/ParticipantItem'
+import PlayerItem from '../PlayerItem/PlayerItem'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import get from 'lodash.get'
+import { useSubscription } from '@apollo/client'
+import { PLAYERS_SUBSCRIPTION } from '../../GQL/subscriptions'
 
-export default function ParticipantsDrawer({ open, onClose }) {
+export default function PlayersDrawer({ open, onClose, gameId }) {
     const classes = useStyles()
-    const participants = [
-        {
-            name: 'Michael Tullis',
-            id: '123'
-        },
-        {
-            name: 'Jonny Boy',
-            id: '4456'
-        },
-        {
-            name: 'Tipzone',
-            id: '789'
-        },
-        {
-            name: 'I am your father',
-            id: 'abc'
-        }
-    ]
 
+    const playersData = useSubscription(PLAYERS_SUBSCRIPTION, { variables: { gameId } })
+    const players = get(playersData, 'data.players', [])
 
     return (
         <Drawer
@@ -39,7 +26,7 @@ export default function ParticipantsDrawer({ open, onClose }) {
         >
             <div className={classes.drawerHeader}>
                 <Typography className={classes.title} variant="subtitle1">
-                    Participants {participants && `(${participants.length})`}
+                    Participants {players && `(${players.length})`}
                 </Typography>
                 <IconButton onClick={onClose}>
                     <ChevronLeftIcon />
@@ -47,10 +34,10 @@ export default function ParticipantsDrawer({ open, onClose }) {
             </div>
             <List>
                 <Divider />
-                {participants.map((person, i) => (
+                {players.map((person, i) => (
                     <div>
                         <ListItem key={person.id} className={classes.listItem}>
-                            <ParticipantItem
+                            <PlayerItem
                                 person={person}
                                 color={colors.avatarColors[i % colors.avatarColors.length]} // Cycle through avatar colors
                             />

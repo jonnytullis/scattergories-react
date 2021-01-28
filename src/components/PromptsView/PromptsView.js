@@ -9,11 +9,11 @@ export default function PromptsView({ prompts }) {
         <div>
             {prompts.map((text, index) => {
                 return (
-                    <div className={classes.lineContainer}>
-                        <Typography variant="h5" key={text}>
+                    <div className={classes.lineContainer} key={text}>
+                        <Typography variant="h5">
                             {index + 1}.&nbsp;&nbsp;
                         </Typography>
-                        <Typography variant="h6" key={text}>
+                        <Typography variant="h6">
                             {'\t' + text}
                         </Typography>
                     </div>
