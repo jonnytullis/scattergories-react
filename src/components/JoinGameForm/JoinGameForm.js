@@ -2,22 +2,21 @@ import React, {useState} from 'react'
 import useStyles from './JoinGameForm.styles'
 import {Button, Grid, TextField, Typography} from '@material-ui/core'
 
-export default function JoinGameForm({onCancel, onGameJoined}) {
+export default function JoinGameForm({onCancel, onSubmit}) {
     const classes = useStyles()
-    if (typeof onCancel !== 'function' || typeof onGameJoined !== 'function') {
+    if (typeof onCancel !== 'function' || typeof onSubmit !== 'function') {
         throw new Error('Invalid props in JoinGameForm. "onCancel" and "onGameJoined" are required and must be of type Function.')
     }
 
     const [gameId, setGameId] = useState('')
 
-    function onSubmit(event) {
+    function onFormSubmit(event) {
         event.preventDefault()
-        console.log(`Making an GQL call to join game: ${gameId}`) // TODO
-        onGameJoined(gameId)
+        onSubmit({ gameId })
     }
 
     return (
-        <form onSubmit={onSubmit} className={classes.center}>
+        <form onSubmit={onFormSubmit} className={classes.center}>
             <Typography variant="subtitle1">
                 Enter a Game ID
             </Typography>

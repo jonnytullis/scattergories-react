@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import useStyles from './HomePage.styles'
 import { Grid, Container, Box, Button, Dialog, DialogTitle, DialogContent } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
@@ -6,25 +6,49 @@ import LogoImage from '../../assets/images/logo-image.png'
 import LogoText from '../../assets/images/logo-text.gif'
 import { useHistory } from 'react-router-dom'
 import { CreateGameForm, JoinGameForm } from '../../components'
+import {Context} from '../../context/Store'
+import {useMutation} from '@apollo/client'
+import {CREATE_GAME, CREATE_USER} from '../../GQL/mutations'
 
 export default function HomePage() {
+    const [state, dispatch] = useContext(Context)
     const classes = useStyles()
     const [dialog, setDialog] = useState(false)
     const [dialogTitle, setDialogTitle] = useState('')
     const [dialogType, setDialogType] = useState('')
+    const [createUser] = useMutation(CREATE_USER)
+    const [createGame] = useMutation(CREATE_GAME)
 
-    const options = { create: 'CREATE', join: 'JOIN' }
+    const dialogTypes = { create: 'CREATE', join: 'JOIN' }
 
     function createGameClicked() {
         setDialogTitle('Host a Game')
-        setDialogType(options.create)
+        setDialogType(dialogTypes.create)
         setDialog(true)
+    }
+
+    async function createGameFormSubmitted({ hostName, gameName }) {
+        try {
+            const userData = await createUser({ variables: { name: hostName }})
+            dispatch({ type: 'SET_CURRENT_USER', payload: userData.data.createUser })
+            const gameData = await createGame({ variables: { userId: userData.data.createUser.id, gameName }})
+            console.log('GAME CREATED:', gameData)
+            goToGame(gameData.data.createGame.game.id)
+        } catch(e) {
+            console.log('An error occurred while creating the game')
+            console.error(e)
+            // TODO tell the user something went wrong creating the game
+        }
     }
 
     function joinGameClicked() {
         setDialogTitle('Join a Game')
-        setDialogType(options.join)
+        setDialogType(dialogTypes.join)
         setDialog(true)
+    }
+
+    async function joinGameFormSubmitted({ gameId }) {
+
     }
 
     function goToGame(gameId) {
@@ -42,7 +66,7 @@ export default function HomePage() {
                         <img src={LogoImage} className={classes.logoImageWrapper}  alt="Logo" />
                     </Box>
                     <Typography variant="h5">
-                        Keep your family and friends close from a distance ❤️
+                        Keep your family and friends close while at a distance
                     </Typography>
                 </Box>
             </Box>
@@ -70,15 +94,14 @@ export default function HomePage() {
             </Grid>
             <Dialog open={dialog} onClose={() => {setDialog(false)}}>
                 <DialogTitle>{dialogTitle}</DialogTitle>
-                {dialogType === options.create ?
-                    <DialogContent className={classes.dialogContentCreate}>
-                        <CreateGameForm onCancel={() => {setDialog(false)}} onGameCreated={goToGame} />
-                    </DialogContent>
+                <DialogContent className={classes.dialog}>
+                    {
+                        dialogType === dialogTypes.create ?
+                        <CreateGameForm onCancel={() => {setDialog(false)}} onSubmit={createGameFormSubmitted} />
                     :
-                    <DialogContent className={classes.dialogContentJoin}>
-                        <JoinGameForm onCancel={() => {setDialog(false)}} onGameJoined={goToGame} />
-                    </DialogContent>
-                }
+                        <JoinGameForm onCancel={() => {setDialog(false)}} onSubmit={joinGameFormSubmitted} />
+                    }
+                </DialogContent>
 
             </Dialog>
         </Container>

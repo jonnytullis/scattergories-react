@@ -2,37 +2,28 @@ import React, { useState } from 'react'
 import useStyles from './CreateGameForm.styles'
 import {Container, Button, Grid, /*Checkbox,*/ TextField} from '@material-ui/core'
 // import PasswordTextField from '../PasswordTextField/PasswordTextField'
-import {useMutation} from '@apollo/client'
-import {CREATE_USER, CREATE_GAME} from '../../GQL/mutations'
 
-export default function CreateGameForm({onCancel, onGameCreated}) {
-    const classes = useStyles()
-
-    if (typeof onCancel !== 'function' || typeof onGameCreated !== 'function') {
+export default function CreateGameForm({onCancel, onSubmit}) {
+    if (typeof onCancel !== 'function' || typeof onSubmit !== 'function') {
         throw new Error('Invalid props in CreateGameForm. "onCancel" and "onGameCreated" are required and must be of type Function.')
     }
 
+    const classes = useStyles()
     const [hostName, setHostName] = useState('')
-    const [gameTitle, setGameTitle] = useState('')
+    const [gameName, setGameName] = useState('')
     // const [passwordRequired, setPasswordRequired] = useState(false)
     // const [password, setPassword] = useState('')
-    const [createUser] = useMutation(CREATE_USER)
-    const [createGame] = useMutation(CREATE_GAME)
 
-    async function onSubmit(event) {
+    async function onFormSubmit(event) {
         event.preventDefault()
-        try {
-            const userData = await createUser({ variables: { name: hostName }})
-            const gameData = await createGame({ variables: { userId: userData.data.createUser.id}})
-            onGameCreated(gameData.data.createGame.id)
-        } catch(e) {
-            // TODO tell the user something went wrong creating the game
-        }
+        onSubmit({
+            hostName, gameName
+        })
     }
 
     return (
         <Container className={classes.container}>
-            <form onSubmit={onSubmit}>
+            <form onSubmit={onFormSubmit}>
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
                         <TextField
@@ -47,8 +38,8 @@ export default function CreateGameForm({onCancel, onGameCreated}) {
                                 setHostName(event.target.value)}
                             }
                             onBlur={(event) => {
-                                if (!gameTitle && hostName) {
-                                    setGameTitle(`${event.target.value}'s Game`)}
+                                if (!gameName && hostName) {
+                                    setGameName(`${event.target.value}'s Game`)}
                             }}
                         />
                     </Grid>
@@ -59,9 +50,9 @@ export default function CreateGameForm({onCancel, onGameCreated}) {
                             fullWidth
                             label="Game Name"
                             variant="outlined"
-                            value={gameTitle}
+                            value={gameName}
                             onChange={(event) => {
-                                setGameTitle(event.target.value)}
+                                setGameName(event.target.value)}
                             }
                         />
                     </Grid>
