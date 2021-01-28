@@ -35,8 +35,8 @@ export default function PlayersDrawer({ open, onClose, gameId }) {
             <List>
                 <Divider />
                 {players.map((person, i) => (
-                    <div>
-                        <ListItem key={person.id} className={classes.listItem}>
+                    <div key={person.id}>
+                        <ListItem className={classes.listItem}>
                             <PlayerItem
                                 person={person}
                                 color={colors.avatarColors[i % colors.avatarColors.length]} // Cycle through avatar colors

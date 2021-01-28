@@ -19,10 +19,10 @@ export default makeStyles((theme) => ({
         padding: `56px 12px`
     },
     dialogContentCreate: {
-        height: 350
+        paddingBottom: 24
     },
     dialogContentJoin: {
-        height: 225
+        paddingBottom: 24
     },
     logoImage: {
         height: '100%'

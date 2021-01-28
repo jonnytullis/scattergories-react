@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import useStyles from './CreateGameForm.styles'
-import {Container, Button, Grid, Checkbox, TextField} from '@material-ui/core'
-import PasswordTextField from '../PasswordTextField/PasswordTextField'
+import {Container, Button, Grid, /*Checkbox,*/ TextField} from '@material-ui/core'
+// import PasswordTextField from '../PasswordTextField/PasswordTextField'
 import {useMutation} from '@apollo/client'
 import {CREATE_USER, CREATE_GAME} from '../../GQL/mutations'
 
@@ -14,8 +14,8 @@ export default function CreateGameForm({onCancel, onGameCreated}) {
 
     const [hostName, setHostName] = useState('')
     const [gameTitle, setGameTitle] = useState('')
-    const [passwordRequired, setPasswordRequired] = useState(false)
-    const [password, setPassword] = useState('')
+    // const [passwordRequired, setPasswordRequired] = useState(false)
+    // const [password, setPassword] = useState('')
     const [createUser] = useMutation(CREATE_USER)
     const [createGame] = useMutation(CREATE_GAME)
 
@@ -65,23 +65,23 @@ export default function CreateGameForm({onCancel, onGameCreated}) {
                             }
                         />
                     </Grid>
-                    <Grid item xs={12}>
-                        <Checkbox
-                            color="primary"
-                            onChange={(_, checked) => { setPasswordRequired(checked) }}
-                        />
-                        Require a password to join
-                    </Grid>
-                    <Grid item xs={12}>
-                        <PasswordTextField
-                            fullWidth
-                            disabled={!passwordRequired}
-                            value={password}
-                            onChange={(event) => {
-                                setPassword(event.target.value)}
-                            }
-                        />
-                    </Grid>
+                    {/*<Grid item xs={12}>*/}
+                    {/*    <Checkbox*/}
+                    {/*        color="primary"*/}
+                    {/*        onChange={(_, checked) => { setPasswordRequired(checked) }}*/}
+                    {/*    />*/}
+                    {/*    Require a password to join*/}
+                    {/*</Grid>*/}
+                    {/*<Grid item xs={12}>*/}
+                    {/*    <PasswordTextField*/}
+                    {/*        fullWidth*/}
+                    {/*        disabled={!passwordRequired}*/}
+                    {/*        value={password}*/}
+                    {/*        onChange={(event) => {*/}
+                    {/*            setPassword(event.target.value)}*/}
+                    {/*        }*/}
+                    {/*    />*/}
+                    {/*</Grid>*/}
                     <Grid container spacing={3} direction="row" className={classes.buttonRow}>
                         <Grid item xs={6}>
                             <Button variant="contained" size="large" onClick={() => (onCancel())} >
