@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import useStyles from './HomePage.styles'
 import { Grid, Container, Box, Button, Dialog, DialogTitle, DialogContent } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
@@ -6,11 +6,14 @@ import LogoImage from '../../assets/images/logo-image.png'
 import LogoText from '../../assets/images/logo-text.gif'
 import { useHistory } from 'react-router-dom'
 import { CreateGameForm, JoinGameForm } from '../../components'
+import {Context} from '../../context/Store'
 import {useMutation} from '@apollo/client'
 import {CREATE_GAME, JOIN_GAME} from '../../GQL/mutations'
 
 export default function HomePage() {
     const classes = useStyles()
+    const history = useHistory()
+    const {dispatch} = useContext(Context)
     const [dialog, setDialog] = useState(false)
     const [dialogTitle, setDialogTitle] = useState('')
     const [dialogType, setDialogType] = useState('')
@@ -27,8 +30,11 @@ export default function HomePage() {
 
     async function createGameFormSubmitted({ hostName, gameName }) {
         try {
-            const gameData = await createGame({ variables: { hostName, gameName }})
-            const game = gameData.data.createGame.game
+            const res = await createGame({ variables: { hostName, gameName }})
+            const game = res.data.createGame.game
+            const user = res.data.createGame.user
+            dispatch({ type: 'SET_GAME', payload: game })
+            dispatch({ type: 'SET_USER', payload: user })
             goToGame(game.id)
         } catch(e) {
             console.log('An error occurred while creating the game')
@@ -45,22 +51,21 @@ export default function HomePage() {
 
     async function joinGameFormSubmitted({ gameId, userName }) {
         try {
-            const gameData = await joinGame({ variables: { gameId, userName }})
-            const game = gameData.data.joinGame.game
+            const res = await joinGame({ variables: { gameId, userName }})
+            const game = res.data.joinGame.game.BAD
+            const user = res.data.joinGame.user
+            dispatch({ type: 'SET_GAME', payload: game })
+            dispatch({ type: 'SET_USER', payload: user })
             goToGame(game.id)
         } catch(e) {
             console.log('An error occurred while joining the game')
             console.error(e)
-            // TODO tell the user something went wrong joining the game
         }
     }
 
     function goToGame(gameId) {
-        console.log('Going to game ' + gameId)
         history.push(`/game/${gameId}`)
     }
-
-    const history = useHistory()
     return (
         <Container className={classes.container}>
             <Box>

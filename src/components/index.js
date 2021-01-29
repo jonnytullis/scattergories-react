@@ -1,3 +1,4 @@
+import Alert from './Alert/Alert'
 import CreateGameForm from './CreateGameForm/CreateGameForm'
 import InviteFriendsView from './InviteFriendsView/InviteFriendsView'
 import JoinGameForm from './JoinGameForm/JoinGameForm'
@@ -9,6 +10,7 @@ import PromptsView from './PromptsView/PromptsView'
 import TimerView from './TimerView/TimerView'
 
 export {
+    Alert,
     CreateGameForm,
     InviteFriendsView,
     JoinGameForm,

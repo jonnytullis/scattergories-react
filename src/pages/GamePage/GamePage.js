@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
+import {Context} from '../../context/Store'
 import useStyles from './GamePage.styles'
 import clsx from 'clsx'
+import { useHistory } from 'react-router-dom'
 import {
     CssBaseline,
     AppBar,
@@ -12,24 +14,50 @@ import {
 } from '@material-ui/core'
 import Group from '@material-ui/icons/Group'
 import { useSubscription } from '@apollo/client'
-
 import {LetterView, TimerView, PromptsView, PlayersDrawer} from '../../components'
 import {GAME_SUBSCRIPTION} from '../../GQL/subscriptions'
 
-export default function GamePage({ match }) {
+export default function GamePage() {
     const classes = useStyles()
-    const gameId = match.params.gameId
-    const [open, setOpen] = useState(true)
+    const history = useHistory()
+    const {state, dispatch} = useContext(Context)
+    const [drawerOpen, setDrawerOpen] = useState(true)
 
-    const gameData = useSubscription(GAME_SUBSCRIPTION, { variables: { gameId } })
-    const payers = []
+    // Warn the user before leaving the browser page
+    useEffect(() => {
+        window.onbeforeunload = (event) => true
+        return function beforeUnmount() {
+            console.log('User is leaving the game!!!')
+            window.onbeforeunload = undefined // Don't need this anymore
+        }
+    }, [])
+
+    // Subscribe to game changes
+    try {
+        const res = useSubscription(GAME_SUBSCRIPTION, { variables: { gameId: state.game.id } })
+        const game = res.data.game
+        dispatch({ type: 'SET_GAME', payload: game })
+    } catch(e) {
+        console.error('Failed to subscribe to game')
+        console.error(e)
+    }
+
+    // Leave the page if the context store has not been updated properly
+    // This won't happen if someone creates or joins the game, it will only
+    // happen if they happen to navigate to a game URL with a valid game ID
+    if (!state.game || !state.user) {
+        history.push('/')
+        return null
+    }
+
+    const players = []
 
     const handleDrawerOpen = () => {
-        setOpen(true)
+        setDrawerOpen(true)
     }
 
     const handleDrawerClose = () => {
-        setOpen(false)
+        setDrawerOpen(false)
     }
 
     return (
@@ -38,7 +66,7 @@ export default function GamePage({ match }) {
             <AppBar
                 position="fixed"
                 className={clsx(classes.appBar, {
-                    [classes.appBarShift]: open,
+                    [classes.appBarShift]: drawerOpen,
                 })}
             >
                 <Toolbar>
@@ -47,19 +75,19 @@ export default function GamePage({ match }) {
                         aria-label="open drawer"
                         onClick={handleDrawerOpen}
                         edge="start"
-                        className={clsx(classes.menuButton, open && classes.hide)}
+                        className={clsx(classes.menuButton, drawerOpen && classes.hide)}
                     >
                         <Group />
                     </IconButton>
                     <Typography variant="h6" noWrap>
-                        Persistent drawer
+                        {state.game.name}
                     </Typography>
                 </Toolbar>
             </AppBar>
-            <PlayersDrawer players={players} open={open} onClose={handleDrawerClose} />
+            <PlayersDrawer players={players} open={drawerOpen} onClose={handleDrawerClose} />
             <main
                 className={clsx(classes.content, {
-                    [classes.contentShift]: open,
+                    [classes.contentShift]: drawerOpen,
                 })}
             >
                 <div className={classes.contentHeader} />

@@ -6,6 +6,13 @@ export const JOIN_GAME = gql`
             success
             game {
                 id
+                name
+                letter
+                settings {
+                    timerSeconds
+                    numPrompts
+                    numRounds
+                }
                 host {
                     id
                     name
@@ -14,6 +21,10 @@ export const JOIN_GAME = gql`
                     id
                     name
                 }
+            }
+            user {
+                id
+                name
             }
         }
     }
@@ -25,6 +36,13 @@ export const CREATE_GAME = gql`
             success
             game {
                 id
+                name
+                letter
+                settings {
+                    timerSeconds
+                    numPrompts
+                    numRounds
+                }
                 host {
                     id
                     name
@@ -33,6 +51,10 @@ export const CREATE_GAME = gql`
                     id
                     name
                 }
+            }
+            user {
+                id
+                name
             }
         }
     }
