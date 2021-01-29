@@ -4,15 +4,9 @@ import { colors } from '../../theme'
 import {Divider, Drawer, IconButton, List, ListItem, Typography} from '@material-ui/core'
 import PlayerItem from '../PlayerItem/PlayerItem'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import get from 'lodash.get'
-import { useSubscription } from '@apollo/client'
-import { PLAYERS_SUBSCRIPTION } from '../../GQL/subscriptions'
 
-export default function PlayersDrawer({ open, onClose, gameId }) {
+export default function PlayersDrawer({ open, onClose, players }) {
     const classes = useStyles()
-
-    const playersData = useSubscription(PLAYERS_SUBSCRIPTION, { variables: { gameId } })
-    const players = get(playersData, 'data.players', [])
 
     return (
         <Drawer

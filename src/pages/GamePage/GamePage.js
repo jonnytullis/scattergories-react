@@ -11,13 +11,18 @@ import {
     Card
 } from '@material-ui/core'
 import Group from '@material-ui/icons/Group'
+import { useSubscription } from '@apollo/client'
 
 import {LetterView, TimerView, PromptsView, PlayersDrawer} from '../../components'
+import {GAME_SUBSCRIPTION} from '../../GQL/subscriptions'
 
 export default function GamePage({ match }) {
     const classes = useStyles()
     const gameId = match.params.gameId
     const [open, setOpen] = useState(true)
+
+    const gameData = useSubscription(GAME_SUBSCRIPTION, { variables: { gameId } })
+    const payers = []
 
     const handleDrawerOpen = () => {
         setOpen(true)
@@ -51,7 +56,7 @@ export default function GamePage({ match }) {
                     </Typography>
                 </Toolbar>
             </AppBar>
-            <PlayersDrawer gameId={gameId} open={open} onClose={handleDrawerClose} />
+            <PlayersDrawer players={players} open={open} onClose={handleDrawerClose} />
             <main
                 className={clsx(classes.content, {
                     [classes.contentShift]: open,

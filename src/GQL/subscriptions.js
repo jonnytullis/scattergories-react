@@ -1,10 +1,24 @@
 import {gql} from '@apollo/client'
 
-export const PLAYERS_SUBSCRIPTION = gql`
+export const GAME_SUBSCRIPTION = gql`
     subscription($gameId:String!) {
-        players(gameId: $gameId) {
+        game(gameId:$gameId) {
             name
+            letter
             id
+            host {
+                id
+                name
+            }
+            players {
+                id
+                name
+            }
+            settings {
+                timerSeconds
+                numPrompts
+                numRounds
+            }
         }
     }
 `
