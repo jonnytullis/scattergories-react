@@ -9,10 +9,17 @@ export default function JoinGameForm({onCancel, onSubmit}) {
     }
 
     const [gameId, setGameId] = useState('')
+    const [userName, setUserName] = useState('') // TODO set initial value to cached value
+
+    function isValidInput() {
+        const validGameId = !!gameId && gameId.length === 6
+        const validName = !!userName && userName.length >= 2
+        return validGameId && validName
+    }
 
     function onFormSubmit(event) {
         event.preventDefault()
-        onSubmit({ gameId })
+        onSubmit({ gameId, userName })
     }
 
     return (
@@ -24,7 +31,7 @@ export default function JoinGameForm({onCancel, onSubmit}) {
                 value={gameId}
                 variant="outlined"
                 type="text"
-                inputProps={{ className: classes.input }}
+                inputProps={{ className: classes.gameIdInput }}
                 autoFocus
                 onChange={(e) => {
                     const text = e.target.value
@@ -35,6 +42,16 @@ export default function JoinGameForm({onCancel, onSubmit}) {
                     }
                 }}
             />
+            <br />
+            <TextField
+                value={userName}
+                label="Display Name"
+                variant="outlined"
+                type="text"
+                size="small"
+                className={classes.nameInput}
+                onChange={(e) => setUserName(e.target.value)}
+            />
             <Grid container spacing={3} direction="row" className={classes.buttonRow}>
                 <Grid item xs={6}>
                     <Button variant="contained" size="large" onClick={onCancel} >
@@ -42,7 +59,7 @@ export default function JoinGameForm({onCancel, onSubmit}) {
                     </Button>
                 </Grid>
                 <Grid item xs={6}>
-                    <Button color="primary" variant="contained" size="large" type="submit">
+                    <Button color="primary" disabled={!isValidInput()} variant="contained" size="large" type="submit">
                         Join
                     </Button>
                 </Grid>

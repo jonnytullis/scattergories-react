@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import useStyles from './HomePage.styles'
 import { Grid, Container, Box, Button, Dialog, DialogTitle, DialogContent } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
@@ -6,18 +6,16 @@ import LogoImage from '../../assets/images/logo-image.png'
 import LogoText from '../../assets/images/logo-text.gif'
 import { useHistory } from 'react-router-dom'
 import { CreateGameForm, JoinGameForm } from '../../components'
-import {Context} from '../../context/Store'
 import {useMutation} from '@apollo/client'
-import {CREATE_GAME, CREATE_USER} from '../../GQL/mutations'
+import {CREATE_GAME, JOIN_GAME} from '../../GQL/mutations'
 
 export default function HomePage() {
-    const [state, dispatch] = useContext(Context)
     const classes = useStyles()
     const [dialog, setDialog] = useState(false)
     const [dialogTitle, setDialogTitle] = useState('')
     const [dialogType, setDialogType] = useState('')
-    const [createUser] = useMutation(CREATE_USER)
     const [createGame] = useMutation(CREATE_GAME)
+    const [joinGame] = useMutation(JOIN_GAME)
 
     const dialogTypes = { create: 'CREATE', join: 'JOIN' }
 
@@ -29,11 +27,9 @@ export default function HomePage() {
 
     async function createGameFormSubmitted({ hostName, gameName }) {
         try {
-            const userData = await createUser({ variables: { name: hostName }})
-            dispatch({ type: 'SET_CURRENT_USER', payload: userData.data.createUser })
-            const gameData = await createGame({ variables: { userId: userData.data.createUser.id, gameName }})
-            console.log('GAME CREATED:', gameData)
-            goToGame(gameData.data.createGame.game.id)
+            const gameData = await createGame({ variables: { hostName, gameName }})
+            const game = gameData.data.createGame.game
+            goToGame(game.id)
         } catch(e) {
             console.log('An error occurred while creating the game')
             console.error(e)
@@ -47,8 +43,16 @@ export default function HomePage() {
         setDialog(true)
     }
 
-    async function joinGameFormSubmitted({ gameId }) {
-
+    async function joinGameFormSubmitted({ gameId, userName }) {
+        try {
+            const gameData = await joinGame({ variables: { gameId, userName }})
+            const game = gameData.data.joinGame.game
+            goToGame(game.id)
+        } catch(e) {
+            console.log('An error occurred while joining the game')
+            console.error(e)
+            // TODO tell the user something went wrong joining the game
+        }
     }
 
     function goToGame(gameId) {

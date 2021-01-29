@@ -7,9 +7,13 @@ export default makeStyles(() => ({
     center: {
         textAlign: 'center'
     },
-    input: {
+    gameIdInput: {
         fontSize: 50,
         textAlign: 'center',
         maxWidth: 250
+    },
+    nameInput: {
+        width: '100%',
+        marginTop: 24
     }
 }))

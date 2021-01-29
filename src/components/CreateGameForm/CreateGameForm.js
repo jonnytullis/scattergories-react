@@ -14,6 +14,12 @@ export default function CreateGameForm({onCancel, onSubmit}) {
     // const [passwordRequired, setPasswordRequired] = useState(false)
     // const [password, setPassword] = useState('')
 
+    function isValidData() {
+        const validHostName = !!hostName && hostName.length >= 2
+        const validGameName = !!gameName && gameName.length >= 2
+        return validHostName && validGameName
+    }
+
     async function onFormSubmit(event) {
         event.preventDefault()
         onSubmit({
@@ -24,13 +30,13 @@ export default function CreateGameForm({onCancel, onSubmit}) {
     return (
         <Container className={classes.container}>
             <form onSubmit={onFormSubmit}>
-                <Grid container spacing={1}>
+                <Grid container spacing={3}>
                     <Grid item xs={12}>
                         <TextField
-                            margin="dense"
+                            size="small"
                             type="text"
                             fullWidth
-                            label="Your Display Name"
+                            label="Display Name"
                             variant="outlined"
                             value={hostName}
                             autoFocus
@@ -45,7 +51,7 @@ export default function CreateGameForm({onCancel, onSubmit}) {
                     </Grid>
                     <Grid item xs={12}>
                         <TextField
-                            margin="dense"
+                            size="small"
                             type="text"
                             fullWidth
                             label="Game Name"
@@ -80,7 +86,7 @@ export default function CreateGameForm({onCancel, onSubmit}) {
                             </Button>
                         </Grid>
                         <Grid item xs={6}>
-                            <Button color="primary" variant="contained" size="large" type="submit">
+                            <Button color="primary" disabled={!isValidData()} variant="contained" size="large" type="submit">
                                 Create
                             </Button>
                         </Grid>
