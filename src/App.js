@@ -11,17 +11,17 @@ function getRoutes() {
     const routes = [
         // Home Page
         {
-            component: React.lazy(() => import('./views/HomePage/HomePage')),
+            component: React.lazy(() => import('./pages/HomePage/HomePage')),
             path: '/',
         },
         // Home Page
         {
-            component: React.lazy(() => import('./views/GamePage/GamePage')),
+            component: React.lazy(() => import('./pages/GamePage/GamePage')),
             path: '/game/:gameId',
         },
         // 404 Not Found
         {
-            component: React.lazy(() => import('./views/NotFound/NotFound')),
+            component: React.lazy(() => import('./pages/NotFound/NotFound')),
             path: '*',
         },
     ]
