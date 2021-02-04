@@ -48,9 +48,6 @@ export default makeStyles((theme) => ({
         [theme.breakpoints.up('sm')] : {
             height: 115
         },
-        [theme.breakpoints.up('md')] : {
-            height: 150
-        },
         margin: '-40px 0'
     }
 }))

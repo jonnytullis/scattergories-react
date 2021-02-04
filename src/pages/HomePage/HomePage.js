@@ -53,11 +53,13 @@ export default function HomePage() {
     async function joinGameFormSubmitted({ gameId, userName }) {
         try {
             const res = await joinGame({ variables: { gameId, userName }})
-            const game = res.data.joinGame.game.BAD
-            const user = res.data.joinGame.user
+            const game = res.data?.joinGame?.game
+            const user = res.data?.joinGame?.user
             setGame(game)
             setUser(user)
-            goToGame(game.id)
+            if (game?.id) {
+                goToGame(game.id)
+            }
         } catch(e) {
             console.log('An error occurred while joining the game')
             console.error(e)

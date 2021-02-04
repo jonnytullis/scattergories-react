@@ -1,6 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react'
-import {GameContext} from '../../context/GameContext'
-import {AlertContext} from '../../context/AlertContext'
+import React, { useState, useEffect } from 'react'
+import { useAlert, useGameContext } from '../../hooks'
 import useStyles from './GamePage.styles'
 import clsx from 'clsx'
 import { useHistory } from 'react-router-dom'
@@ -21,8 +20,8 @@ import {GAME_SUBSCRIPTION} from '../../GQL/subscriptions'
 export default function GamePage({ match }) {
     const classes = useStyles()
     const history = useHistory()
-    const { game, setGame, user } = useContext(GameContext)
-    const { raiseAlert } = useContext(AlertContext)
+    const { game, setGame, user } = useGameContext()
+    const { raiseAlert } = useAlert()
     const [drawerOpen, setDrawerOpen] = useState(true)
     const { data: gameData } = useSubscription(GAME_SUBSCRIPTION, { variables: { gameId: match.params.gameId } })
 
