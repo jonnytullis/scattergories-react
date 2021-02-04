@@ -1,15 +1,22 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import {ApolloClient, ApolloProvider, InMemoryCache} from '@apollo/client'
+import {WebSocketLink} from '@apollo/client/link/ws'
+
 import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
-import {ApolloClient, ApolloProvider, InMemoryCache} from '@apollo/client'
-import {WebSocketLink} from '@apollo/client/link/ws'
+import GameProvider from './context/GameContext'
+import AlertProvider from './context/AlertContext'
 
 ReactDOM.render(
   <React.StrictMode>
       <ApolloProvider client={getApolloClient()}>
-          <App />
+          <AlertProvider>
+              <GameProvider>
+                  <App />
+              </GameProvider>
+          </AlertProvider>
       </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')

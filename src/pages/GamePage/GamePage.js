@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
-import {Context} from '../../context/Store'
+import {GameContext} from '../../context/GameContext'
+import {AlertContext} from '../../context/AlertContext'
 import useStyles from './GamePage.styles'
 import clsx from 'clsx'
 import { useHistory } from 'react-router-dom'
@@ -17,40 +18,37 @@ import { useSubscription } from '@apollo/client'
 import {LetterView, TimerView, PromptsView, PlayersDrawer} from '../../components'
 import {GAME_SUBSCRIPTION} from '../../GQL/subscriptions'
 
-export default function GamePage() {
+export default function GamePage({ match }) {
     const classes = useStyles()
     const history = useHistory()
-    const {state, dispatch} = useContext(Context)
+    const { game, setGame, user } = useContext(GameContext)
+    const { raiseAlert } = useContext(AlertContext)
     const [drawerOpen, setDrawerOpen] = useState(true)
+    const { data: gameData } = useSubscription(GAME_SUBSCRIPTION, { variables: { gameId: match.params.gameId } })
 
     // Warn the user before leaving the browser page
     useEffect(() => {
         window.onbeforeunload = (event) => true
         return function beforeUnmount() {
+            raiseAlert({ milliseconds: 6000, message: 'You left the game', severity: 'info' })
             console.log('User is leaving the game!!!')
             window.onbeforeunload = undefined // Don't need this anymore
         }
     }, [])
 
-    // Subscribe to game changes
-    try {
-        const res = useSubscription(GAME_SUBSCRIPTION, { variables: { gameId: state.game.id } })
-        const game = res.data.game
-        dispatch({ type: 'SET_GAME', payload: game })
-    } catch(e) {
-        console.error('Failed to subscribe to game')
-        console.error(e)
-    }
+    useEffect(() => {
+        if (gameData) {
+            setGame(gameData.game)
+        }
+    }, [gameData])
 
     // Leave the page if the context store has not been updated properly
     // This won't happen if someone creates or joins the game, it will only
-    // happen if they happen to navigate to a game URL with a valid game ID
-    if (!state.game || !state.user) {
+    // happen if they happen to navigate to a game URL
+    if (!game || !user) {
         history.push('/')
         return null
     }
-
-    const players = []
 
     const handleDrawerOpen = () => {
         setDrawerOpen(true)
@@ -80,11 +78,11 @@ export default function GamePage() {
                         <Group />
                     </IconButton>
                     <Typography variant="h6" noWrap>
-                        {state.game.name}
+                        {game.name}
                     </Typography>
                 </Toolbar>
             </AppBar>
-            <PlayersDrawer players={players} open={drawerOpen} onClose={handleDrawerClose} />
+            <PlayersDrawer players={game.players} open={drawerOpen} onClose={handleDrawerClose} />
             <main
                 className={clsx(classes.content, {
                     [classes.contentShift]: drawerOpen,

@@ -1,7 +1,6 @@
 import React, { Suspense } from 'react'
 import { ThemeProvider } from '@material-ui/styles'
 import { theme } from './theme'
-import Store from './context/Store'
 import {
     BrowserRouter as Router,
     Switch,
@@ -36,15 +35,13 @@ export default class App extends React.Component {
     render() {
         return (
             <ThemeProvider theme={theme}>
-                <Store>
-                    <Router>
-                        <Suspense fallback={<div>Loading...</div>}>
-                            <Switch>
-                                {getRoutes()}
-                            </Switch>
-                        </Suspense>
-                    </Router>
-                </Store>
+                <Router>
+                    <Suspense fallback={<div>Loading...</div>}>
+                        <Switch>
+                            {getRoutes()}
+                        </Switch>
+                    </Suspense>
+                </Router>
             </ThemeProvider>
         )
     }
