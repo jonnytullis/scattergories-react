@@ -5,7 +5,7 @@ import {Divider, Drawer, IconButton, List, ListItem, Typography} from '@material
 import PlayerItem from '../PlayerItem/PlayerItem'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 
-export default function PlayersDrawer({ open, onClose, players }) {
+export default function PlayersDrawer({ open, onClose, players, hostId }) {
     const classes = useStyles()
 
     return (
@@ -27,12 +27,12 @@ export default function PlayersDrawer({ open, onClose, players }) {
                 </IconButton>
             </div>
             <List>
-                <Divider />
                 {players.map((person, i) => (
                     <div key={person.id}>
                         <ListItem className={classes.listItem}>
                             <PlayerItem
                                 person={person}
+                                caption={person.id === hostId ? '(Host)' : null}
                                 color={colors.avatarColors[i % colors.avatarColors.length]} // Cycle through avatar colors
                             />
                         </ListItem>

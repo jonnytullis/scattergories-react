@@ -6,18 +6,15 @@ export const GAME_SUBSCRIPTION = gql`
             id
             name
             letter
+            hostId
+            players {
+                id
+                name
+            }
             settings {
                 timerSeconds
                 numPrompts
                 numRounds
-            }
-            host {
-                id
-                name
-            }
-            players {
-                id
-                name
             }
         }
     }

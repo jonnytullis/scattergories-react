@@ -1,20 +1,21 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import { Grid, Container, Box, Button, Dialog, DialogTitle, DialogContent } from '@material-ui/core'
 import Typography from '@material-ui/core/Typography'
 import { useMutation } from '@apollo/client'
 import { useHistory } from 'react-router-dom'
 
+import { useAlert, useGameContext } from '../../hooks'
 import useStyles from './HomePage.styles'
 import LogoImage from '../../assets/images/logo-image.png'
 import LogoText from '../../assets/images/logo-text.gif'
 import { CreateGameForm, JoinGameForm } from '../../components'
-import { GameContext } from '../../context/GameContext'
 import { CREATE_GAME, JOIN_GAME } from '../../GQL/mutations'
 
 export default function HomePage() {
     const classes = useStyles()
     const history = useHistory()
-    const {setGame, setUser} = useContext(GameContext)
+    const {setGame, setUser} = useGameContext()
+    const {raiseAlert} = useAlert()
     const [dialog, setDialog] = useState(false)
     const [dialogTitle, setDialogTitle] = useState('')
     const [dialogType, setDialogType] = useState('')
@@ -38,9 +39,11 @@ export default function HomePage() {
             setUser(user)
             goToGame(game.id)
         } catch(e) {
-            console.log('An error occurred while creating the game')
-            console.error(e)
-            // TODO tell the user something went wrong creating the game
+            raiseAlert({
+                message: 'Oops! Something went wrong when creating your game. Please try again.',
+                milliseconds: 6000,
+                severity: 'error'
+            })
         }
     }
 
@@ -61,8 +64,11 @@ export default function HomePage() {
                 goToGame(game.id)
             }
         } catch(e) {
-            console.log('An error occurred while joining the game')
-            console.error(e)
+            raiseAlert({
+                message: 'Oops! Something went wrong when joining the game. Please try again.',
+                milliseconds: 9000,
+                severity: 'error'
+            })
         }
     }
 
@@ -104,15 +110,13 @@ export default function HomePage() {
                     </Button>
                 </Grid>
             </Grid>
-            <Dialog open={dialog} onClose={() => {setDialog(false)}}>
+            <Dialog open={dialog} style={{ outline: 'none' }} onClose={() => {setDialog(false)}}>
                 <DialogTitle>{dialogTitle}</DialogTitle>
                 <DialogContent className={classes.dialog}>
-                    {
-                        dialogType === dialogTypes.create ?
+                    {dialogType === dialogTypes.create ?
                         <CreateGameForm onCancel={() => {setDialog(false)}} onSubmit={createGameFormSubmitted} />
                     :
-                        <JoinGameForm onCancel={() => {setDialog(false)}} onSubmit={joinGameFormSubmitted} />
-                    }
+                        <JoinGameForm onCancel={() => {setDialog(false)}} onSubmit={joinGameFormSubmitted} />}
                 </DialogContent>
 
             </Dialog>

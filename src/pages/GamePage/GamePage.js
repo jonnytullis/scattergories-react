@@ -23,7 +23,7 @@ export default function GamePage({ match }) {
     const { game, setGame, user } = useGameContext()
     const { raiseAlert } = useAlert()
     const [drawerOpen, setDrawerOpen] = useState(true)
-    const { data: gameData } = useSubscription(GAME_SUBSCRIPTION, { variables: { gameId: match.params.gameId } })
+    const { data: gameData, error: subscriptionError } = useSubscription(GAME_SUBSCRIPTION, { variables: { gameId: match.params.gameId } })
 
     // Warn the user before leaving the browser page
     useEffect(() => {
@@ -34,6 +34,16 @@ export default function GamePage({ match }) {
             window.onbeforeunload = undefined // Don't need this anymore
         }
     }, [])
+
+    useEffect(() => {
+        if (subscriptionError) {
+            raiseAlert({
+                milliseconds: 9000,
+                message: 'We encountered an error while connecting to the game',
+                severity: 'error'
+            })
+        }
+    }, [subscriptionError])
 
     useEffect(() => {
         if (gameData) {
@@ -81,7 +91,7 @@ export default function GamePage({ match }) {
                     </Typography>
                 </Toolbar>
             </AppBar>
-            <PlayersDrawer players={game.players} open={drawerOpen} onClose={handleDrawerClose} />
+            <PlayersDrawer players={game.players} hostId={game.hostId} open={drawerOpen} onClose={handleDrawerClose} />
             <main
                 className={clsx(classes.content, {
                     [classes.contentShift]: drawerOpen,

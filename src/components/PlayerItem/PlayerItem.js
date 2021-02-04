@@ -1,19 +1,26 @@
 import React from 'react'
 import useStyles from './PlayerItem.styles'
-import {Typography, Avatar} from '@material-ui/core'
+import {Typography, Avatar, Tooltip} from '@material-ui/core'
 
-export default function PlayerItem({ person, color }) {
+export default function PlayerItem({ person, caption, color }) {
     const classes = useStyles()
 
     return (
-        <div className={classes.container}>
-            <Avatar className={classes.avatar} style={{ backgroundColor: color }}>
-                {getInitials(person.name)}
-            </Avatar>
-            <Typography variant="subtitle1" className={classes.text}>
-                {person.name}
-            </Typography>
-        </div>
+        <Tooltip title={`${caption ? `${caption} ` : ''}${person.name}`} enterDelay={1000} interactive>
+            <div className={classes.container}>
+                <Avatar className={classes.avatar} style={{ backgroundColor: color }}>
+                    {getInitials(person.name)}
+                </Avatar>
+                <div>
+                    <Typography variant="subtitle1" noWrap={true} className={classes.text}>
+                        {person.name}
+                    </Typography>
+                    <Typography variant="caption" className={classes.textCaption}>
+                        {caption}
+                    </Typography>
+                </div>
+            </div>
+        </Tooltip>
     )
 }
 

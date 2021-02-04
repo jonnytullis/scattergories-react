@@ -11,6 +11,11 @@ export default makeStyles(() => ({
         height: 40
     },
     text: {
-        paddingTop: '9px'
+        paddingTop: 9,
+        maxWidth: 150,
+        marginBottom: -7,
+    },
+    textCaption: {
+        color: '#777777'
     }
 }))
