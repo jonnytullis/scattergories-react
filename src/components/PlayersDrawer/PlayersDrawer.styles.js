@@ -16,21 +16,21 @@ export default makeStyles((theme) => {
             width: drawerWidth,
         },
         drawerHeader: {
-            display: 'flex',
             alignItems: 'center',
-            padding: theme.spacing(0, 1),
-            position: 'sticky',
-            zIndex: theme.zIndex.drawer + 1,
             backgroundColor: 'white',
             borderBottom: `1px ${theme.palette.divider} solid`,
-            top: '0px',
-            left: '0px',
-            // necessary for content to be below app bar
-            ...theme.mixins.toolbar,
-            justifyContent: 'flex-end',
+            display: 'flex',
+            marginBottom: -8,
+            minHeight: 65,
+            padding: theme.spacing(0, 1),
+            position: 'sticky',
+            top: 0,
+            left: 0,
+            zIndex: theme.zIndex.drawer + 1,
         },
         listItem: {
-            marginBottom: 4
+            marginBottom: 4,
+            paddingLeft: 8
         }
     }
 })

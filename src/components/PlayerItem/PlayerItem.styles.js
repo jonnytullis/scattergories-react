@@ -11,11 +11,14 @@ export default makeStyles(() => ({
         height: 40
     },
     text: {
-        paddingTop: 9,
         maxWidth: 150,
-        marginBottom: -7,
+        marginBottom: -5,
     },
     textCaption: {
         color: '#777777'
+    },
+    textWrapper: {
+        marginTop: 'auto',
+        marginBottom: 'auto'
     }
 }))

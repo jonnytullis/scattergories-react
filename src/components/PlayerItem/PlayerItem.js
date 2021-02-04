@@ -3,7 +3,7 @@ import useStyles from './PlayerItem.styles'
 import {Typography, Avatar, Tooltip} from '@material-ui/core'
 
 export default function PlayerItem({ person, caption, color }) {
-    const classes = useStyles()
+    const classes = useStyles({ hasCaption: !!caption })
 
     return (
         <Tooltip title={`${caption ? `${caption} ` : ''}${person.name}`} enterDelay={1000} interactive>
@@ -11,7 +11,7 @@ export default function PlayerItem({ person, caption, color }) {
                 <Avatar className={classes.avatar} style={{ backgroundColor: color }}>
                     {getInitials(person.name)}
                 </Avatar>
-                <div>
+                <div className={classes.textWrapper}>
                     <Typography variant="subtitle1" noWrap={true} className={classes.text}>
                         {person.name}
                     </Typography>
