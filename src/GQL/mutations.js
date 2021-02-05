@@ -1,7 +1,7 @@
 import {gql} from '@apollo/client'
 
 export const JOIN_GAME = gql`
-    mutation($gameId:String!, $userName:String) {
+    mutation($gameId:String!, $userName:String!) {
         joinGame(gameId:$gameId, userName:$userName) {
             game {
                 id
@@ -48,6 +48,15 @@ export const CREATE_GAME = gql`
                 id
                 name
             }
+        }
+    }
+`
+
+export const START_TIMER = gql`
+    mutation($gameId:String!, $userId:ID!) {
+        startTimer(gameId:$gameId, userId:$userId) {
+            totalSeconds
+            remaining
         }
     }
 `

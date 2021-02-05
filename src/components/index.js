@@ -7,7 +7,7 @@ import PlayerItem from './PlayerItem/PlayerItem'
 import PlayersDrawer from './PlayersDrawer/PlayersDrawer'
 import PasswordTextField from './PasswordTextField/PasswordTextField'
 import PromptsView from './PromptsView/PromptsView'
-import TimerView from './TimerView/TimerView'
+import Timer from './Timer/Timer'
 
 export {
     Alert,
@@ -19,5 +19,5 @@ export {
     PlayersDrawer,
     PasswordTextField,
     PromptsView,
-    TimerView
+    Timer
 }

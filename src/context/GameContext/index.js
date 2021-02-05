@@ -1,14 +1,14 @@
-import React, {createContext, useState} from 'react'
+import React, { createContext, useState } from 'react'
 
 export default function GameProvider({ children }) {
     const [game, setGame] = useState(null)
     const [user, setUser] = useState(null)
 
     const gameState = {
-        game: game,
-        setGame: setGame,
-        user: user,
-        setUser: setUser
+        game,
+        setGame,
+        user,
+        setUser
     }
 
     return (

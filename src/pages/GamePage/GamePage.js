@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useAlert, useGameContext } from '../../hooks'
-import useStyles from './GamePage.styles'
 import clsx from 'clsx'
 import { useHistory } from 'react-router-dom'
 import {
@@ -13,9 +11,12 @@ import {
     Card
 } from '@material-ui/core'
 import Group from '@material-ui/icons/Group'
-import { useSubscription } from '@apollo/client'
-import {LetterView, TimerView, PromptsView, PlayersDrawer} from '../../components'
-import {GAME_SUBSCRIPTION} from '../../GQL/subscriptions'
+import { useSubscription, useMutation } from '@apollo/client'
+
+import useStyles from './GamePage.styles'
+import { useAlert, useGameContext } from '../../hooks'
+import { LetterView, Timer, PromptsView, PlayersDrawer } from '../../components'
+import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
 
 export default function GamePage({ match }) {
     const classes = useStyles()
@@ -23,7 +24,9 @@ export default function GamePage({ match }) {
     const { game, setGame, user } = useGameContext()
     const { raiseAlert } = useAlert()
     const [drawerOpen, setDrawerOpen] = useState(true)
-    const { data: gameData, error: subscriptionError } = useSubscription(GAME_SUBSCRIPTION, { variables: { gameId: match.params.gameId } })
+    const { data: gameData, error: subscriptionError } = useSubscription(GAME_SUBSCRIPTION, {
+        variables: { gameId: match.params.gameId }
+    })
 
     // Warn the user before leaving the browser page
     useEffect(() => {
@@ -33,7 +36,7 @@ export default function GamePage({ match }) {
             console.log('User is leaving the game!!!')
             window.onbeforeunload = undefined // Don't need this anymore
         }
-    }, [])
+    }, [raiseAlert])
 
     useEffect(() => {
         if (subscriptionError) {
@@ -43,13 +46,13 @@ export default function GamePage({ match }) {
                 severity: 'error'
             })
         }
-    }, [subscriptionError])
+    }, [subscriptionError, raiseAlert])
 
     useEffect(() => {
         if (gameData) {
             setGame(gameData.game)
         }
-    }, [gameData])
+    }, [gameData, setGame])
 
     // Leave the page if the context store has not been updated properly
     // This won't happen if someone creates or joins the game, it will only
@@ -103,7 +106,7 @@ export default function GamePage({ match }) {
                         <Grid container direction="column" spacing={3}>
                             <Grid item>
                                 <Card className={classes.card}>
-                                    <TimerView seconds={180} />
+                                    <Timer gameId={game.id} userId={user.id} secondsTotal={game.settings?.timerSeconds} />
                                 </Card>
                             </Grid>
                             <Grid item>
