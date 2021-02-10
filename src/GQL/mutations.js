@@ -60,3 +60,21 @@ export const START_TIMER = gql`
         }
     }
 `
+
+export const PAUSE_TIMER = gql`
+    mutation($gameId:String!, $userId:ID!) {
+        pauseTimer(gameId:$gameId, userId:$userId) {
+            totalSeconds
+            remaining
+        }
+    }
+`
+
+export const RESET_TIMER = gql`
+    mutation($gameId:String!, $userId:ID!) {
+        resetTimer(gameId:$gameId, userId:$userId) {
+            totalSeconds
+            remaining
+        }
+    }
+`
