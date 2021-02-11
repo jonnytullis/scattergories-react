@@ -1,6 +1,6 @@
 import React from 'react'
 import useStyles from './LetterView.styles'
-import {Button, CardContent, Typography} from '@material-ui/core'
+import {Button, CardContent, Typography, Grid} from '@material-ui/core'
 import LoopIcon from '@material-ui/icons/Loop'
 
 export default function LetterView({ letter }) {
@@ -14,9 +14,11 @@ export default function LetterView({ letter }) {
                     </Typography>
                 </CardContent>
             </div>
-            <Button className={classes.button} color="primary">
-                <LoopIcon /> &nbsp; New
-            </Button>
+            <div className={classes.buttonContainer}>
+                <Button color="primary">
+                    <LoopIcon /> &nbsp; New
+                </Button>
+            </div>
         </div>
     )
 }

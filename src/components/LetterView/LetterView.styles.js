@@ -2,17 +2,19 @@ import { makeStyles } from '@material-ui/styles'
 
 export default makeStyles(() => {
     return {
+        buttonContainer: {
+            textAlign: 'center',
+            marginTop: -48
+        },
         container: {
-            height: 232,
+            height: 200,
             width: '100%',
             textAlign: 'center'
         },
-        button: {
-            width: '100%'
-        },
         letter: {
             fontFamily: 'Georgia, Times New Roman, Serif',
-            fontSize: '150px'
+            fontSize: '150px',
+            margin: '-24px 0'
         }
     }
 })

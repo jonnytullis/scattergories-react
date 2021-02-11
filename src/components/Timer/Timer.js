@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Typography, Grid } from '@material-ui/core'
-import { Edit, AlarmOn, AlarmOff } from '@material-ui/icons'
+import { Pause, AlarmOn, AlarmOff, Refresh } from '@material-ui/icons'
 import clsx from 'clsx'
 
 import { useTimer } from '../../hooks'
@@ -33,6 +33,10 @@ export default function Timer({ gameId, userId, secondsTotal }) {
         return `${minutes}:${remainingSeconds.toLocaleString('en-US', {minimumIntegerDigits: 2})}`
     }
 
+    function isPaused() {
+        return !running && seconds > 0 && seconds < secondsTotal
+    }
+
     const timerActionOptions = {
         variables: {
             gameId,
@@ -41,7 +45,12 @@ export default function Timer({ gameId, userId, secondsTotal }) {
     }
 
     return (
-        <div className={classes.container}>
+        <div className={classes.center}>
+            <div className={ classes.pausedTextContainer }>
+                <div className={clsx(classes.pausedText, {[classes.hide]: !isPaused()})}>
+                    <Pause /> Paused
+                </div>
+            </div>
             <Typography className={classes.clockFont} variant="h1">
                 { formattedTime() }
             </Typography>
@@ -49,34 +58,36 @@ export default function Timer({ gameId, userId, secondsTotal }) {
                 container
                 direction="row"
                 justify="center"
-                className={clsx({
-                    [classes.hide]: !(user?.id === game?.hostId)
-                })}
+                className={clsx({[classes.hide]: !(user?.id === game?.hostId)}, classes.grid)}
             >
-                <Button
-                    color="primary"
-                    onClick={() => reset(timerActionOptions)}
-                >
-                    <AlarmOff />&nbsp; Reset
-                </Button>
-                <Button
-                    color="primary"
-                    className={clsx({
-                        [classes.hide]: running
-                    })}
-                    onClick={() => start(timerActionOptions)}
-                >
-                    <AlarmOn />&nbsp; { seconds < secondsTotal ? 'Resume' : 'Start' }
-                </Button>
-                <Button
-                    color="primary"
-                    className={clsx({
-                        [classes.hide]: !running
-                    })}
-                    onClick={() => pause(timerActionOptions)}
-                >
-                    <AlarmOff />&nbsp; Pause
-                </Button>
+                <Grid item xs={6}>
+                    <Button
+                        color="primary"
+                        onClick={() => reset(timerActionOptions)}
+                    >
+                        <Refresh />&nbsp; Reset
+                    </Button>
+                </Grid>
+                <Grid item xs={6} className={clsx({[classes.hide]: seconds <= 0})}>
+                    <Button
+                        color="primary"
+                        className={clsx({
+                            [classes.hide]: running
+                        })}
+                        onClick={() => start(timerActionOptions)}
+                    >
+                        <AlarmOn />&nbsp; { seconds < secondsTotal ? 'Resume' : 'Start' }
+                    </Button>
+                    <Button
+                        color="primary"
+                        className={clsx({
+                            [classes.hide]: !running
+                        })}
+                        onClick={() => pause(timerActionOptions)}
+                    >
+                        <AlarmOff />&nbsp; Pause
+                    </Button>
+                </Grid>
             </Grid>
         </div>
     )

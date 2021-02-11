@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles'
+import { colors } from '../../theme'
 
 export default makeStyles(() => ({
     avatar: {
@@ -15,7 +16,7 @@ export default makeStyles(() => ({
         marginBottom: -5,
     },
     textCaption: {
-        color: '#777777'
+        color: colors.disabled
     },
     textWrapper: {
         marginTop: 'auto',

@@ -5,6 +5,7 @@ const colors = {
     secondary: '#c70039',
     accent: '#f37121',
     light: '#f2f2f2',
+    disabled: '#777777',
     avatarColors: [
         '#c70039',
         '#11698e',
