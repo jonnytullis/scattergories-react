@@ -3,7 +3,7 @@ import { Button, Typography, Grid } from '@material-ui/core'
 import { Pause, AlarmOn, AlarmOff, Refresh } from '@material-ui/icons'
 import clsx from 'clsx'
 
-import { useTimer } from '../../hooks'
+import { useTimer, useAlert } from '../../hooks'
 import useStyles from './Timer.styles'
 import { useGameContext } from '../../hooks'
 
@@ -13,6 +13,7 @@ export default function Timer({ gameId, userId, secondsTotal }) {
     }
     const {user, game} = useGameContext()
     const {data, error, start, pause, reset} = useTimer(game.id)
+    const {raiseAlert} = useAlert()
     const [seconds, setSeconds] = useState(() => secondsTotal)
     const [running, setRunning] = useState(() => false)
     const classes = useStyles()
@@ -37,10 +38,11 @@ export default function Timer({ gameId, userId, secondsTotal }) {
         return !running && seconds > 0 && seconds < secondsTotal
     }
 
-    const timerActionOptions = {
-        variables: {
-            gameId,
-            userId,
+    function doTimerAction(action) {
+        if (typeof action === 'function') {
+            action({ variables: { gameId, userId }}).catch(() => {
+                raiseAlert({ severity: 'error', message: 'We ran into an error with the timer. Please try again.'})
+            })
         }
     }
 
@@ -63,7 +65,7 @@ export default function Timer({ gameId, userId, secondsTotal }) {
                 <Grid item xs={6}>
                     <Button
                         color="primary"
-                        onClick={() => reset(timerActionOptions)}
+                        onClick={() => doTimerAction(reset)}
                     >
                         <Refresh />&nbsp; Reset
                     </Button>
@@ -74,7 +76,7 @@ export default function Timer({ gameId, userId, secondsTotal }) {
                         className={clsx({
                             [classes.hide]: running
                         })}
-                        onClick={() => start(timerActionOptions)}
+                        onClick={() => doTimerAction(start)}
                     >
                         <AlarmOn />&nbsp; { seconds < secondsTotal ? 'Resume' : 'Start' }
                     </Button>
@@ -83,7 +85,7 @@ export default function Timer({ gameId, userId, secondsTotal }) {
                         className={clsx({
                             [classes.hide]: !running
                         })}
-                        onClick={() => pause(timerActionOptions)}
+                        onClick={() => doTimerAction(pause)}
                     >
                         <AlarmOff />&nbsp; Pause
                     </Button>

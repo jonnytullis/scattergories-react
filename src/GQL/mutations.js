@@ -52,6 +52,14 @@ export const CREATE_GAME = gql`
     }
 `
 
+export const LEAVE_GAME = gql`
+    mutation($gameId:String!, $userId:ID!) {
+        leaveGame(gameId:$gameId, userId:$userId) {
+            success
+        }
+    }
+`
+
 export const START_TIMER = gql`
     mutation($gameId:String!, $userId:ID!) {
         startTimer(gameId:$gameId, userId:$userId) {

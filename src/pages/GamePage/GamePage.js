@@ -17,6 +17,7 @@ import useStyles from './GamePage.styles'
 import { useAlert, useGameContext } from '../../hooks'
 import { LetterView, Timer, PromptsView, PlayersDrawer } from '../../components'
 import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
+import { LEAVE_GAME } from '../../GQL/mutations'
 
 export default function GamePage({ match }) {
     const classes = useStyles()
@@ -24,16 +25,17 @@ export default function GamePage({ match }) {
     const { game, setGame, user } = useGameContext()
     const { raiseAlert } = useAlert()
     const [drawerOpen, setDrawerOpen] = useState(true)
+    const [leaveGame] = useMutation(LEAVE_GAME)
     const { data: gameData, error: subscriptionError } = useSubscription(GAME_SUBSCRIPTION, {
         variables: { gameId: match.params.gameId }
     })
 
     // Warn the user before leaving the browser page
     useEffect(() => {
-        window.onbeforeunload = (event) => true
+        window.onbeforeunload = () => true
         return function beforeUnmount() {
+            leaveGame({ variables: { gameId: game?.id, userId: user?.id }}).catch()
             raiseAlert({ milliseconds: 6000, message: 'You left the game', severity: 'info' })
-            console.log('User is leaving the game!!!')
             window.onbeforeunload = undefined // Don't need this anymore
         }
     }, [raiseAlert])
@@ -41,8 +43,7 @@ export default function GamePage({ match }) {
     useEffect(() => {
         if (subscriptionError) {
             raiseAlert({
-                milliseconds: 9000,
-                message: 'We encountered an error while connecting to the game',
+                message: 'We encountered an error connecting to the game',
                 severity: 'error'
             })
         }
