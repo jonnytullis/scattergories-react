@@ -10,14 +10,14 @@ import PromptsView from './PromptsView/PromptsView'
 import Timer from './Timer/Timer'
 
 export {
-    Alert,
-    CreateGameForm,
-    InviteFriendsView,
-    JoinGameForm,
-    LetterView,
-    PlayerItem,
-    PlayersDrawer,
-    PasswordTextField,
-    PromptsView,
-    Timer
+  Alert,
+  CreateGameForm,
+  InviteFriendsView,
+  JoinGameForm,
+  LetterView,
+  PlayerItem,
+  PlayersDrawer,
+  PasswordTextField,
+  PromptsView,
+  Timer
 }

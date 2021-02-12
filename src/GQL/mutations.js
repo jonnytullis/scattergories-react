@@ -1,4 +1,4 @@
-import {gql} from '@apollo/client'
+import { gql } from '@apollo/client'
 
 export const JOIN_GAME = gql`
     mutation($gameId:String!, $userName:String!) {
