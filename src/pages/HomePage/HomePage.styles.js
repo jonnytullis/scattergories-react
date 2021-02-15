@@ -29,15 +29,18 @@ export default makeStyles((theme) => ({
     borderRadius: 50,
     [theme.breakpoints.down('xs')] : {
       height: 150,
-      width: 150
+      width: 150,
+      borderRadius: 24,
     },
     [theme.breakpoints.up('sm')] : {
       height: 250,
-      width: 250
+      width: 250,
+      borderRadius: 40,
     },
     [theme.breakpoints.up('md')] : {
       width: 300,
-      height: 300
+      height: 300,
+      borderRadius: 46,
     },
     margin: '36px auto'
   },
