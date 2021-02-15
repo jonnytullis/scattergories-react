@@ -5,14 +5,12 @@ import clsx from 'clsx'
 
 import { useTimer, useAlert } from '../../hooks'
 import useStyles from './Timer.styles'
-import { useGameContext } from '../../hooks'
 
-export default function Timer({ gameId, userId, secondsTotal }) {
+export default function Timer({ gameId, userId, hostId, secondsTotal }) {
   if (!gameId || !userId) {
     throw new Error('Properties "gameId" and "userId" are required for Timer')
   }
-  const { user, game } = useGameContext()
-  const { data, error, start, pause, reset } = useTimer(game.id)
+  const { data, error, start, pause, reset } = useTimer(gameId)
   const { raiseAlert } = useAlert()
   const [ seconds, setSeconds ] = useState(() => secondsTotal)
   const [ running, setRunning ] = useState(() => false)
@@ -60,7 +58,7 @@ export default function Timer({ gameId, userId, secondsTotal }) {
         container
         direction="row"
         justify="center"
-        className={clsx({ [classes.hide]: !(user?.id === game?.hostId) }, classes.grid)}
+        className={clsx({ [classes.hide]: hostId ? !(userId === hostId) : false }, classes.grid)}
       >
         <Grid item xs={6}>
           <Button

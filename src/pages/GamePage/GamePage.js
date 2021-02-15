@@ -34,7 +34,7 @@ export default function GamePage({ match }) {
   useEffect(() => {
     window.onbeforeunload = () => true
     return function beforeUnmount() {
-      leaveGame({ variables: { gameId: game?.id, userId: user?.id } }).catch()
+      leaveGame({ variables: { gameId: game?.id, userId: user?.id } }).catch(() => {})
       raiseAlert({ milliseconds: 6000, message: 'You left the game', severity: 'info' })
       window.onbeforeunload = undefined // Don't need this anymore
     }
@@ -107,7 +107,7 @@ export default function GamePage({ match }) {
             <Grid container direction="column" spacing={3}>
               <Grid item>
                 <Card className={classes.card}>
-                  <Timer gameId={game.id} userId={user.id} secondsTotal={game.settings?.timerSeconds} />
+                  <Timer gameId={game.id} userId={user.id} hostId={game.hostId} secondsTotal={game.settings?.timerSeconds} />
                 </Card>
               </Grid>
               <Grid item>
