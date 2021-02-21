@@ -63,7 +63,7 @@ export const LEAVE_GAME = gql`
 export const START_TIMER = gql`
     mutation($gameId:String!, $userId:ID!) {
         startTimer(gameId:$gameId, userId:$userId) {
-            totalSeconds
+            seconds
             remaining
         }
     }
@@ -72,7 +72,7 @@ export const START_TIMER = gql`
 export const PAUSE_TIMER = gql`
     mutation($gameId:String!, $userId:ID!) {
         pauseTimer(gameId:$gameId, userId:$userId) {
-            totalSeconds
+            seconds
             remaining
         }
     }
@@ -81,7 +81,7 @@ export const PAUSE_TIMER = gql`
 export const RESET_TIMER = gql`
     mutation($gameId:String!, $userId:ID!) {
         resetTimer(gameId:$gameId, userId:$userId) {
-            totalSeconds
+            seconds
             remaining
         }
     }

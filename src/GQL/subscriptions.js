@@ -24,7 +24,7 @@ export const TIMER_SUBSCRIPTION = gql`
     subscription($gameId:String!) {
         timer(gameId:$gameId) {
             remaining
-            totalSeconds
+            seconds
             isRunning
         }
     }
