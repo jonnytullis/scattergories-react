@@ -3,13 +3,15 @@ import { makeStyles } from '@material-ui/styles'
 export default makeStyles(() => {
   return {
     buttonContainer: {
-      textAlign: 'center',
-      marginTop: -48
+      textAlign: 'center'
     },
     container: {
-      height: 200,
+      height: 160,
       width: '100%',
       textAlign: 'center'
+    },
+    hide: {
+      display: 'none'
     },
     letter: {
       fontFamily: 'Georgia, Times New Roman, Serif',

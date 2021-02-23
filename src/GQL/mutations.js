@@ -60,6 +60,14 @@ export const LEAVE_GAME = gql`
     }
 `
 
+export const NEW_LETTER = gql`
+    mutation($gameId:String!, $userId:ID!) {
+        newLetter(gameId:$gameId, userId:$userId) {
+            letter
+        }
+    }
+`
+
 export const START_TIMER = gql`
     mutation($gameId:String!, $userId:ID!) {
         startTimer(gameId:$gameId, userId:$userId) {

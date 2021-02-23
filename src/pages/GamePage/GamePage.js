@@ -17,7 +17,7 @@ import useStyles from './GamePage.styles'
 import { useAlert, useGameContext } from '../../hooks'
 import { LetterView, Timer, PromptsView, PlayersDrawer } from '../../components'
 import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
-import { LEAVE_GAME } from '../../GQL/mutations'
+import { LEAVE_GAME, NEW_LETTER } from '../../GQL/mutations'
 
 export default function GamePage({ match }) {
   const classes = useStyles()
@@ -28,6 +28,7 @@ export default function GamePage({ match }) {
   const [ exitNow, setExitNow ] = useState(() => false)
   const [ drawerOpen, setDrawerOpen ] = useState(() => true)
   const [ leaveGame ] = useMutation(LEAVE_GAME)
+  const [ getNewLetter ] = useMutation(NEW_LETTER)
   const { data: gameData, error: subscriptionError } = useSubscription(GAME_SUBSCRIPTION, {
     variables: { gameId: match.params?.gameId }
   })
@@ -79,6 +80,10 @@ export default function GamePage({ match }) {
       history.push('/')
     }
   }, [ exitNow, setExitNow ])
+
+  const handleNewLetter = () => {
+    getNewLetter({ variables: { gameId: game?.id, userId: user?.id } }).catch(() => {})
+  }
 
   const handleDrawerOpen = () => {
     setDrawerOpen(true)
@@ -136,7 +141,7 @@ export default function GamePage({ match }) {
               </Grid>
               <Grid item>
                 <Card className={classes.card}>
-                  <LetterView letter="A" />
+                  <LetterView letter={game.letter} isHost={user.id === game.hostId} onNewLetter={handleNewLetter} />
                 </Card>
               </Grid>
             </Grid>
