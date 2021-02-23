@@ -7,6 +7,8 @@ import {
   Route
 } from "react-router-dom"
 
+import { ErrorBoundary } from './components'
+
 function getRoutes() {
   const routes = [
     // Home Page
@@ -34,15 +36,17 @@ function getRoutes() {
 export default class App extends React.Component {
   render() {
     return (
-      <ThemeProvider theme={theme}>
-        <Router>
-          <Suspense fallback={<div>Loading...</div>}>
-            <Switch>
-              {getRoutes()}
-            </Switch>
-          </Suspense>
-        </Router>
-      </ThemeProvider>
+      <ErrorBoundary>
+        <ThemeProvider theme={theme}>
+          <Router>
+            <Suspense fallback={<div>Loading...</div>}>
+              <Switch>
+                {getRoutes()}
+              </Switch>
+            </Suspense>
+          </Router>
+        </ThemeProvider>
+      </ErrorBoundary>
     )
   }
 }
