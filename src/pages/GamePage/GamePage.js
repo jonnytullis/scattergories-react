@@ -24,44 +24,61 @@ export default function GamePage({ match }) {
   const history = useHistory()
   const { game, setGame, user } = useGameContext()
   const { raiseAlert } = useAlert()
-  const [ drawerOpen, setDrawerOpen ] = useState(true)
+  const [ exitMessage, setExitMessage ] = useState(() => 'You left the game')
+  const [ exitNow, setExitNow ] = useState(() => false)
+  const [ drawerOpen, setDrawerOpen ] = useState(() => true)
   const [ leaveGame ] = useMutation(LEAVE_GAME)
   const { data: gameData, error: subscriptionError } = useSubscription(GAME_SUBSCRIPTION, {
-    variables: { gameId: match.params.gameId }
+    variables: { gameId: match.params?.gameId }
   })
 
-  // Warn the user before leaving the browser page
   useEffect(() => {
+    // Leave the page if the context store has not been updated properly
+    // This won't happen if someone creates or joins the game, it will only
+    // happen if they happen to navigate to a game URL
+    if (!game || !user) {
+      exitGame('To join a game, click "Join"')
+      return null
+    }
+  }, [])
+
+  useEffect(() => {
+    // Warn the user before leaving the browser page
     window.onbeforeunload = () => true
     return function beforeUnmount() {
       leaveGame({ variables: { gameId: game?.id, userId: user?.id } }).catch(() => {})
-      raiseAlert({ milliseconds: 6000, message: 'You left the game', severity: 'info' })
+      if (exitMessage) {
+        raiseAlert({ milliseconds: 6000, message: exitMessage, severity: 'info' })
+      }
       window.onbeforeunload = undefined // Don't need this anymore
     }
-  }, [ raiseAlert ])
+  }, [ raiseAlert, exitMessage, leaveGame ])
 
   useEffect(() => {
     if (subscriptionError) {
       raiseAlert({
-        message: 'We encountered an error connecting to the game',
+        message: 'Error connecting to game',
         severity: 'error'
       })
     }
   }, [ subscriptionError, raiseAlert ])
 
   useEffect(() => {
-    if (gameData) {
-      setGame(gameData.game)
+    const game = gameData?.gameUpdated?.game
+    const gameEnded = gameData?.gameUpdated?.gameEnded
+    if (game) {
+      setGame(game)
+    }
+    if (gameEnded) {
+      exitGame(gameEnded.message)
     }
   }, [ gameData, setGame ])
 
-  // Leave the page if the context store has not been updated properly
-  // This won't happen if someone creates or joins the game, it will only
-  // happen if they happen to navigate to a game URL
-  if (!game || !user) {
-    history.push('/')
-    return null
-  }
+  useEffect(() => {
+    if (exitNow) {
+      history.push('/')
+    }
+  }, [ exitNow, setExitNow ])
 
   const handleDrawerOpen = () => {
     setDrawerOpen(true)
@@ -71,8 +88,15 @@ export default function GamePage({ match }) {
     setDrawerOpen(false)
   }
 
+  const exitGame = (message) => {
+    if (message !== undefined) {
+      setExitMessage(message)
+    }
+    setExitNow(true)
+  }
+
   return (
-    <div className={classes.root}>
+    game && user ? <div className={classes.root}>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -138,6 +162,6 @@ export default function GamePage({ match }) {
           </Grid>
         </Grid>
       </main>
-    </div>
+    </div> : <div />
   )
 }

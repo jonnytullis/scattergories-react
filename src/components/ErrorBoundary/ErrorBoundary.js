@@ -1,9 +1,10 @@
 import React from 'react'
 
+// When this was written, React did not support error boundaries with functional components
 export default class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false }
   }
 
   static getDerivedStateFromError() {
