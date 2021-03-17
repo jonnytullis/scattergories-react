@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles'
+import { colors } from '../../theme'
 
 const drawerWidth = 240
 
@@ -48,5 +49,16 @@ export default makeStyles((theme) => ({
   },
   card: {
     padding: 24,
+  },
+  leaveButton: {
+    backgroundColor: colors.error,
+    color: colors.light,
+    fontWeight: 'bold',
+    '&:hover': {
+      backgroundColor: colors.secondary
+    }
+  },
+  spacer: {
+    flexGrow: 1
   }
 }))

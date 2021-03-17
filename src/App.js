@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react'
+import { CssBaseline } from '@material-ui/core'
 import { ThemeProvider } from '@material-ui/styles'
 import { theme } from './theme'
 import {
@@ -7,7 +8,7 @@ import {
   Route
 } from "react-router-dom"
 
-import { ErrorBoundary } from './components'
+import ErrorBoundary from './ErrorBoundary'
 
 function getRoutes() {
   const routes = [
@@ -40,6 +41,7 @@ export default class App extends React.Component {
         <ThemeProvider theme={theme}>
           <Router>
             <Suspense fallback={<div>Loading...</div>}>
+              <CssBaseline />
               <Switch>
                 {getRoutes()}
               </Switch>

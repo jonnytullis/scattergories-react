@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react'
 import clsx from 'clsx'
 import { useHistory } from 'react-router-dom'
 import {
-  CssBaseline,
   AppBar,
   Toolbar,
   Typography,
   IconButton,
   Grid,
-  Card
+  Card,
+  Button
 } from '@material-ui/core'
-import Group from '@material-ui/icons/Group'
+import { Group, ExitToApp } from '@material-ui/icons'
 import { useSubscription, useMutation, useQuery } from '@apollo/client'
 
 import useStyles from './GamePage.styles'
@@ -19,6 +19,7 @@ import { LetterView, Timer, PromptsView, PlayersDrawer } from '../../components'
 import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
 import { LEAVE_GAME, NEW_LETTER } from '../../GQL/mutations'
 import { USER } from '../../GQL/query'
+import LoadingOverlay from "../../components/LoadingOverlay/LoadingOverlay";
 
 export default function GamePage({ match }) {
   const { userId, gameId } = match.params
@@ -42,13 +43,13 @@ export default function GamePage({ match }) {
 
   useEffect(() => {
     // Warn the user before leaving the browser page
-    window.onbeforeunload = () => true
+    // window.onbeforeunload = () => true
     return function beforeUnmount() {
-      leaveGame({ variables: { gameId, userId } }).catch(() => {})
-      if (exitMessage) {
-        raiseAlert({ milliseconds: 6000, message: exitMessage, severity: 'info' })
-      }
-      window.onbeforeunload = undefined // Don't need this anymore
+      // leaveGame({ variables: { gameId, userId } }).catch(() => {})
+      // if (exitMessage) {
+      //   raiseAlert({ milliseconds: 6000, message: exitMessage, severity: 'info' })
+      // }
+      // window.onbeforeunload = undefined // Don't need this anymore
     }
   }, [ raiseAlert, exitMessage, leaveGame ])
 
@@ -104,74 +105,69 @@ export default function GamePage({ match }) {
     setDrawerOpen(false)
   }
 
+  const isHost = () => userId === game.hostId
+
   return (
-    // eslint-disable-next-line no-constant-condition
-    game && user ? <div className={classes.root}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: drawerOpen,
-        })}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, drawerOpen && classes.hide)}
-          >
-            <Group />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            {game.name}
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <PlayersDrawer players={game.players} hostId={game.hostId} open={drawerOpen} onClose={handleDrawerClose} />
-      <main
-        className={clsx(classes.content, {
-          [classes.contentShift]: drawerOpen,
-        })}
-      >
-        <div className={classes.contentHeader} />
-        <Grid container spacing={3} direction="row">
-          <Grid item>
-            <Grid container direction="column" spacing={3}>
-              <Grid item>
-                <Card className={classes.card}>
-                  <Timer gameId={game.id} userId={user.id} hostId={game.hostId} secondsTotal={game.settings?.timerSeconds} />
-                </Card>
-              </Grid>
-              <Grid item>
-                <Card className={classes.card}>
-                  <LetterView letter={game.letter} isHost={user.id === game.hostId} onNewLetter={handleNewLetter} />
-                </Card>
+    <div>
+      {game && user && <div className={classes.root}>
+        <AppBar
+          position="fixed"
+          className={clsx(classes.appBar, {
+            [classes.appBarShift]: drawerOpen,
+          })}
+        >
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              className={clsx(classes.menuButton, drawerOpen && classes.hide)}
+            >
+              <Group />
+            </IconButton>
+            <Typography variant="h6" noWrap>
+              {game.name}
+            </Typography>
+            <div className={classes.spacer} />
+            <Button variant="contained" className={classes.leaveButton}>
+              {isHost() ? 'End' : 'Leave'} Game &nbsp;
+              <ExitToApp />
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <PlayersDrawer players={game.players} hostId={game.hostId} open={drawerOpen} onClose={handleDrawerClose} />
+        <main
+          className={clsx(classes.content, {
+            [classes.contentShift]: drawerOpen,
+          })}
+        >
+          <div className={classes.contentHeader} />
+          <Grid container spacing={3} direction="row">
+            <Grid item>
+              <Grid container direction="column" spacing={3}>
+                <Grid item>
+                  <Card className={classes.card}>
+                    <Timer gameId={game.id} userId={user.id} hostId={game.hostId} secondsTotal={game.settings?.timerSeconds} />
+                  </Card>
+                </Grid>
+                <Grid item>
+                  <Card className={classes.card}>
+                    <LetterView letter={game.letter} isHost={isHost()} onNewLetter={handleNewLetter} />
+                  </Card>
+                </Grid>
               </Grid>
             </Grid>
+            <Grid item xs={12} sm={12} md={12} lg={9} xl={9}>
+              <Card className={classes.card}>
+                <PromptsView
+                  prompts={game.prompts} />
+              </Card>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={12} md={12} lg={9} xl={9}>
-            <Card className={classes.card}>
-              <PromptsView
-                prompts={[
-                  'Test1',
-                  'test2',
-                  'test3',
-                  'test4',
-                  'Test5',
-                  'test6',
-                  'test7',
-                  'test8',
-                  'Test9',
-                  'test10',
-                  'test11',
-                  'test12'
-                ]} />
-            </Card>
-          </Grid>
-        </Grid>
-      </main>
-    </div> : <div />
+        </main>
+      </div>}
+      <LoadingOverlay open={userLoading || !gameData} />
+    </div>
   )
 }
