@@ -4,7 +4,7 @@ import Typography from '@material-ui/core/Typography'
 import { useMutation } from '@apollo/client'
 import { useHistory } from 'react-router-dom'
 
-import { useAlert, useGameContext } from '../../hooks'
+import { useAlert } from '../../hooks'
 import useStyles from './HomePage.styles'
 import LogoImage from '../../assets/images/logo-image.png'
 import LogoText from '../../assets/images/logo-text.gif'
@@ -14,7 +14,6 @@ import { CREATE_GAME, JOIN_GAME } from '../../GQL/mutations'
 export default function HomePage() {
   const classes = useStyles()
   const history = useHistory()
-  const { setGame, setUser } = useGameContext()
   const { raiseAlert } = useAlert()
   const [ dialog, setDialog ] = useState(false)
   const [ dialogTitle, setDialogTitle ] = useState('')
@@ -33,11 +32,8 @@ export default function HomePage() {
   async function createGameFormSubmitted({ hostName, gameName }) {
     try {
       const res = await createGame({ variables: { hostName, gameName } })
-      const game = res.data.createGame.game
-      const user = res.data.createGame.user
-      setGame(game)
-      setUser(user)
-      goToGame(game.id)
+      const { gameId, userId } = res.data?.createGame
+      goToGame({ gameId, userId })
     } catch(e) {
       raiseAlert({
         message: 'Oops! Something went wrong when creating your game. Please try again. ' + e.message,
@@ -56,12 +52,9 @@ export default function HomePage() {
   async function joinGameFormSubmitted({ gameId, userName }) {
     try {
       const res = await joinGame({ variables: { gameId, userName } })
-      const game = res.data?.joinGame?.game
-      const user = res.data?.joinGame?.user
-      setGame(game)
-      setUser(user)
-      if (game?.id) {
-        goToGame(game.id)
+      const { userId } = res.data?.joinGame
+      if (gameId && userId) {
+        goToGame({ gameId, userId })
       }
     } catch(e) {
       raiseAlert({
@@ -72,9 +65,10 @@ export default function HomePage() {
     }
   }
 
-  function goToGame(gameId) {
-    history.push(`/game/${gameId}`)
+  function goToGame({ gameId, userId }) {
+    history.push(`/game/${userId}/${gameId}`)
   }
+
   return (
     <Container className={classes.container}>
       <Box>
@@ -84,7 +78,7 @@ export default function HomePage() {
             <img src={LogoImage} className={classes.logoImageWrapper}  alt="Logo" />
           </Box>
           <Typography variant="h5">
-                        Keep your family and friends close while at a distance
+            This is a subtitle if needed
           </Typography>
         </Box>
       </Box>
@@ -96,7 +90,7 @@ export default function HomePage() {
             color="secondary"
             onClick={() => {createGameClicked()}}
           >
-                        Create Game
+            Create Game
           </Button>
         </Grid>
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
@@ -106,7 +100,7 @@ export default function HomePage() {
             color="primary"
             onClick={() => {joinGameClicked()}}
           >
-                        Join Game
+            Join Game
           </Button>
         </Grid>
       </Grid>

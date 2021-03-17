@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const GAME_SUBSCRIPTION = gql`
-    subscription($gameId:String!) {
-        gameUpdated(gameId:$gameId) {
+    subscription($gameId:String!, $userId:ID!) {
+        gameUpdated(gameId:$gameId, userId:$userId) {
             game {
                 id
                 name
@@ -12,14 +12,16 @@ export const GAME_SUBSCRIPTION = gql`
                     id
                     name
                 }
+                prompts
                 settings {
                     timerSeconds
                     numPrompts
                     numRounds
                 }
             }
-            gameEnded {
+            status {
                 gameId
+                ended
                 message
             }
         }

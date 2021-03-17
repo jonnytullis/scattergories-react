@@ -11,43 +11,40 @@ import {
   Card
 } from '@material-ui/core'
 import Group from '@material-ui/icons/Group'
-import { useSubscription, useMutation } from '@apollo/client'
+import { useSubscription, useMutation, useQuery } from '@apollo/client'
 
 import useStyles from './GamePage.styles'
-import { useAlert, useGameContext } from '../../hooks'
+import { useAlert } from '../../hooks'
 import { LetterView, Timer, PromptsView, PlayersDrawer } from '../../components'
 import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
 import { LEAVE_GAME, NEW_LETTER } from '../../GQL/mutations'
+import { USER } from '../../GQL/query'
 
 export default function GamePage({ match }) {
+  const { userId, gameId } = match.params
+
   const classes = useStyles()
   const history = useHistory()
-  const { game, setGame, user } = useGameContext()
   const { raiseAlert } = useAlert()
   const [ exitMessage, setExitMessage ] = useState(() => 'You left the game')
   const [ exitNow, setExitNow ] = useState(() => false)
   const [ drawerOpen, setDrawerOpen ] = useState(() => true)
   const [ leaveGame ] = useMutation(LEAVE_GAME)
   const [ getNewLetter ] = useMutation(NEW_LETTER)
-  const { data: gameData, error: subscriptionError } = useSubscription(GAME_SUBSCRIPTION, {
-    variables: { gameId: match.params?.gameId }
+  const [ game, setGame ] = useState(() => null)
+  const [ user, setUser ] = useState(() => null)
+  const { data: userData, loading: userLoading, error: userError } = useQuery(USER, {
+    variables: { gameId, userId }
   })
-
-  useEffect(() => {
-    // Leave the page if the context store has not been updated properly
-    // This won't happen if someone creates or joins the game, it will only
-    // happen if they happen to navigate to a game URL
-    if (!game || !user) {
-      exitGame('To join a game, click "Join"')
-      return null
-    }
-  }, [])
+  const { data: gameData, error: subscriptionError } = useSubscription(GAME_SUBSCRIPTION, {
+    variables: { gameId, userId }
+  })
 
   useEffect(() => {
     // Warn the user before leaving the browser page
     window.onbeforeunload = () => true
     return function beforeUnmount() {
-      leaveGame({ variables: { gameId: game?.id, userId: user?.id } }).catch(() => {})
+      leaveGame({ variables: { gameId, userId } }).catch(() => {})
       if (exitMessage) {
         raiseAlert({ milliseconds: 6000, message: exitMessage, severity: 'info' })
       }
@@ -57,21 +54,28 @@ export default function GamePage({ match }) {
 
   useEffect(() => {
     if (subscriptionError) {
+      console.log('ERROR:', subscriptionError)
       raiseAlert({
-        message: 'Error connecting to game',
+        message: "We're having trouble connecting...",
         severity: 'error'
       })
     }
   }, [ subscriptionError, raiseAlert ])
 
   useEffect(() => {
+    if (userData && !userLoading && !userError) {
+      setUser(userData.user)
+    }
+  }, [ userData, userLoading, userError ])
+
+  useEffect(() => {
     const game = gameData?.gameUpdated?.game
-    const gameEnded = gameData?.gameUpdated?.gameEnded
+    const status = gameData?.gameUpdated?.status
     if (game) {
       setGame(game)
     }
-    if (gameEnded) {
-      exitGame(gameEnded.message)
+    if (status) {
+      exitGame(status.message)
     }
   }, [ gameData, setGame ])
 
@@ -80,6 +84,13 @@ export default function GamePage({ match }) {
       history.push('/')
     }
   }, [ exitNow, setExitNow ])
+
+  const exitGame = (message) => {
+    if (message !== undefined) {
+      setExitMessage(message)
+    }
+    setExitNow(true)
+  }
 
   const handleNewLetter = () => {
     getNewLetter({ variables: { gameId: game?.id, userId: user?.id } }).catch(() => {})
@@ -93,14 +104,8 @@ export default function GamePage({ match }) {
     setDrawerOpen(false)
   }
 
-  const exitGame = (message) => {
-    if (message !== undefined) {
-      setExitMessage(message)
-    }
-    setExitNow(true)
-  }
-
   return (
+    // eslint-disable-next-line no-constant-condition
     game && user ? <div className={classes.root}>
       <CssBaseline />
       <AppBar

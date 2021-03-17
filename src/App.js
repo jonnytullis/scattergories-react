@@ -19,7 +19,7 @@ function getRoutes() {
     // Home Page
     {
       component: React.lazy(() => import('./pages/GamePage/GamePage')),
-      path: '/game/:gameId',
+      path: '/game/:userId/:gameId',
     },
     // 404 Not Found
     {
