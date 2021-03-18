@@ -3,7 +3,7 @@ import { colors } from '../../theme'
 
 export default makeStyles(() => {
   return {
-    grid: {
+    buttonRow: {
       minWidth: 230
     },
     center: {
@@ -17,15 +17,21 @@ export default makeStyles(() => {
       display: 'none !important'
     },
     pausedTextContainer: {
-      margin: '-8px 0',
       height: 24,
-
     },
     pausedText: {
       color: colors.disabled,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
+    },
+    soundBtn: {
+      position: 'absolute',
+      right: 0,
+      top: 0
+    },
+    wrapper: {
+      paddingTop: '12px'
     }
   }
 })

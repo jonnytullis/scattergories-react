@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Typography, Grid } from '@material-ui/core'
-import { Pause, AlarmOn, AlarmOff, Refresh } from '@material-ui/icons'
+import { Button, IconButton, Typography, Grid } from '@material-ui/core'
+import { Pause, AlarmOn, AlarmOff, Refresh, NotificationsActiveOutlined, NotificationsOffOutlined } from '@material-ui/icons'
 import clsx from 'clsx'
-
 import { useTimer, useAlert } from '../../hooks'
 import useStyles from './Timer.styles'
+
+import tickingSoundFile from '../../assets/sounds/ticking.mp3'
+import alarmSoundFile from '../../assets/sounds/bell.mp3'
+
+const tickingAudio = new Audio(tickingSoundFile)
+const alarmAudio = new Audio(alarmSoundFile)
 
 export default function Timer({ gameId, userId, hostId, secondsTotal }) {
   if (!gameId || !userId) {
@@ -14,6 +19,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal }) {
   const { raiseAlert } = useAlert()
   const [ seconds, setSeconds ] = useState(() => secondsTotal)
   const [ running, setRunning ] = useState(() => false)
+  const [ playSounds, setPlaySounds ] = useState(() => true)
   const classes = useStyles()
 
   // Update the view when data from the subscription changes
@@ -25,6 +31,35 @@ export default function Timer({ gameId, userId, hostId, secondsTotal }) {
       console.error('Oh no! There\'s an issue with the timer!', error)
     }
   }, [ data, error ])
+
+  /** Manage audio sounds for timer **/
+  useEffect(() => {
+    // Ticking sound
+    if (running && seconds === 10) {
+      tickingAudio.play()
+    } else if (tickingAudio.paused && running && seconds <= 10) {
+      tickingAudio.currentTime = tickingAudio.duration - seconds
+      tickingAudio.play()
+    } else if (!running && !tickingAudio.paused) {
+      tickingAudio.pause()
+    }
+
+    // Alarm sound
+    if (running && seconds <= 0) {
+      alarmAudio.play()
+    }
+  }, [ running, seconds ])
+
+  /** Respond to sound options **/
+  useEffect(() => {
+    if (playSounds) {
+      tickingAudio.volume = 1
+      alarmAudio.volume = 1
+    } else {
+      tickingAudio.volume = 0
+      alarmAudio.volume = 0
+    }
+  }, [ playSounds ])
 
   function formattedTime() {
     const minutes = Math.floor(seconds / 60)
@@ -45,12 +80,15 @@ export default function Timer({ gameId, userId, hostId, secondsTotal }) {
   }
 
   return (
-    <div className={classes.center}>
+    <div className={clsx(classes.center, classes.wrapper)}>
       <div className={ classes.pausedTextContainer }>
         <div className={clsx(classes.pausedText, { [classes.hide]: !isPaused() })}>
           <Pause /> Paused
         </div>
       </div>
+      <IconButton color="primary" onClick={() => { setPlaySounds(!playSounds) }} className={classes.soundBtn} >
+        {playSounds ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
+      </IconButton>
       <Typography className={classes.clockFont} variant="h1">
         { formattedTime() }
       </Typography>
@@ -58,7 +96,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal }) {
         container
         direction="row"
         justify="center"
-        className={clsx({ [classes.hide]: hostId ? !(userId === hostId) : false }, classes.grid)}
+        className={clsx({ [classes.hide]: hostId ? !(userId === hostId) : false }, classes.buttonRow)}
       >
         <Grid item xs={6}>
           <Button

@@ -1,6 +1,6 @@
 import React from 'react'
 import useStyles from './LetterView.styles'
-import { Button, CardContent, Typography } from '@material-ui/core'
+import { Button, CardContent } from '@material-ui/core'
 import LoopIcon from '@material-ui/icons/Loop'
 import clsx from 'clsx'
 
@@ -17,9 +17,9 @@ export default function LetterView({ letter, isHost, onNewLetter }) {
     <div>
       <div className={classes.container}>
         <CardContent>
-          <Typography variant="h1" className={classes.letter}>
+          <h1 className={classes.letter}>
             {letter}
-          </Typography>
+          </h1>
         </CardContent>
       </div>
       <div className={clsx(classes.buttonContainer, { [classes.hide]: !isHost })}>

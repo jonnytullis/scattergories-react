@@ -6,8 +6,6 @@ export default makeStyles(() => {
       textAlign: 'center'
     },
     container: {
-      height: 160,
-      width: '100%',
       textAlign: 'center'
     },
     hide: {
@@ -15,7 +13,7 @@ export default makeStyles(() => {
     },
     letter: {
       fontFamily: 'Georgia, Times New Roman, Serif',
-      fontSize: '150px',
+      fontSize: '6rem',
       margin: '-24px 0'
     }
   }

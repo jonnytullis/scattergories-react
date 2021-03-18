@@ -15,11 +15,10 @@ import { useSubscription, useMutation, useQuery } from '@apollo/client'
 
 import useStyles from './GamePage.styles'
 import { useAlert } from '../../hooks'
-import { LetterView, Timer, PromptsView, PlayersDrawer } from '../../components'
+import { LetterView, Timer, PromptsView, PlayersDrawer, LoadingOverlay } from '../../components'
 import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
 import { LEAVE_GAME, NEW_LETTER } from '../../GQL/mutations'
 import { USER } from '../../GQL/query'
-import LoadingOverlay from "../../components/LoadingOverlay/LoadingOverlay";
 
 export default function GamePage({ match }) {
   const { userId, gameId } = match.params
@@ -74,6 +73,7 @@ export default function GamePage({ match }) {
     const status = gameData?.gameUpdated?.status
     if (game) {
       setGame(game)
+      document.title += game.name ? ` | ${game.name}` : ''
     }
     if (status) {
       exitGame(status.message)
@@ -143,25 +143,24 @@ export default function GamePage({ match }) {
           })}
         >
           <div className={classes.contentHeader} />
-          <Grid container spacing={3} direction="row">
+          <Grid container spacing={2} direction="row" className={classes.pageLayout}>
             <Grid item>
-              <Grid container direction="column" spacing={3}>
-                <Grid item>
-                  <Card className={classes.card}>
-                    <Timer gameId={game.id} userId={user.id} hostId={game.hostId} secondsTotal={game.settings?.timerSeconds} />
-                  </Card>
-                </Grid>
+              <Grid container direction="column" spacing={2} justify="center">
                 <Grid item>
                   <Card className={classes.card}>
                     <LetterView letter={game.letter} isHost={isHost()} onNewLetter={handleNewLetter} />
                   </Card>
                 </Grid>
+                <Grid item>
+                  <Card className={classes.card}>
+                    <Timer gameId={game.id} userId={user.id} hostId={game.hostId} secondsTotal={game.settings?.timerSeconds} />
+                  </Card>
+                </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={12} sm={12} md={12} lg={9} xl={9}>
+            <Grid item>
               <Card className={classes.card}>
-                <PromptsView
-                  prompts={game.prompts} />
+                <PromptsView prompts={game.prompts} />
               </Card>
             </Grid>
           </Grid>

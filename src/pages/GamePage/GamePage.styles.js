@@ -48,7 +48,7 @@ export default makeStyles((theme) => ({
     ...theme.mixins.toolbar,
   },
   card: {
-    padding: 24,
+    padding: 12,
   },
   leaveButton: {
     backgroundColor: colors.error,
@@ -60,5 +60,10 @@ export default makeStyles((theme) => ({
   },
   spacer: {
     flexGrow: 1
+  },
+  pageLayout: {
+    [theme.breakpoints.down('sm')]: {
+      justifyContent: 'center'
+    }
   }
 }))
