@@ -9,8 +9,8 @@ export default function CreateGameForm({ onCancel, onSubmit }) {
   }
 
   const classes = useStyles()
-  const [ hostName, setHostName ] = useState('')
-  const [ gameName, setGameName ] = useState('')
+  const [ hostName, setHostName ] = useState(window.localStorage.getItem('hostName') || '')
+  const [ gameName, setGameName ] = useState(window.localStorage.getItem('gameName') || '')
   // const [passwordRequired, setPasswordRequired] = useState(false)
   // const [password, setPassword] = useState('')
 
@@ -22,6 +22,8 @@ export default function CreateGameForm({ onCancel, onSubmit }) {
 
   async function onFormSubmit(event) {
     event.preventDefault()
+    window.localStorage.setItem('hostName', hostName)
+    window.localStorage.setItem('gameName', gameName)
     onSubmit({
       hostName, gameName
     })
@@ -82,12 +84,12 @@ export default function CreateGameForm({ onCancel, onSubmit }) {
           <Grid container spacing={3} direction="row" className={classes.buttonRow}>
             <Grid item xs={6}>
               <Button variant="contained" size="large" onClick={() => (onCancel())} >
-                                Cancel
+                Cancel
               </Button>
             </Grid>
             <Grid item xs={6}>
               <Button color="primary" disabled={!isValidData()} variant="contained" size="large" type="submit">
-                                Create
+                Create
               </Button>
             </Grid>
           </Grid>

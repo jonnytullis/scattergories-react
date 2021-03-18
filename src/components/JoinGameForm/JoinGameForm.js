@@ -9,7 +9,11 @@ export default function JoinGameForm({ onCancel, onSubmit }) {
   }
 
   const [ gameId, setGameId ] = useState('')
-  const [ userName, setUserName ] = useState('') // TODO set initial value to cached value
+  const [ userName, setUserName ] = useState(
+    window.localStorage.getItem('userName') ||
+    window.localStorage.getItem('hostName') ||
+    ''
+  )
 
   function isValidInput() {
     const validGameId = !!gameId && gameId.length === 6
@@ -19,6 +23,7 @@ export default function JoinGameForm({ onCancel, onSubmit }) {
 
   function onFormSubmit(event) {
     event.preventDefault()
+    window.localStorage.setItem('userName', userName)
     onSubmit({ gameId, userName })
   }
 
