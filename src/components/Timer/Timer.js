@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Button, IconButton, Typography, Grid } from '@material-ui/core'
-import { Pause, AlarmOn, AlarmOff, Refresh, NotificationsActiveOutlined, NotificationsOffOutlined } from '@material-ui/icons'
+import { Pause, AlarmOn, AlarmOff, Refresh, NotificationsActiveOutlined, NotificationsOffOutlined, Edit } from '@material-ui/icons'
 import clsx from 'clsx'
 import { useTimer, useAlert } from '../../hooks'
 import useStyles from './Timer.styles'
@@ -20,7 +20,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal }) {
   const { raiseAlert } = useAlert()
   const [ seconds, setSeconds ] = useState(() => secondsTotal)
   const [ running, setRunning ] = useState(() => false)
-  const [ playSounds, setPlaySounds ] = useState(() => true)
+  const [ playSounds, setPlaySounds ] = useState(() => window.localStorage.getItem('playTimerSounds') !== 'false')
   const [ isHost ] = useState(() => userId === hostId)
   const classes = useStyles()
 
@@ -37,9 +37,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal }) {
   /** Manage audio sounds for timer **/
   useEffect(() => {
     // Ticking sound
-    if (running && seconds === 10) {
-      tickingAudio.play()
-    } else if (tickingAudio.paused && running && seconds <= 10) {
+    if (tickingAudio.paused && running && seconds <= 10) {
       tickingAudio.currentTime = tickingAudio.duration - seconds
       tickingAudio.play()
     } else if (!running && !tickingAudio.paused) {
@@ -61,6 +59,8 @@ export default function Timer({ gameId, userId, hostId, secondsTotal }) {
       tickingAudio.volume = 0
       alarmAudio.volume = 0
     }
+
+    window.localStorage.setItem('playTimerSounds', String(playSounds))
   }, [ playSounds ])
 
   function formattedTime() {
@@ -95,10 +95,15 @@ export default function Timer({ gameId, userId, hostId, secondsTotal }) {
         <IconButton color="primary" onClick={() => { setPlaySounds(!playSounds) }} className={classes.soundBtnHost} >
           {playSounds ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
         </IconButton> :
-        <Button color="primary" onClick={() => { setPlaySounds(!playSounds) }} className={classes.soundBtnGeneral}>
+        <Button color="primary" onClick={() => { setPlaySounds(!playSounds) }}>
           {playSounds ? 'Sound' : 'Muted'}&nbsp;
           {playSounds ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
         </Button>
+      }
+      {isHost && !running &&
+        <IconButton color="primary" onClick={() => {}} className={classes.editBtn}>
+          <Edit />
+        </IconButton>
       }
       <Grid
         container

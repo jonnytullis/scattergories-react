@@ -13,6 +13,11 @@ export default makeStyles(() => {
     clockFont: {
       fontFamily: 'Arial, Sans-serif'
     },
+    editBtn: {
+      position: 'absolute',
+      top: 0,
+      right: 0
+    },
     hide: {
       display: 'none !important'
     },
@@ -30,10 +35,8 @@ export default makeStyles(() => {
     },
     soundBtnHost: {
       position: 'absolute',
-      right: 0,
+      left: 0,
       top: 0
-    },
-    soundBtnGeneral: {
     }
   }
 })

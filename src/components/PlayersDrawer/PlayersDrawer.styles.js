@@ -10,10 +10,11 @@ export default makeStyles((theme) => {
     },
     drawer: {
       width: drawerWidth,
-      flexShrink: 0,
+      flexShrink: 0
     },
     drawerPaper: {
       width: drawerWidth,
+      boxShadow: '0 1px 6px #c1c1c1'
     },
     drawerHeader: {
       alignItems: 'center',

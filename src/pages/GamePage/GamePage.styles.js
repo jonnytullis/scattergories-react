@@ -11,12 +11,14 @@ export default makeStyles((theme) => ({
     }),
   },
   appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    transition: theme.transitions.create([ 'margin', 'width' ], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+    [theme.breakpoints.up('sm')]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+      marginLeft: drawerWidth,
+      transition: theme.transitions.create([ 'margin', 'width' ], {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+    }
   },
   card: {
     padding: 12,
@@ -31,11 +33,13 @@ export default makeStyles((theme) => ({
     marginLeft: -drawerWidth
   },
   contentShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
+    [theme.breakpoints.up('sm')]: {
+      transition: theme.transitions.create('margin', {
+        easing: theme.transitions.easing.easeOut,
+        duration: theme.transitions.duration.enteringScreen,
+      }),
+      marginLeft: 0
+    }
   },
   contentHeader: {
     // necessary for content to be below app bar
@@ -67,6 +71,6 @@ export default makeStyles((theme) => ({
     flexGrow: 1
   },
   wrapper: {
-    display: 'flex',
+    display: 'flex'
   }
 }))

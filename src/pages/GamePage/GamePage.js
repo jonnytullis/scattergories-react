@@ -28,7 +28,7 @@ export default function GamePage({ match }) {
   const { raiseAlert } = useAlert()
   const [ exitMessage, setExitMessage ] = useState(() => 'You left the game')
   const [ exitNow, setExitNow ] = useState(() => false)
-  const [ drawerOpen, setDrawerOpen ] = useState(() => true)
+  const [ drawerOpen, setDrawerOpen ] = useState(() => window.localStorage.getItem('playersDrawerOpen') !== 'false')
   const [ leaveGame ] = useMutation(LEAVE_GAME)
   const [ getNewLetter ] = useMutation(NEW_LETTER)
   const [ game, setGame ] = useState(() => null)
@@ -61,6 +61,11 @@ export default function GamePage({ match }) {
       })
     }
   }, [ subscriptionError, raiseAlert ])
+
+  /** Use local storage to remember drawer open state **/
+  useEffect(() => {
+    window.localStorage.setItem('playersDrawerOpen', String(drawerOpen))
+  }, [ drawerOpen ])
 
   useEffect(() => {
     if (userData && !userLoading && !userError) {
