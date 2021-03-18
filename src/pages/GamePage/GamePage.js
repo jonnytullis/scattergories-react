@@ -109,7 +109,7 @@ export default function GamePage({ match }) {
 
   return (
     <div>
-      {game && user && <div className={classes.root}>
+      {game && user && <div className={classes.wrapper}>
         <AppBar
           position="fixed"
           className={clsx(classes.appBar, {
@@ -159,7 +159,7 @@ export default function GamePage({ match }) {
               </Grid>
             </Grid>
             <Grid item>
-              <Card className={classes.card}>
+              <Card className={clsx(classes.card, classes.promptsWrapper)}>
                 <PromptsView prompts={game.prompts} />
               </Card>
             </Grid>

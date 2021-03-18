@@ -16,6 +16,9 @@ export default makeStyles(() => {
     hide: {
       display: 'none !important'
     },
+    padTop: {
+      paddingTop: '12px'
+    },
     pausedTextContainer: {
       height: 24,
     },
@@ -25,13 +28,12 @@ export default makeStyles(() => {
       alignItems: 'center',
       justifyContent: 'center',
     },
-    soundBtn: {
+    soundBtnHost: {
       position: 'absolute',
       right: 0,
       top: 0
     },
-    wrapper: {
-      paddingTop: '12px'
+    soundBtnGeneral: {
     }
   }
 })

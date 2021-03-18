@@ -4,9 +4,6 @@ import { colors } from '../../theme'
 const drawerWidth = 240
 
 export default makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
   appBar: {
     transition: theme.transitions.create([ 'margin', 'width' ], {
       easing: theme.transitions.easing.sharp,
@@ -21,11 +18,8 @@ export default makeStyles((theme) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  hide: {
-    display: 'none',
+  card: {
+    padding: 12,
   },
   content: {
     flexGrow: 1,
@@ -47,8 +41,8 @@ export default makeStyles((theme) => ({
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
   },
-  card: {
-    padding: 12,
+  hide: {
+    display: 'none',
   },
   leaveButton: {
     backgroundColor: colors.error,
@@ -58,12 +52,21 @@ export default makeStyles((theme) => ({
       backgroundColor: colors.secondary
     }
   },
-  spacer: {
-    flexGrow: 1
+  menuButton: {
+    marginRight: theme.spacing(2),
   },
   pageLayout: {
     [theme.breakpoints.down('sm')]: {
       justifyContent: 'center'
     }
+  },
+  promptsWrapper: {
+    width: '100%'
+  },
+  spacer: {
+    flexGrow: 1
+  },
+  wrapper: {
+    display: 'flex',
   }
 }))

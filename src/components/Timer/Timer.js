@@ -5,11 +5,12 @@ import clsx from 'clsx'
 import { useTimer, useAlert } from '../../hooks'
 import useStyles from './Timer.styles'
 
-import tickingSoundFile from '../../assets/sounds/ticking.mp3'
-import alarmSoundFile from '../../assets/sounds/bell.mp3'
+import soundFileTicking from '../../assets/sounds/ticking.mp3'
+import soundFileAlarm from '../../assets/sounds/bell.mp3'
 
-const tickingAudio = new Audio(tickingSoundFile)
-const alarmAudio = new Audio(alarmSoundFile)
+// Declare audio outside of react lifecycle
+const tickingAudio = new Audio(soundFileTicking)
+const alarmAudio = new Audio(soundFileAlarm)
 
 export default function Timer({ gameId, userId, hostId, secondsTotal }) {
   if (!gameId || !userId) {
@@ -20,6 +21,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal }) {
   const [ seconds, setSeconds ] = useState(() => secondsTotal)
   const [ running, setRunning ] = useState(() => false)
   const [ playSounds, setPlaySounds ] = useState(() => true)
+  const [ isHost ] = useState(() => userId === hostId)
   const classes = useStyles()
 
   // Update the view when data from the subscription changes
@@ -80,23 +82,29 @@ export default function Timer({ gameId, userId, hostId, secondsTotal }) {
   }
 
   return (
-    <div className={clsx(classes.center, classes.wrapper)}>
+    <div className={clsx(classes.center, isHost ? classes.padTop : {})}>
       <div className={ classes.pausedTextContainer }>
         <div className={clsx(classes.pausedText, { [classes.hide]: !isPaused() })}>
           <Pause /> Paused
         </div>
       </div>
-      <IconButton color="primary" onClick={() => { setPlaySounds(!playSounds) }} className={classes.soundBtn} >
-        {playSounds ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
-      </IconButton>
       <Typography className={classes.clockFont} variant="h1">
         { formattedTime() }
       </Typography>
+      {isHost ?
+        <IconButton color="primary" onClick={() => { setPlaySounds(!playSounds) }} className={classes.soundBtnHost} >
+          {playSounds ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
+        </IconButton> :
+        <Button color="primary" onClick={() => { setPlaySounds(!playSounds) }} className={classes.soundBtnGeneral}>
+          {playSounds ? 'Sound' : 'Muted'}&nbsp;
+          {playSounds ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
+        </Button>
+      }
       <Grid
         container
         direction="row"
         justify="center"
-        className={clsx({ [classes.hide]: hostId ? !(userId === hostId) : false }, classes.buttonRow)}
+        className={clsx({ [classes.hide]: !isHost }, classes.buttonRow)}
       >
         <Grid item xs={6}>
           <Button
