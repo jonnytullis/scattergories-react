@@ -36,7 +36,7 @@ export default function HomePage() {
       goToGame({ gameId, userId })
     } catch(e) {
       raiseAlert({
-        message: 'Oops! Something went wrong when creating your game. Please try again. ' + e.message,
+        message: 'Oops! Something went wrong when creating your game. Please try again.',
         milliseconds: 6000,
         severity: 'error'
       })
@@ -58,7 +58,7 @@ export default function HomePage() {
       }
     } catch(e) {
       raiseAlert({
-        message: 'Oops! Something went wrong when joining the game. Please try again. ' + e.message,
+        message: 'Oops! Something went wrong when joining the game. Please try again.',
         milliseconds: 9000,
         severity: 'error'
       })

@@ -1,6 +1,6 @@
 import React from 'react'
 import useStyles from './PlayersDrawer.styles'
-import { colors } from '../../theme'
+import { colors } from '../../../theme'
 import { Divider, Drawer, IconButton, List, ListItem, Typography } from '@material-ui/core'
 import PlayerItem from '../PlayerItem/PlayerItem'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'

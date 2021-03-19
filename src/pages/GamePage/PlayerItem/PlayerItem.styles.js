@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles'
-import { colors } from '../../theme'
+import { colors } from '../../../theme'
 
 export default makeStyles(() => ({
   avatar: {

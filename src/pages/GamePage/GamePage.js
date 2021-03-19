@@ -12,13 +12,16 @@ import {
 import { Group } from '@material-ui/icons'
 import { useSubscription, useMutation, useQuery } from '@apollo/client'
 
-import useStyles from './GamePage.styles'
 import { useAlert } from '../../hooks'
-import { LetterView, Timer, PromptsView, PlayersDrawer, LoadingOverlay } from '../../components'
+import { LetterView, Timer, LoadingOverlay } from '../../components'
 import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
 import { LEAVE_GAME, NEW_LETTER, UPDATE_SETTINGS } from '../../GQL/mutations'
 import { USER } from '../../GQL/query'
-import LeaveGameButton from "./LeaveGameButton/LeaveGameButton";
+
+import useStyles from './GamePage.styles'
+import PromptsView from './PromptsView/PromptsView'
+import LeaveGameButton from './LeaveGameButton/LeaveGameButton'
+import PlayersDrawer from './PlayersDrawer/PlayersDrawer'
 
 export default function GamePage({ match }) {
   const { userId, gameId } = match.params
