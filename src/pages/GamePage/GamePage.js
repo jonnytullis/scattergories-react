@@ -16,7 +16,7 @@ import useStyles from './GamePage.styles'
 import { useAlert } from '../../hooks'
 import { LetterView, Timer, PromptsView, PlayersDrawer, LoadingOverlay } from '../../components'
 import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
-import { LEAVE_GAME, NEW_LETTER } from '../../GQL/mutations'
+import { LEAVE_GAME, NEW_LETTER, UPDATE_SETTINGS } from '../../GQL/mutations'
 import { USER } from '../../GQL/query'
 import LeaveGameButton from "./LeaveGameButton/LeaveGameButton";
 
@@ -29,6 +29,7 @@ export default function GamePage({ match }) {
   const { raiseAlert } = useAlert()
   const [ drawerOpen, setDrawerOpen ] = useState(() => window.localStorage.getItem('playersDrawerOpen') !== 'false')
   const [ getNewLetter ] = useMutation(NEW_LETTER)
+  const [ updateSettings ] = useMutation(UPDATE_SETTINGS)
   const [ leaveGame ] = useMutation(LEAVE_GAME)
   const [ game, setGame ] = useState(() => null)
   const [ user, setUser ] = useState(() => null)
@@ -76,7 +77,7 @@ export default function GamePage({ match }) {
     }
   }, [ gameData, setGame ])
 
-  const goToHome = (message) => {
+  function goToHome(message) {
     if (message) {
       raiseAlert({
         message,
@@ -86,19 +87,33 @@ export default function GamePage({ match }) {
     history.replace('/')
   }
 
-  const handleNewLetter = () => {
+  function handleNewLetter() {
     getNewLetter({ variables: { gameId: game?.id, userId: user?.id } }).catch(() => {})
   }
 
-  const handleDrawerOpen = () => {
+  // Will update any props that are included
+  async function handleUpdateSettings({ timerSeconds, numPrompts, numRounds }) {
+    await updateSettings({
+      variables: { gameId: game?.id, userId: user?.id, settings: { timerSeconds, numPrompts, numRounds } },
+    }).catch(() => {
+      raiseAlert({
+        message: 'Error updating timer',
+        severity: 'error'
+      })
+    })
+  }
+
+  function handleDrawerOpen() {
     setDrawerOpen(true)
   }
 
-  const handleDrawerClose = () => {
+  function handleDrawerClose() {
     setDrawerOpen(false)
   }
 
-  const isHost = () => userId === game.hostId
+  function isHost() {
+    return userId === game.hostId
+  }
 
   return (
     <div>
@@ -145,7 +160,13 @@ export default function GamePage({ match }) {
                 </Grid>
                 <Grid item>
                   <Card className={classes.card}>
-                    <Timer gameId={game.id} userId={user.id} hostId={game.hostId} secondsTotal={game.settings?.timerSeconds} />
+                    <Timer
+                      gameId={game.id}
+                      userId={user.id}
+                      hostId={game.hostId}
+                      secondsTotal={game.settings?.timerSeconds}
+                      onSecondsUpdate={async (seconds) => {await handleUpdateSettings({ timerSeconds: seconds })}}
+                    />
                   </Card>
                 </Grid>
               </Grid>

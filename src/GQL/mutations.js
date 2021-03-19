@@ -60,3 +60,13 @@ export const RESET_TIMER = gql`
         }
     }
 `
+
+export const UPDATE_SETTINGS = gql`
+    mutation($gameId:String!, $userId:ID!, $settings:SettingsInput!) {
+        updateSettings(gameId:$gameId, userId:$userId, settings:$settings) {
+            timerSeconds
+            numPrompts
+            numRounds
+        }
+    }
+`

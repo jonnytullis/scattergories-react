@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { Button, IconButton, Typography, Grid } from '@material-ui/core'
-import { Pause, AlarmOn, AlarmOff, Refresh, NotificationsActiveOutlined, NotificationsOffOutlined, Edit } from '@material-ui/icons'
+import { Pause, AlarmOn, AlarmOff, Refresh, NotificationsActiveOutlined, NotificationsOffOutlined } from '@material-ui/icons'
 import clsx from 'clsx'
 import { useTimer, useAlert } from '../../hooks'
 import useStyles from './Timer.styles'
 
 import soundFileTicking from '../../assets/sounds/ticking.mp3'
 import soundFileAlarm from '../../assets/sounds/bell.mp3'
+import EditTime from './EditTime/EditTime'
 
 // Declare audio outside of react lifecycle
 const tickingAudio = new Audio(soundFileTicking)
 const alarmAudio = new Audio(soundFileAlarm)
 
-export default function Timer({ gameId, userId, hostId, secondsTotal }) {
+export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsUpdate }) {
   if (!gameId || !userId) {
     throw new Error('Properties "gameId" and "userId" are required for Timer')
   }
@@ -81,6 +82,11 @@ export default function Timer({ gameId, userId, hostId, secondsTotal }) {
     }
   }
 
+  async function onUpdate(seconds) {
+    await onSecondsUpdate(seconds)
+    doTimerAction(reset)
+  }
+
   return (
     <div className={clsx(classes.center, isHost ? classes.padTop : {})}>
       <div className={ classes.pausedTextContainer }>
@@ -101,9 +107,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal }) {
         </Button>
       }
       {isHost && !running &&
-        <IconButton color="primary" onClick={() => {}} className={classes.editBtn}>
-          <Edit />
-        </IconButton>
+        <EditTime className={classes.editBtn} seconds={secondsTotal} onUpdate={onUpdate} />
       }
       <Grid
         container
