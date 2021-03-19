@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
+import { ApolloClient, ApolloProvider, InMemoryCache, HttpLink, split } from '@apollo/client'
+import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/client/link/ws'
 
 import './index.css'
@@ -20,16 +21,34 @@ ReactDOM.render(
 )
 
 function getApolloClient() {
-  // Open up the web socket to use GraphQL subscriptions
-  const link = new WebSocketLink({
+  // Queries and mutations will use HTTP as normal, and subscriptions will use WebSocket.
+  const httpLink = new HttpLink({
+    uri: 'http://localhost:4000/graphql'
+  })
+
+  const wsLink = new WebSocketLink({
     uri: `ws://localhost:4000/graphql`,
     options: {
       reconnect: true
     }
   })
 
+  // This handles the decision of whether to use WebSocket or HTTP link
+  // https://www.apollographql.com/docs/react/data/subscriptions/#3-split-communication-by-operation-recommended
+  const splitLink = split(
+    ({ query }) => {
+      const definition = getMainDefinition(query)
+      return (
+        definition.kind === 'OperationDefinition' &&
+        definition.operation === 'subscription'
+      )
+    },
+    wsLink,
+    httpLink,
+  )
+
   return new ApolloClient({
-    link,
+    link: splitLink,
     uri: 'http://localhost:4000/graphql', // URI for graphql server
     cache: new InMemoryCache()
   })

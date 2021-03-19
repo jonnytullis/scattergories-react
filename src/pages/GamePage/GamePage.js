@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import clsx from 'clsx'
 import { useHistory } from 'react-router-dom'
+import clsx from 'clsx'
 import {
   AppBar,
   Toolbar,
@@ -8,9 +8,8 @@ import {
   IconButton,
   Grid,
   Card,
-  Button
 } from '@material-ui/core'
-import { Group, ExitToApp } from '@material-ui/icons'
+import { Group } from '@material-ui/icons'
 import { useSubscription, useMutation, useQuery } from '@apollo/client'
 
 import useStyles from './GamePage.styles'
@@ -19,18 +18,18 @@ import { LetterView, Timer, PromptsView, PlayersDrawer, LoadingOverlay } from '.
 import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
 import { LEAVE_GAME, NEW_LETTER } from '../../GQL/mutations'
 import { USER } from '../../GQL/query'
+import LeaveGameButton from "./LeaveGameButton/LeaveGameButton";
 
 export default function GamePage({ match }) {
   const { userId, gameId } = match.params
-
   const classes = useStyles()
+
   const history = useHistory()
+
   const { raiseAlert } = useAlert()
-  const [ exitMessage, setExitMessage ] = useState(() => 'You left the game')
-  const [ exitNow, setExitNow ] = useState(() => false)
   const [ drawerOpen, setDrawerOpen ] = useState(() => window.localStorage.getItem('playersDrawerOpen') !== 'false')
-  const [ leaveGame ] = useMutation(LEAVE_GAME)
   const [ getNewLetter ] = useMutation(NEW_LETTER)
+  const [ leaveGame ] = useMutation(LEAVE_GAME)
   const [ game, setGame ] = useState(() => null)
   const [ user, setUser ] = useState(() => null)
   const { data: userData, loading: userLoading, error: userError } = useQuery(USER, {
@@ -41,24 +40,16 @@ export default function GamePage({ match }) {
   })
 
   useEffect(() => {
-    // Warn the user before leaving the browser page
-    // window.onbeforeunload = () => true
-    return function beforeUnmount() {
-      // leaveGame({ variables: { gameId, userId } }).catch(() => {})
-      // if (exitMessage) {
-      //   raiseAlert({ milliseconds: 6000, message: exitMessage, severity: 'info' })
-      // }
-      // window.onbeforeunload = undefined // Don't need this anymore
-    }
-  }, [ raiseAlert, exitMessage, leaveGame ])
-
-  useEffect(() => {
     if (subscriptionError) {
-      console.log('ERROR:', subscriptionError)
-      raiseAlert({
-        message: "We're having trouble connecting...",
-        severity: 'error'
-      })
+      const message = subscriptionError?.message?.toLowerCase()
+      if (message?.includes('unauthorized') || message?.includes('not found')) {
+        goToHome()
+      } else {
+        raiseAlert({
+          message: "We're having trouble connecting...",
+          severity: 'error'
+        })
+      }
     }
   }, [ subscriptionError, raiseAlert ])
 
@@ -80,22 +71,19 @@ export default function GamePage({ match }) {
       setGame(game)
       document.title += game.name ? ` | ${game.name}` : ''
     }
-    if (status) {
-      exitGame(status.message)
+    if (status?.ended) {
+      goToHome(status.message)
     }
   }, [ gameData, setGame ])
 
-  useEffect(() => {
-    if (exitNow) {
-      history.push('/')
+  const goToHome = (message) => {
+    if (message) {
+      raiseAlert({
+        message,
+        severity: 'info'
+      })
     }
-  }, [ exitNow, setExitNow ])
-
-  const exitGame = (message) => {
-    if (message !== undefined) {
-      setExitMessage(message)
-    }
-    setExitNow(true)
+    history.replace('/')
   }
 
   const handleNewLetter = () => {
@@ -135,10 +123,9 @@ export default function GamePage({ match }) {
               {game.name}
             </Typography>
             <div className={classes.spacer} />
-            <Button variant="contained" className={classes.leaveButton}>
-              {isHost() ? 'End' : 'Leave'} Game &nbsp;
-              <ExitToApp />
-            </Button>
+            <LeaveGameButton isHost={isHost()} onLeave={() => {
+              leaveGame({ variables: { gameId, userId } }).catch()
+            }} />
           </Toolbar>
         </AppBar>
         <PlayersDrawer players={game.players} hostId={game.hostId} open={drawerOpen} onClose={handleDrawerClose} />
@@ -171,7 +158,7 @@ export default function GamePage({ match }) {
           </Grid>
         </main>
       </div>}
-      <LoadingOverlay open={userLoading || !gameData} />
+      <LoadingOverlay open={userLoading} />
     </div>
   )
 }
