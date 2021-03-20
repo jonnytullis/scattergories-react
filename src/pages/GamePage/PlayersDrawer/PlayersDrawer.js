@@ -4,8 +4,20 @@ import { Divider, Drawer, IconButton, List, ListItem, Typography } from '@materi
 import PlayerItem from '../PlayerItem/PlayerItem'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 
-export default function PlayersDrawer({ open, onClose, players, hostId }) {
+export default function PlayersDrawer({ open, onClose, players, hostId, userId }) {
   const classes = useStyles()
+  players.sort((a, b) => b.id === userId ? 1 : b.id === hostId && a.id !== userId ? 1 : -1)
+
+  function getCaption(isHost, isCurrentPlayer) {
+    if (isHost && isCurrentPlayer) {
+      return 'Me (Host)'
+    } else if (isHost) {
+      return '(Host)'
+    } else if (isCurrentPlayer) {
+      return 'Me'
+    }
+    return ''
+  }
 
   return (
     <Drawer
@@ -19,7 +31,7 @@ export default function PlayersDrawer({ open, onClose, players, hostId }) {
     >
       <div className={classes.drawerHeader}>
         <Typography className={classes.title} variant="subtitle1">
-                    Participants {players && `(${players.length})`}
+          Participants {players && `(${players.length})`}
         </Typography>
         <IconButton onClick={onClose}>
           <ChevronLeftIcon />
@@ -31,7 +43,7 @@ export default function PlayersDrawer({ open, onClose, players, hostId }) {
             <ListItem className={classes.listItem}>
               <PlayerItem
                 person={person}
-                caption={person.id === hostId ? '(Host)' : null}
+                caption={getCaption(person.id === hostId, person.id === userId)}
                 color={person.color || '#a5a5a5'}
               />
             </ListItem>

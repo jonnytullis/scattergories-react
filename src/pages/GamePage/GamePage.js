@@ -150,7 +150,13 @@ export default function GamePage({ match }) {
             }} />
           </Toolbar>
         </AppBar>
-        <PlayersDrawer players={game.players} hostId={game.hostId} open={drawerOpen} onClose={handleDrawerClose} />
+        <PlayersDrawer
+          players={game.players}
+          hostId={game.hostId}
+          userId={userId}
+          open={drawerOpen}
+          onClose={handleDrawerClose}
+        />
         <main
           className={clsx(classes.content, {
             [classes.contentShift]: drawerOpen,
