@@ -45,6 +45,7 @@ export default function GamePage({ match }) {
 
   useEffect(() => {
     if (subscriptionError) {
+      console.log('ERROR:', subscriptionError)
       const message = subscriptionError?.message?.toLowerCase()
       if (message?.includes('unauthorized') || message?.includes('not found')) {
         goToHome()
@@ -71,6 +72,8 @@ export default function GamePage({ match }) {
   useEffect(() => {
     const game = gameData?.gameUpdated?.game
     const status = gameData?.gameUpdated?.status
+    console.log('GAME:', game)
+    console.log('STATUS:', status)
     if (game) {
       setGame(game)
       document.title += game.name ? ` | ${game.name}` : ''

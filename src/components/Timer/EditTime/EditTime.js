@@ -26,11 +26,8 @@ export default function EditTime({ className, seconds, onUpdate }) {
     if (Number(minutesInput < 0)) {
       return 'No Negative'
     }
-    if (Number(Number(minutesInput) === MAX_MINUTES && secondsInput > 0)) {
-      return '10 Minutes Max'
-    }
     return ''
-  }, [ minutesInput, secondsInput ])
+  }, [ minutesInput ])
 
   const secondsError = useCallback(() => {
     if (Number(secondsInput) > 59) {
@@ -39,8 +36,15 @@ export default function EditTime({ className, seconds, onUpdate }) {
     if (Number(secondsInput < 0)) {
       return 'No Negative'
     }
-    if (Number(Number(minutesInput) === MAX_MINUTES && secondsInput > 0)) {
+    return ''
+  }, [ secondsInput ])
+
+  const inputError = useCallback(() => {
+    if (Number(minutesInput) === MAX_MINUTES && Number(secondsInput) > 0) {
       return '10 Minutes Max'
+    }
+    if (Number(minutesInput) <= 0 && Number(secondsInput) < 30) {
+      return '30 Seconds Min'
     }
     return ''
   }, [ minutesInput, secondsInput ])
@@ -55,7 +59,7 @@ export default function EditTime({ className, seconds, onUpdate }) {
 
   return (
     <>
-      {seconds &&
+      {!!seconds &&
         <div>
           <IconButton className={className} color="primary" onClick={() => {setOpenDialog(true)}}>
             <Edit />
@@ -77,8 +81,8 @@ export default function EditTime({ className, seconds, onUpdate }) {
                     max: 10,
                     className: classes.largeText
                   }}
-                  error={!!minutesError()}
-                  helperText={minutesError()}
+                  error={!!minutesError() || !!inputError()}
+                  helperText={minutesError() || inputError()}
                   onInput={({ target }) => setMinutesInput(target.value?.slice(0, 2))}
                   onBlur={({ target }) => setMinutesInput(target.value?.padStart(2, '0'))}
                 />
@@ -90,12 +94,12 @@ export default function EditTime({ className, seconds, onUpdate }) {
                   variant="outlined"
                   label="Seconds"
                   inputProps={{
-                    min: 0,
+                    min: Number(minutesInput) <= 0 ? 30 : 0,
                     max: Number(minutesInput) >= MAX_MINUTES ? 0 : 59,
                     className: classes.largeText
                   }}
-                  error={!!secondsError()}
-                  helperText={secondsError()}
+                  error={!!secondsError() || !!inputError()}
+                  helperText={secondsError() || inputError()}
                   onInput={({ target }) => setSecondsInput(target.value?.slice(0, 2))}
                   onBlur={({ target }) => setSecondsInput(target.value?.padStart(2, '0'))}
                 />
