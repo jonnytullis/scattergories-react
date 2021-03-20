@@ -1,6 +1,5 @@
 import React from 'react'
 import useStyles from './PlayersDrawer.styles'
-import { colors } from '../../../theme'
 import { Divider, Drawer, IconButton, List, ListItem, Typography } from '@material-ui/core'
 import PlayerItem from '../PlayerItem/PlayerItem'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
@@ -27,13 +26,13 @@ export default function PlayersDrawer({ open, onClose, players, hostId }) {
         </IconButton>
       </div>
       <List>
-        {players.map((person, i) => (
+        {players.map(person => (
           <div key={person.id}>
             <ListItem className={classes.listItem}>
               <PlayerItem
                 person={person}
                 caption={person.id === hostId ? '(Host)' : null}
-                color={colors.avatarColors[i % colors.avatarColors.length]} // Cycle through avatar colors
+                color={person.color || '#a5a5a5'}
               />
             </ListItem>
             <Divider />

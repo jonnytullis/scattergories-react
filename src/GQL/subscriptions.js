@@ -11,6 +11,7 @@ export const GAME_SUBSCRIPTION = gql`
                 players {
                     id
                     name
+                    color
                 }
                 prompts
                 settings {
