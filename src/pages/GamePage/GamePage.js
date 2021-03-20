@@ -144,8 +144,9 @@ export default function GamePage({ match }) {
               {game.name}
             </Typography>
             <div className={classes.spacer} />
-            <LeaveGameButton isHost={isHost()} onLeave={() => {
-              leaveGame({ variables: { gameId, userId } }).catch()
+            <LeaveGameButton isHost={isHost()} onLeave={async () => {
+              await leaveGame({ variables: { gameId, userId } }).catch()
+              goToHome(isHost() ? 'You ended the game' : 'You left the game')
             }} />
           </Toolbar>
         </AppBar>
