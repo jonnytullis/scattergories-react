@@ -13,7 +13,7 @@ import EditTime from './EditTime/EditTime'
 const tickingAudio = new Audio(soundFileTicking)
 const alarmAudio = new Audio(soundFileAlarm)
 
-export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsUpdate }) {
+export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsUpdate, onStart, onStop }) {
   if (!gameId || !userId) {
     throw new Error('Properties "gameId" and "userId" are required for Timer')
   }
@@ -21,7 +21,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
   const { raiseAlert } = useAlert()
   const [ seconds, setSeconds ] = useState(() => secondsTotal)
   const [ running, setRunning ] = useState(() => false)
-  const [ playSounds, setPlaySounds ] = useState(() => window.localStorage.getItem('playTimerSounds') !== 'false')
+  const [ soundsOn, setPlaySounds ] = useState(() => window.localStorage.getItem('soundsOn') !== 'false')
   const [ isHost ] = useState(() => userId === hostId)
   const classes = useStyles()
 
@@ -51,9 +51,18 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
     }
   }, [ running, seconds ])
 
+  useEffect(() => {
+    if (running && typeof onStart === 'function') {
+      onStart()
+    }
+    if (!running && typeof onStop === 'function') {
+      onStop()
+    }
+  }, [ running ])
+
   /** Respond to sound options **/
   useEffect(() => {
-    if (playSounds) {
+    if (soundsOn) {
       tickingAudio.volume = 1
       alarmAudio.volume = 1
     } else {
@@ -61,8 +70,8 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
       alarmAudio.volume = 0
     }
 
-    window.localStorage.setItem('playTimerSounds', String(playSounds))
-  }, [ playSounds ])
+    window.localStorage.setItem('soundsOn', String(soundsOn))
+  }, [ soundsOn ])
 
   function formattedTime() {
     const minutes = Math.floor(seconds / 60)
@@ -98,12 +107,12 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
         { formattedTime() }
       </Typography>
       {isHost ?
-        <IconButton color="primary" onClick={() => { setPlaySounds(!playSounds) }} className={classes.soundBtnHost} >
-          {playSounds ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
+        <IconButton color="primary" onClick={() => { setPlaySounds(!soundsOn) }} className={classes.soundBtnHost} >
+          {soundsOn ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
         </IconButton> :
-        <Button color="primary" onClick={() => { setPlaySounds(!playSounds) }}>
-          {playSounds ? 'Sound' : 'Muted'}&nbsp;
-          {playSounds ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
+        <Button color="primary" onClick={() => { setPlaySounds(!soundsOn) }}>
+          {soundsOn ? 'Sound' : 'Muted'}&nbsp;
+          {soundsOn ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
         </Button>
       }
       {isHost && !running &&
@@ -118,7 +127,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
         <Grid item xs={6}>
           <Button
             color="primary"
-            onClick={() => doTimerAction(reset)}
+            onClick={() => {doTimerAction(reset)}}
           >
             <Refresh />&nbsp; Reset
           </Button>
@@ -129,7 +138,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
             className={clsx({
               [classes.hide]: running
             })}
-            onClick={() => doTimerAction(start)}
+            onClick={() => {doTimerAction(start)}}
           >
             <AlarmOn />&nbsp; { seconds < secondsTotal ? 'Resume' : 'Start' }
           </Button>
@@ -138,7 +147,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
             className={clsx({
               [classes.hide]: !running
             })}
-            onClick={() => doTimerAction(pause)}
+            onClick={() => {doTimerAction(pause)}}
           >
             <AlarmOff />&nbsp; Pause
           </Button>

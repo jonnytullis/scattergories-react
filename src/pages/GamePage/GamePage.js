@@ -36,6 +36,7 @@ export default function GamePage({ match }) {
   const [ leaveGame ] = useMutation(LEAVE_GAME)
   const [ game, setGame ] = useState(() => null)
   const [ user, setUser ] = useState(() => null)
+  const [ hidePrompts, setHidePrompts ] = useState(() => true)
   const { data: userData, loading: userLoading, error: userError } = useQuery(USER, {
     variables: { gameId, userId }
   })
@@ -72,8 +73,6 @@ export default function GamePage({ match }) {
   useEffect(() => {
     const game = gameData?.gameUpdated?.game
     const status = gameData?.gameUpdated?.status
-    console.log('GAME:', game)
-    console.log('STATUS:', status)
     if (game) {
       setGame(game)
       document.title += game.name ? ` | ${game.name}` : ''
@@ -179,6 +178,8 @@ export default function GamePage({ match }) {
                       hostId={game.hostId}
                       secondsTotal={game.settings?.timerSeconds}
                       onSecondsUpdate={async (seconds) => {await handleUpdateSettings({ timerSeconds: seconds })}}
+                      onStart={() => {setHidePrompts(false)}}
+                      onStop={() => {setHidePrompts(true)}}
                     />
                   </Card>
                 </Grid>
@@ -186,7 +187,7 @@ export default function GamePage({ match }) {
             </Grid>
             <Grid item>
               <Card className={clsx(classes.card, classes.promptsWrapper)}>
-                <PromptsView prompts={game.prompts} />
+                <PromptsView prompts={game.prompts} hidden={hidePrompts} />
               </Card>
             </Grid>
           </Grid>
