@@ -98,8 +98,13 @@ export default function GamePage({ match }) {
     getNewLetter({ variables: { gameId: game?.id, userId: user?.id } }).catch(() => {})
   }
 
-  function handleNewPrompts() {
-    getNewPrompts({ variables: { gameId: game?.id, userId: user?.id } }).catch(() => {})
+  async function handleNewPrompts() {
+    await getNewPrompts({ variables: { gameId: game?.id, userId: user?.id } }).catch(() => {
+      raiseAlert({
+        message: 'Error getting new prompts',
+        severity: 'error'
+      })
+    })
   }
 
   // Will update any props that are included

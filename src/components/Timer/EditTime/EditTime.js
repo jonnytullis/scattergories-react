@@ -107,13 +107,13 @@ export default function EditTime({ className, seconds, onUpdate, disabled }) {
             </DialogContent>
             <DialogActions>
               <Grid container direction="row" justify="space-between">
-                <Button variant="contained" onClick={() => {setOpenDialog(false)}}>
+                <Button onClick={() => {setOpenDialog(false)}}>
                   Cancel
                 </Button>
                 <Button
                   variant="contained"
                   color="primary"
-                  disabled={minutesError() || secondsError()}
+                  disabled={!!(minutesError() || secondsError())}
                   onClick={updateTimer}
                 >
                   Update

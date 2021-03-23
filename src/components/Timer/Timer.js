@@ -20,7 +20,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
   const { data, error, start, pause, reset } = useTimer(gameId)
   const { raiseAlert } = useAlert()
   const [ seconds, setSeconds ] = useState(() => secondsTotal)
-  const [ running, setRunning ] = useState(() => false)
+  const [ isRunning, setIsRunning ] = useState(() => false)
   const [ soundsOn, setPlaySounds ] = useState(() => window.localStorage.getItem('soundsOn') !== 'false')
   const [ isHost ] = useState(() => userId === hostId)
   const classes = useStyles()
@@ -29,7 +29,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
   useEffect(() => {
     if (data) {
       setSeconds(data.timer?.remaining)
-      setRunning(data.timer?.isRunning)
+      setIsRunning(data.timer?.isRunning)
     } else if (error) {
       console.error('Oh no! There\'s an issue with the timer!', error)
     }
@@ -38,27 +38,27 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
   /** Manage audio sounds for timer **/
   useEffect(() => {
     // Ticking sound
-    if (tickingAudio.paused && running && seconds <= 10) {
+    if (tickingAudio.paused && isRunning && seconds <= 10) {
       tickingAudio.currentTime = tickingAudio.duration - seconds
       tickingAudio.play()
-    } else if (!running && !tickingAudio.paused) {
+    } else if (!isRunning && !tickingAudio.paused) {
       tickingAudio.pause()
     }
 
     // Alarm sound
-    if (running && seconds <= 0) {
+    if (isRunning && seconds <= 0) {
       alarmAudio.play()
     }
-  }, [ running, seconds ])
+  }, [ isRunning, seconds ])
 
   useEffect(() => {
-    if (running && typeof onStart === 'function') {
+    if (isRunning && typeof onStart === 'function') {
       onStart()
     }
-    if (!running && typeof onStop === 'function') {
+    if (!isRunning && typeof onStop === 'function') {
       onStop()
     }
-  }, [ running ])
+  }, [ isRunning ])
 
   /** Respond to sound options **/
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
   }
 
   function isPaused() {
-    return !running && seconds > 0 && seconds < secondsTotal
+    return !isRunning && seconds > 0 && seconds < secondsTotal
   }
 
   function doTimerAction(action) {
@@ -116,7 +116,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
         </Button>
       }
       {isHost &&
-        <EditTime className={classes.editBtn} seconds={secondsTotal} disabled={running} onUpdate={onUpdate} />
+        <EditTime className={classes.editBtn} seconds={secondsTotal} disabled={isRunning} onUpdate={onUpdate} />
       }
       <Grid
         container
@@ -136,7 +136,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
           <Button
             color="primary"
             className={clsx({
-              [classes.hide]: running
+              [classes.hide]: isRunning
             })}
             onClick={() => {doTimerAction(start)}}
           >
@@ -145,7 +145,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
           <Button
             color="primary"
             className={clsx({
-              [classes.hide]: !running
+              [classes.hide]: !isRunning
             })}
             onClick={() => {doTimerAction(pause)}}
           >

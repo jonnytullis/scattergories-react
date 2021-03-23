@@ -7,7 +7,7 @@ export default makeStyles(() => {
       borderRadius: '8px',
       opacity: '0.7',
       backgroundColor: colors.captionText,
-      padding: '-12px 8px'
+      padding: '0 8px'
     },
     lineWrapper: {
       width: 'fit-content'
@@ -30,6 +30,10 @@ export default makeStyles(() => {
     },
     overlay: {
       position: 'absolute'
+    },
+    wrapper: {
+      position: 'relative',
+      padding: '0 8px'
     }
   }
 })

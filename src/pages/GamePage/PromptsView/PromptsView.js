@@ -2,19 +2,19 @@ import React from 'react'
 import clsx from 'clsx'
 import { Button, Grid } from '@material-ui/core'
 import LoopIcon from '@material-ui/icons/Loop'
+
 import useStyles from './PromptsView.styles'
+import EditPrompts from './EditPrompts/EditPrompts'
 
 export default function PromptsView({ prompts, hidden, isHost, onNewPrompts, disabled }) {
   const classes = useStyles()
 
-  function handleNewPromptsClicked() {
-    if (typeof onNewPrompts === 'function') {
-      onNewPrompts()
-    }
+  function handleUpdatedPrompts() {
+    console.log('REACHED')
   }
 
   return (
-    <div>
+    <div className={classes.wrapper}>
       {prompts.map((text, index) => {
         return (
           <div className={classes.lineWrapper} key={text}>
@@ -31,10 +31,15 @@ export default function PromptsView({ prompts, hidden, isHost, onNewPrompts, dis
           </div>
         )
       })}
-      {isHost && <Grid container justify="center">
-        <Button disabled={disabled} style={{ alignSelf: 'center' }} onClick={handleNewPromptsClicked}>
+      {isHost && <Grid container justify="space-between">
+        <Button disabled={disabled} style={{ alignSelf: 'center' }} onClick={onNewPrompts}>
           <LoopIcon /> &nbsp; New
         </Button>
+        <EditPrompts
+          disabled={disabled}
+          numPrompts={prompts?.length || 0}
+          onUpdate={handleUpdatedPrompts}
+        />
       </Grid>}
     </div>
   )
