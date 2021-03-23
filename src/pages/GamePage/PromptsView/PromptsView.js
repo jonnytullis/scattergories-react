@@ -6,12 +6,8 @@ import LoopIcon from '@material-ui/icons/Loop'
 import useStyles from './PromptsView.styles'
 import EditPrompts from './EditPrompts/EditPrompts'
 
-export default function PromptsView({ prompts, hidden, isHost, onNewPrompts, disabled }) {
+export default function PromptsView({ prompts, hidden, isHost, disabled, onNewPrompts, onSettingsUpdate }) {
   const classes = useStyles()
-
-  function handleUpdatedPrompts() {
-    console.log('REACHED')
-  }
 
   return (
     <div className={classes.wrapper}>
@@ -38,7 +34,7 @@ export default function PromptsView({ prompts, hidden, isHost, onNewPrompts, dis
         <EditPrompts
           disabled={disabled}
           numPrompts={prompts?.length || 0}
-          onUpdate={handleUpdatedPrompts}
+          onUpdate={onSettingsUpdate}
         />
       </Grid>}
     </div>

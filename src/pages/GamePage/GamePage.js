@@ -48,7 +48,6 @@ export default function GamePage({ match }) {
 
   useEffect(() => {
     if (subscriptionError) {
-      console.log('ERROR:', subscriptionError)
       const message = subscriptionError?.message?.toLowerCase()
       if (message?.includes('unauthorized') || message?.includes('not found')) {
         goToHome()
@@ -119,12 +118,9 @@ export default function GamePage({ match }) {
     })
   }
 
-  function handleDrawerOpen() {
-    setDrawerOpen(true)
-  }
-
-  function handleDrawerClose() {
-    setDrawerOpen(false)
+  async function onPromptSettingsUpdate(options) {
+    await handleUpdateSettings(options)
+    await handleNewPrompts()
   }
 
   function isHost() {
@@ -144,7 +140,7 @@ export default function GamePage({ match }) {
             <IconButton
               color="inherit"
               aria-label="open drawer"
-              onClick={handleDrawerOpen}
+              onClick={() => {setDrawerOpen(true)}}
               edge="start"
               className={clsx(classes.menuButton, drawerOpen && classes.hide)}
             >
@@ -165,7 +161,7 @@ export default function GamePage({ match }) {
           hostId={game.hostId}
           userId={userId}
           open={drawerOpen}
-          onClose={handleDrawerClose}
+          onClose={() => {setDrawerOpen(false)}}
         />
         <main
           className={clsx(classes.content, {
@@ -204,6 +200,7 @@ export default function GamePage({ match }) {
                   isHost={isHost()}
                   disabled={timerRunning}
                   onNewPrompts={handleNewPrompts}
+                  onSettingsUpdate={onPromptSettingsUpdate}
                 />
               </Card>
             </Grid>

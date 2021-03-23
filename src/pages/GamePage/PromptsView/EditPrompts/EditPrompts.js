@@ -3,7 +3,7 @@ import { Button, IconButton, Dialog, DialogActions, DialogTitle, Grid, DialogCon
 import { Edit } from '@material-ui/icons'
 import useStyles from './EditPrompts.styles'
 
-export default function EditPrompts({ numPrompts, disabled, onUpdate, className }) {
+export default function EditPrompts({ numPrompts, disabled, className, onUpdate }) {
   const classes = useStyles()
   const [ openDialog, setOpenDialog ] = useState(() => false)
   const [ numPromptsInput, setNumPromptsInput ] = useState(() => numPrompts)
@@ -13,6 +13,7 @@ export default function EditPrompts({ numPrompts, disabled, onUpdate, className 
 
   useEffect(() => {
     if (!openDialog) {
+      // Allow some time for transition to finish
       setTimeout(resetData, 500)
     }
   }, [ openDialog ])
@@ -42,8 +43,8 @@ export default function EditPrompts({ numPrompts, disabled, onUpdate, className 
       <IconButton disabled={disabled} className={className} color="primary" onClick={() => {setOpenDialog(true)}}>
         <Edit />
       </IconButton>
-      <Dialog open={openDialog} onClose={() => {setOpenDialog(false)}}>
-        <DialogTitle>Update Prompts ({numPrompts})</DialogTitle>
+      <Dialog open={openDialog} onEscapeKeyDown={() => {setOpenDialog(false)}}>
+        <DialogTitle>Update Prompts</DialogTitle>
         <DialogContent>
           <TextField
             value={numPromptsInput}
@@ -67,7 +68,7 @@ export default function EditPrompts({ numPrompts, disabled, onUpdate, className 
             <Button onClick={() => {setOpenDialog(false)}}>
               Cancel
             </Button>
-            <Button variant="contained" color="primary" disabled={numPromptsError()} onClick={handleUpdate}>Update</Button>
+            <Button variant="contained" color="primary" disabled={!!numPromptsError()} onClick={handleUpdate}>Update</Button>
           </Grid>
         </DialogActions>
       </Dialog>
