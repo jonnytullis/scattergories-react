@@ -16,7 +16,7 @@ export default makeStyles(() => ({
     marginBottom: -5,
   },
   textCaption: {
-    color: colors.disabled
+    color: colors.captionText
   },
   textWrapper: {
     marginTop: 'auto',

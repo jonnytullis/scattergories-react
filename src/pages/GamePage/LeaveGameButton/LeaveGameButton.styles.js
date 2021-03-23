@@ -10,6 +10,11 @@ export default makeStyles(() => ({
       backgroundColor: colors.secondary
     }
   },
+  disabledButton: {
+    backgroundColor: `${colors.error} !important`,
+    opacity: '0.65',
+    color: `${colors.light} !important`
+  },
   dialog: {
     textAlign: 'center'
   },

@@ -3,16 +3,22 @@ import { ExitToApp } from '@material-ui/icons'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from '@material-ui/core'
 import useStyles from './LeaveGameButton.styles'
 
-export default function LeaveGameButton({ isHost, onLeave }) {
+export default function LeaveGameButton({ isHost, onLeave, disabled }) {
   const classes = useStyles()
   const [ dialogOpen, setDialogOpen ] = useState(() => false)
   return (
     <div>
-      <Button variant="contained" className={classes.leaveButton} onClick={() => {setDialogOpen(true)}}>
+      <Button
+        disabled={disabled}
+        variant="contained"
+        className={classes.leaveButton}
+        classes={{ disabled: classes.disabledButton }}
+        onClick={() => {setDialogOpen(true)}}
+      >
         {isHost ? 'End' : 'Leave'} Game &nbsp;
         <ExitToApp />
       </Button>
-      <Dialog open={dialogOpen} className={classes.dialog} onClose={() => {setDialogOpen(false)}}>
+      <Dialog open={!disabled && dialogOpen} className={classes.dialog} onClose={() => {setDialogOpen(false)}}>
         <DialogTitle>
           Are you sure?
         </DialogTitle>

@@ -4,7 +4,7 @@ import { Button, CardContent } from '@material-ui/core'
 import LoopIcon from '@material-ui/icons/Loop'
 import clsx from 'clsx'
 
-export default function LetterView({ letter, isHost, onNewLetter }) {
+export default function LetterView({ letter, isHost, onNewLetter, disabled }) {
   const classes = useStyles()
 
   const getNewLetter = () => {
@@ -23,7 +23,7 @@ export default function LetterView({ letter, isHost, onNewLetter }) {
         </CardContent>
       </div>
       <div className={clsx(classes.buttonContainer, { [classes.hide]: !isHost })}>
-        <Button color="primary" onClick={getNewLetter}>
+        <Button disabled={disabled} color="primary" onClick={getNewLetter}>
           <LoopIcon /> &nbsp; New
         </Button>
       </div>

@@ -15,7 +15,7 @@ import { useSubscription, useMutation, useQuery } from '@apollo/client'
 import { useAlert } from '../../hooks'
 import { Timer, LoadingOverlay } from '../../components'
 import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
-import { LEAVE_GAME, NEW_LETTER, UPDATE_SETTINGS } from '../../GQL/mutations'
+import { LEAVE_GAME, NEW_LETTER, UPDATE_SETTINGS, NEW_PROMPTS } from '../../GQL/mutations'
 import { USER } from '../../GQL/query'
 
 import useStyles from './GamePage.styles'
@@ -35,9 +35,10 @@ export default function GamePage({ match }) {
   const [ getNewLetter ] = useMutation(NEW_LETTER)
   const [ updateSettings ] = useMutation(UPDATE_SETTINGS)
   const [ leaveGame ] = useMutation(LEAVE_GAME)
+  const [ getNewPrompts ] = useMutation(NEW_PROMPTS)
   const [ game, setGame ] = useState(() => null)
   const [ user, setUser ] = useState(() => null)
-  const [ hidePrompts, setHidePrompts ] = useState(() => true)
+  const [ timerRunning, setTimerRunning ] = useState(() => true)
   const { data: userData, loading: userLoading, error: userError } = useQuery(USER, {
     variables: { gameId, userId }
   })
@@ -97,6 +98,10 @@ export default function GamePage({ match }) {
     getNewLetter({ variables: { gameId: game?.id, userId: user?.id } }).catch(() => {})
   }
 
+  function handleNewPrompts() {
+    getNewPrompts({ variables: { gameId: game?.id, userId: user?.id } }).catch(() => {})
+  }
+
   // Will update any props that are included
   async function handleUpdateSettings({ timerSeconds, numPrompts, numRounds }) {
     await updateSettings({
@@ -144,7 +149,7 @@ export default function GamePage({ match }) {
               {game.name}
             </Typography>
             <div className={classes.spacer} />
-            <LeaveGameButton isHost={isHost()} onLeave={async () => {
+            <LeaveGameButton disabled={timerRunning} isHost={isHost()} onLeave={async () => {
               await leaveGame({ variables: { gameId, userId } }).catch()
               goToHome(isHost() ? 'You ended the game' : 'You left the game')
             }} />
@@ -168,7 +173,7 @@ export default function GamePage({ match }) {
               <Grid container direction="column" spacing={2} justify="center">
                 <Grid item>
                   <Card className={classes.card}>
-                    <LetterView letter={game.letter} isHost={isHost()} onNewLetter={handleNewLetter} />
+                    <LetterView letter={game.letter} isHost={isHost()} disabled={timerRunning} onNewLetter={handleNewLetter} />
                   </Card>
                 </Grid>
                 <Grid item>
@@ -179,8 +184,8 @@ export default function GamePage({ match }) {
                       hostId={game.hostId}
                       secondsTotal={game.settings?.timerSeconds}
                       onSecondsUpdate={async (seconds) => {await handleUpdateSettings({ timerSeconds: seconds })}}
-                      onStart={() => {setHidePrompts(false)}}
-                      onStop={() => {setHidePrompts(true)}}
+                      onStart={() => {setTimerRunning(true)}}
+                      onStop={() => {setTimerRunning(false)}}
                     />
                   </Card>
                 </Grid>
@@ -188,7 +193,13 @@ export default function GamePage({ match }) {
             </Grid>
             <Grid item>
               <Card className={clsx(classes.card, classes.promptsWrapper)}>
-                <PromptsView prompts={game.prompts} hidden={hidePrompts} />
+                <PromptsView
+                  prompts={game.prompts}
+                  hidden={!timerRunning}
+                  isHost={isHost()}
+                  disabled={timerRunning}
+                  onNewPrompts={handleNewPrompts}
+                />
               </Card>
             </Grid>
           </Grid>

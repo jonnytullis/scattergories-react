@@ -28,7 +28,7 @@ export default makeStyles(() => {
       height: 24,
     },
     pausedText: {
-      color: colors.disabled,
+      color: colors.captionText,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',

@@ -34,6 +34,14 @@ export const NEW_LETTER = gql`
     }
 `
 
+export const NEW_PROMPTS = gql`
+    mutation($gameId:String!, $userId:ID!) {
+        newPrompts(gameId:$gameId, userId:$userId) {
+            prompts
+        }
+    }
+`
+
 export const START_TIMER = gql`
     mutation($gameId:String!, $userId:ID!) {
         startTimer(gameId:$gameId, userId:$userId) {

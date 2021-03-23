@@ -1,9 +1,12 @@
 import { makeStyles } from '@material-ui/styles'
+import { colors } from '../../../theme'
 
 export default makeStyles(() => {
   return {
     blank: {
-      backgroundColor: 'grey'
+      borderRadius: '40px',
+      opacity: '0.7',
+      backgroundColor: colors.captionText
     },
     lineWrapper: {
       width: 'fit-content'
