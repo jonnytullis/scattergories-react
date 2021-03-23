@@ -115,8 +115,8 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
           {soundsOn ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
         </Button>
       }
-      {isHost && !running &&
-        <EditTime className={classes.editBtn} seconds={secondsTotal} onUpdate={onUpdate} />
+      {isHost &&
+        <EditTime className={classes.editBtn} seconds={secondsTotal} disabled={running} onUpdate={onUpdate} />
       }
       <Grid
         container

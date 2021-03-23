@@ -6,8 +6,7 @@ const colors = {
   error: '#db0000',
   accent: '#f37121',
   light: '#f2f2f2',
-  captionText: '#999999',
-  disabledButton: '#aaaaaa'
+  captionText: '#999999'
 }
 
 const theme = createMuiTheme({

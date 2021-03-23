@@ -4,7 +4,7 @@ import { Edit } from '@material-ui/icons'
 
 import useStyles from './EditTime.styles'
 
-export default function EditTime({ className, seconds, onUpdate }) {
+export default function EditTime({ className, seconds, onUpdate, disabled }) {
   const classes = useStyles()
   const MAX_MINUTES = 10
 
@@ -61,7 +61,7 @@ export default function EditTime({ className, seconds, onUpdate }) {
     <>
       {!!seconds &&
         <div>
-          <IconButton className={className} color="primary" onClick={() => {setOpenDialog(true)}}>
+          <IconButton disabled={disabled} className={className} color="primary" onClick={() => {setOpenDialog(true)}}>
             <Edit />
           </IconButton>
           <Dialog open={openDialog} onClose={() => {setOpenDialog(false)}}>

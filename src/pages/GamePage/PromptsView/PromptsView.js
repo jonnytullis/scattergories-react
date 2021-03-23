@@ -17,12 +17,16 @@ export default function PromptsView({ prompts, hidden, isHost, onNewPrompts, dis
     <div>
       {prompts.map((text, index) => {
         return (
-          <div className={clsx(classes.lineWrapper, { [classes.blank]: hidden })} key={text}>
-            <div className={clsx(classes.line, { [classes.hiddenText]: hidden })}>
+          <div className={classes.lineWrapper} key={text}>
+            <div className={classes.line}>
               <div className={classes.lineNumber}>
                 {index + 1}.
               </div>
-              { text }
+              <div className={clsx({ [classes.blank]: hidden })}>
+                <div className={clsx({ [classes.hiddenText]: hidden })}>
+                  { text }
+                </div>
+              </div>
             </div>
           </div>
         )

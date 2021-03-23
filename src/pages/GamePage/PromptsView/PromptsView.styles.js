@@ -4,9 +4,10 @@ import { colors } from '../../../theme'
 export default makeStyles(() => {
   return {
     blank: {
-      borderRadius: '40px',
+      borderRadius: '8px',
       opacity: '0.7',
-      backgroundColor: colors.captionText
+      backgroundColor: colors.captionText,
+      padding: '-12px 8px'
     },
     lineWrapper: {
       width: 'fit-content'
