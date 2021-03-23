@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
 import clsx from 'clsx'
 import {
@@ -38,7 +38,8 @@ export default function GamePage({ match }) {
   const [ getNewPrompts ] = useMutation(NEW_PROMPTS)
   const [ game, setGame ] = useState(() => null)
   const [ user, setUser ] = useState(() => null)
-  const [ timerRunning, setTimerRunning ] = useState(() => true)
+  const [ isTimerRunning, setIsTimerRunning ] = useState(() => false)
+  const [ hidePrompts, setHidePrompts ] = useState(() => true) // FIXME this should come from the server, not local state
   const { data: userData, loading: userLoading, error: userError } = useQuery(USER, {
     variables: { gameId, userId }
   })
@@ -72,11 +73,14 @@ export default function GamePage({ match }) {
   }, [ userData, userLoading, userError ])
 
   useEffect(() => {
-    const game = gameData?.gameUpdated?.game
+    const newGame = gameData?.gameUpdated?.game
     const status = gameData?.gameUpdated?.status
-    if (game) {
-      setGame(game)
-      document.title += game.name ? ` | ${game.name}` : ''
+    if (newGame) {
+      if (JSON.stringify(newGame.prompts) !== JSON.stringify(game?.prompts)) {
+        setHidePrompts(true)
+      }
+      setGame(newGame)
+      document.title += newGame.name ? ` | ${newGame.name}` : ''
     }
     if (status?.ended) {
       goToHome(status.message)
@@ -123,9 +127,25 @@ export default function GamePage({ match }) {
     await handleNewPrompts()
   }
 
-  function isHost() {
-    return userId === game.hostId
+  async function handleTimerSettingsUpdate(seconds) {
+    await handleUpdateSettings({ timerSeconds: seconds })
   }
+
+  function handleTimerStop(seconds) {
+    setIsTimerRunning(false)
+    if (Number(seconds) > 0) {
+      setHidePrompts(true)
+    }
+  }
+
+  function handleTimerStart() {
+    setIsTimerRunning(true)
+    setHidePrompts(false)
+  }
+
+  const isHost = useCallback(() => {
+    return userId === game.hostId
+  }, [ game, userId ])
 
   return (
     <div>
@@ -150,7 +170,7 @@ export default function GamePage({ match }) {
               {game.name}
             </Typography>
             <div className={classes.spacer} />
-            <LeaveGameButton disabled={timerRunning} isHost={isHost()} onLeave={async () => {
+            <LeaveGameButton disabled={isTimerRunning} isHost={isHost()} onLeave={async () => {
               await leaveGame({ variables: { gameId, userId } }).catch()
               goToHome(isHost() ? 'You ended the game' : 'You left the game')
             }} />
@@ -174,7 +194,7 @@ export default function GamePage({ match }) {
               <Grid container direction="column" spacing={2} justify="center">
                 <Grid item>
                   <Card className={classes.card}>
-                    <LetterView letter={game.letter} isHost={isHost()} disabled={timerRunning} onNewLetter={handleNewLetter} />
+                    <LetterView letter={game.letter} isHost={isHost()} disabled={isTimerRunning} onNewLetter={handleNewLetter} />
                   </Card>
                 </Grid>
                 <Grid item>
@@ -184,9 +204,9 @@ export default function GamePage({ match }) {
                       userId={user.id}
                       hostId={game.hostId}
                       secondsTotal={game.settings?.timerSeconds}
-                      onSecondsUpdate={async (seconds) => {await handleUpdateSettings({ timerSeconds: seconds })}}
-                      onStart={() => {setTimerRunning(true)}}
-                      onStop={() => {setTimerRunning(false)}}
+                      onSecondsUpdate={handleTimerSettingsUpdate}
+                      onStart={handleTimerStart}
+                      onStop={handleTimerStop}
                     />
                   </Card>
                 </Grid>
@@ -196,9 +216,9 @@ export default function GamePage({ match }) {
               <Card className={clsx(classes.card, classes.promptsWrapper)}>
                 <PromptsView
                   prompts={game.prompts}
-                  hidden={!timerRunning}
+                  hidden={hidePrompts}
                   isHost={isHost()}
-                  disabled={timerRunning}
+                  disabled={isTimerRunning}
                   onNewPrompts={handleNewPrompts}
                   onSettingsUpdate={onPromptSettingsUpdate}
                 />

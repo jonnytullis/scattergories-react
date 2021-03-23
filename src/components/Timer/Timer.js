@@ -53,10 +53,10 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
 
   useEffect(() => {
     if (isRunning && typeof onStart === 'function') {
-      onStart()
+      onStart(seconds)
     }
     if (!isRunning && typeof onStop === 'function') {
-      onStop()
+      onStop(seconds)
     }
   }, [ isRunning ])
 
