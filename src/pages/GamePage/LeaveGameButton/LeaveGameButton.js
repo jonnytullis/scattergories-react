@@ -27,7 +27,7 @@ export default function LeaveGameButton({ isHost, onLeave, disabled }) {
         </DialogContent>
         <DialogActions>
           <Grid container direction="row" justify="space-between">
-            <Button variant="contained" onClick={() => {setDialogOpen(false)}}>
+            <Button onClick={() => {setDialogOpen(false)}}>
               Back
             </Button>
             <Button variant="contained" onClick={() => {onLeave()}} className={classes.leaveButton}>

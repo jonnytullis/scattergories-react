@@ -5,6 +5,7 @@ export const JOIN_GAME = gql`
         joinGame(gameId:$gameId, userName:$userName) {
             gameId
             userId
+            sessionId
         }
     }
 `
@@ -14,6 +15,7 @@ export const CREATE_GAME = gql`
         createGame(hostName:$hostName, gameName:$gameName) {
             gameId
             userId
+            sessionId
         }
     }
 `

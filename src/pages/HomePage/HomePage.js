@@ -32,7 +32,9 @@ export default function HomePage() {
   async function createGameFormSubmitted({ hostName, gameName }) {
     try {
       const res = await createGame({ variables: { hostName, gameName } })
-      const { gameId, userId } = res.data?.createGame
+      const { gameId, userId, sessionId } = res.data?.createGame
+      window.localStorage.setItem('sessionId', sessionId)
+      console.log('SESSION ID:', sessionId)
       goToGame({ gameId, userId })
     } catch(e) {
       raiseAlert({
@@ -52,7 +54,8 @@ export default function HomePage() {
   async function joinGameFormSubmitted({ gameId, userName }) {
     try {
       const res = await joinGame({ variables: { gameId, userName } })
-      const { userId } = res.data?.joinGame
+      const { userId, sessionId } = res.data?.joinGame
+      window.localStorage.setItem('sessionId', sessionId)
       if (gameId && userId) {
         goToGame({ gameId, userId })
       }

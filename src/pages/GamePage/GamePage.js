@@ -49,6 +49,7 @@ export default function GamePage({ match }) {
 
   useEffect(() => {
     if (subscriptionError) {
+      console.log('Subscription ERROR:', subscriptionError)
       const message = subscriptionError?.message?.toLowerCase()
       if (message?.includes('unauthorized') || message?.includes('not found')) {
         goToHome()

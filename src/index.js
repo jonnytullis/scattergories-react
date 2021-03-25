@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { ApolloClient, ApolloProvider, InMemoryCache, HttpLink, split } from '@apollo/client'
+import { ApolloClient, ApolloProvider, InMemoryCache, HttpLink, split, concat, ApolloLink } from '@apollo/client'
 import { getMainDefinition } from '@apollo/client/utilities'
 import { WebSocketLink } from '@apollo/client/link/ws'
 
@@ -29,7 +29,7 @@ function getApolloClient() {
   const wsLink = new WebSocketLink({
     uri: `ws://localhost:4000/graphql`,
     options: {
-      reconnect: true
+      reconnect: true,
     }
   })
 
@@ -47,8 +47,31 @@ function getApolloClient() {
     httpLink,
   )
 
+  // This middleware adds an authorization header to every query and mutation request
+  const authMiddleware = new ApolloLink((operation, forward) => {
+    const sessionId = window.localStorage.getItem('sessionId')
+    if (sessionId) {
+      operation.setContext({
+        headers: {
+          authorization: `Bearer ${sessionId}`,
+        }
+      })
+    }
+
+    return forward(operation)
+  })
+
+  // This adds a session ID to the payload of every subscription
+  const subscriptionAuthMiddleware = {
+    applyMiddleware(options, next) {
+      options.sessionId = window.localStorage.getItem('sessionId')
+      next()
+    }
+  }
+  wsLink.subscriptionClient.use([ subscriptionAuthMiddleware ])
+
   return new ApolloClient({
-    link: splitLink,
+    link: concat(authMiddleware, splitLink),
     uri: 'http://localhost:4000/graphql', // URI for graphql server
     cache: new InMemoryCache()
   })
