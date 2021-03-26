@@ -25,26 +25,25 @@ import PlayersDrawer from './PlayersDrawer/PlayersDrawer'
 import LetterView from './LetterView/LetterView'
 
 export default function GamePage({ match }) {
-  const { userId, gameId } = match.params
   const classes = useStyles()
-
   const history = useHistory()
-
   const { raiseAlert } = useAlert()
+
+  // State
   const [ drawerOpen, setDrawerOpen ] = useState(() => window.localStorage.getItem('playersDrawerOpen') !== 'false')
-  const [ getNewLetter ] = useMutation(NEW_LETTER)
-  const [ updateSettings ] = useMutation(UPDATE_SETTINGS)
-  const [ leaveGame ] = useMutation(LEAVE_GAME)
-  const [ getNewPrompts ] = useMutation(NEW_PROMPTS)
   const [ game, setGame ] = useState(() => null)
   const [ user, setUser ] = useState(() => null)
   const [ isTimerRunning, setIsTimerRunning ] = useState(() => false)
   const [ hidePrompts, setHidePrompts ] = useState(() => true) // FIXME this should come from the server, not local state
-  const { data: userData, loading: userLoading, error: userError } = useQuery(USER, {
-    variables: { gameId, userId }
-  })
+
+  // GQL
+  const [ getNewLetter ] = useMutation(NEW_LETTER)
+  const [ updateSettings ] = useMutation(UPDATE_SETTINGS)
+  const [ leaveGame ] = useMutation(LEAVE_GAME)
+  const [ getNewPrompts ] = useMutation(NEW_PROMPTS)
+  const { data: userData, loading: userLoading, error: userError } = useQuery(USER)
   const { data: gameData, error: subscriptionError } = useSubscription(GAME_SUBSCRIPTION, {
-    variables: { gameId, userId }
+    variables: { gameId: match.params.gameId }
   })
 
   useEffect(() => {
@@ -99,11 +98,16 @@ export default function GamePage({ match }) {
   }
 
   function handleNewLetter() {
-    getNewLetter({ variables: { gameId: game?.id, userId: user?.id } }).catch(() => {})
+    getNewLetter().catch(() => {
+      raiseAlert({
+        message: 'Error getting new letter',
+        severity: 'error'
+      })
+    })
   }
 
   async function handleNewPrompts() {
-    await getNewPrompts({ variables: { gameId: game?.id, userId: user?.id } }).catch(() => {
+    await getNewPrompts().catch(() => {
       raiseAlert({
         message: 'Error getting new prompts',
         severity: 'error'
@@ -113,9 +117,7 @@ export default function GamePage({ match }) {
 
   // Will update any props that are included
   async function handleUpdateSettings({ timerSeconds, numPrompts, numRounds }) {
-    await updateSettings({
-      variables: { gameId: game?.id, userId: user?.id, settings: { timerSeconds, numPrompts, numRounds } },
-    }).catch(() => {
+    await updateSettings({ variables: { settings: { timerSeconds, numPrompts, numRounds } } }).catch(() => {
       raiseAlert({
         message: 'Error updating timer',
         severity: 'error'
@@ -145,8 +147,8 @@ export default function GamePage({ match }) {
   }
 
   const isHost = useCallback(() => {
-    return userId === game.hostId
-  }, [ game, userId ])
+    return user.id === game.hostId
+  }, [ game, user ])
 
   return (
     <div>
@@ -172,7 +174,7 @@ export default function GamePage({ match }) {
             </Typography>
             <div className={classes.spacer} />
             <LeaveGameButton disabled={isTimerRunning} isHost={isHost()} onLeave={async () => {
-              await leaveGame({ variables: { gameId, userId } }).catch()
+              await leaveGame().catch()
               goToHome(isHost() ? 'You ended the game' : 'You left the game')
             }} />
           </Toolbar>
@@ -180,7 +182,7 @@ export default function GamePage({ match }) {
         <PlayersDrawer
           players={game.players}
           hostId={game.hostId}
-          userId={userId}
+          userId={user.id}
           open={drawerOpen}
           onClose={() => {setDrawerOpen(false)}}
         />

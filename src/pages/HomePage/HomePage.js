@@ -34,7 +34,6 @@ export default function HomePage() {
       const res = await createGame({ variables: { hostName, gameName } })
       const { gameId, userId, sessionId } = res.data?.createGame
       window.localStorage.setItem('sessionId', sessionId)
-      console.log('SESSION ID:', sessionId)
       goToGame({ gameId, userId })
     } catch(e) {
       raiseAlert({

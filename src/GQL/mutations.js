@@ -21,24 +21,24 @@ export const CREATE_GAME = gql`
 `
 
 export const LEAVE_GAME = gql`
-    mutation($gameId:String!, $userId:ID!) {
-        leaveGame(gameId:$gameId, userId:$userId) {
+    mutation {
+        leaveGame {
             success
         }
     }
 `
 
 export const NEW_LETTER = gql`
-    mutation($gameId:String!, $userId:ID!) {
-        newLetter(gameId:$gameId, userId:$userId) {
+    mutation {
+        newLetter {
             letter
         }
     }
 `
 
 export const NEW_PROMPTS = gql`
-    mutation($gameId:String!, $userId:ID!) {
-        newPrompts(gameId:$gameId, userId:$userId) {
+    mutation {
+        newPrompts {
             prompts
         }
     }
@@ -72,8 +72,8 @@ export const RESET_TIMER = gql`
 `
 
 export const UPDATE_SETTINGS = gql`
-    mutation($gameId:String!, $userId:ID!, $settings:SettingsInput!) {
-        updateSettings(gameId:$gameId, userId:$userId, settings:$settings) {
+    mutation($settings:SettingsInput!) {
+        updateSettings(settings:$settings) {
             timerSeconds
             numPrompts
             numRounds
