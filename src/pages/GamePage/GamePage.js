@@ -173,7 +173,7 @@ export default function GamePage({ match }) {
               {game.name}
             </Typography>
             <div className={classes.spacer} />
-            <LeaveGameButton disabled={isTimerRunning} isHost={isHost()} onLeave={async () => {
+            <LeaveGameButton isHost={isHost()} onLeave={async () => {
               await leaveGame().catch()
               goToHome(isHost() ? 'You ended the game' : 'You left the game')
             }} />
