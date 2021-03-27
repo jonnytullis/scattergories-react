@@ -85,7 +85,7 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
 
   function doTimerAction(action) {
     if (typeof action === 'function') {
-      action({ variables: { gameId, userId } }).catch(() => {
+      action().catch(() => {
         raiseAlert({ severity: 'error', message: 'We ran into an error with the timer. Please try again.' })
       })
     }

@@ -45,8 +45,8 @@ export const NEW_PROMPTS = gql`
 `
 
 export const START_TIMER = gql`
-    mutation($gameId:String!, $userId:ID!) {
-        startTimer(gameId:$gameId, userId:$userId) {
+    mutation {
+        startTimer {
             seconds
             remaining
         }
@@ -54,8 +54,8 @@ export const START_TIMER = gql`
 `
 
 export const PAUSE_TIMER = gql`
-    mutation($gameId:String!, $userId:ID!) {
-        pauseTimer(gameId:$gameId, userId:$userId) {
+    mutation {
+        pauseTimer {
             seconds
             remaining
         }
@@ -63,8 +63,8 @@ export const PAUSE_TIMER = gql`
 `
 
 export const RESET_TIMER = gql`
-    mutation($gameId:String!, $userId:ID!) {
-        resetTimer(gameId:$gameId, userId:$userId) {
+    mutation {
+        resetTimer {
             seconds
             remaining
         }

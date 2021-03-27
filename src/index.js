@@ -49,14 +49,11 @@ function getApolloClient() {
 
   // This middleware adds an authorization header to every query and mutation request
   const authMiddleware = new ApolloLink((operation, forward) => {
-    const sessionId = window.localStorage.getItem('sessionId')
-    if (sessionId) {
-      operation.setContext({
-        headers: {
-          authorization: `Bearer ${sessionId}`,
-        }
-      })
-    }
+    operation.setContext({
+      headers: {
+        authorization: `Bearer ${window.localStorage.getItem('sessionId')}`,
+      }
+    })
 
     return forward(operation)
   })
@@ -64,7 +61,7 @@ function getApolloClient() {
   // This adds a session ID to the payload of every subscription
   const subscriptionAuthMiddleware = {
     applyMiddleware(options, next) {
-      options.sessionId = window.localStorage.getItem('sessionId')
+      options.authorization = `Bearer ${window.localStorage.getItem('sessionId')}`
       next()
     }
   }
