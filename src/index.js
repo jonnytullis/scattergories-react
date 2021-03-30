@@ -67,10 +67,22 @@ function getApolloClient() {
   }
   wsLink.subscriptionClient.use([ subscriptionAuthMiddleware ])
 
+  const defaultOptions = {
+    watchQuery: {
+      fetchPolicy: 'no-cache',
+      errorPolicy: 'ignore',
+    },
+    query: {
+      fetchPolicy: 'no-cache',
+      errorPolicy: 'all',
+    },
+  }
+
   return new ApolloClient({
     link: concat(authMiddleware, splitLink),
     uri: 'http://localhost:4000/graphql', // URI for graphql server
-    cache: new InMemoryCache()
+    cache: new InMemoryCache(),
+    defaultOptions
   })
 }
 
