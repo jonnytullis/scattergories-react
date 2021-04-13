@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client'
 
 export const JOIN_GAME = gql`
-    mutation($gameId:String!, $userName:String!) {
+    mutation($gameId:ID!, $userName:String!) {
         joinGame(gameId:$gameId, userName:$userName) {
             gameId
             userId
@@ -76,7 +76,6 @@ export const UPDATE_SETTINGS = gql`
         updateSettings(settings:$settings) {
             timerSeconds
             numPrompts
-            numRounds
         }
     }
 `

@@ -30,6 +30,9 @@ function getApolloClient() {
     uri: `ws://localhost:4000/graphql`,
     options: {
       reconnect: true,
+      connectionParams: {
+        authorization: `Bearer ${window.localStorage.getItem('sessionId')}`,
+      }
     }
   })
 
@@ -57,15 +60,6 @@ function getApolloClient() {
 
     return forward(operation)
   })
-
-  // This adds a session ID to the payload of every subscription
-  const subscriptionAuthMiddleware = {
-    applyMiddleware(options, next) {
-      options.authorization = `Bearer ${window.localStorage.getItem('sessionId')}`
-      next()
-    }
-  }
-  wsLink.subscriptionClient.use([ subscriptionAuthMiddleware ])
 
   const defaultOptions = {
     watchQuery: {
