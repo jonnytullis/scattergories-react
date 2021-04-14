@@ -56,7 +56,6 @@ export default function GamePage({ match }) {
       raiseAlert({
         message,
         severity: 'info',
-        duration: 3000
       })
     }
     history.replace('/')
@@ -71,7 +70,6 @@ export default function GamePage({ match }) {
         raiseAlert({
           message: "We're having trouble connecting...",
           severity: 'warning',
-          duration: 4000
         })
       }
     }
@@ -100,6 +98,11 @@ export default function GamePage({ match }) {
     }
     if (status?.ended) {
       goToHome(status.message)
+    } else if (status?.message) {
+      raiseAlert({
+        message: status.message,
+        severity: 'info',
+      })
     }
   }, [ game?.prompts, gameData, goToHome, setGame ])
 
@@ -108,7 +111,6 @@ export default function GamePage({ match }) {
       raiseAlert({
         message: 'Error getting new letter',
         severity: 'error',
-        duration: 6000
       })
     })
   }
@@ -118,7 +120,6 @@ export default function GamePage({ match }) {
       raiseAlert({
         message: 'Error getting new prompts',
         severity: 'error',
-        duration: 6000
       })
     })
   }
@@ -129,7 +130,6 @@ export default function GamePage({ match }) {
       raiseAlert({
         message: 'Error updating settings',
         severity: 'error',
-        duration: 6000
       })
     })
   }

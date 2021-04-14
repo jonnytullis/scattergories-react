@@ -5,18 +5,32 @@ export default function AlertProvider({ children }) {
   const [ open, setOpen ] = useState(false)
   const [ options, setOptions ] = useState({
     message: '',
-    severity: 'success',
-    milliseconds: 6000
+    severity: 'success'
   })
 
   const contextValue = {
-    raiseAlert: useCallback(({ message, severity, milliseconds }) => {
-      setOptions({
-        message: message || severity || 'success',
-        severity: severity || 'success',
-        milliseconds: milliseconds || 6000
-      })
-      setOpen(true)
+    raiseAlert: useCallback(({ message, severity }) => {
+      if (message) {
+        severity = severity?.toLowerCase() || 'success'
+
+        let milliseconds = 6000
+        if (severity === 'success') {
+          milliseconds = 2000
+        } else if (severity === 'info') {
+          milliseconds = 3000
+        } else if (severity === 'warning') {
+          milliseconds = 4000
+        } else if (severity === 'error') {
+          milliseconds = 6000
+        }
+
+        setOptions({
+          message,
+          severity,
+          milliseconds
+        })
+        setOpen(true)
+      }
     }, [])
   }
 

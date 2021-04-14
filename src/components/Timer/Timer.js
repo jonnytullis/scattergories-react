@@ -77,7 +77,6 @@ export default function Timer({ isHost, timer, secondsTotal, onSecondsUpdate, on
         raiseAlert({
           severity: 'error',
           message: 'We ran into an error with the timer. Please try again.',
-          duration: 6000
         })
       })
     }
