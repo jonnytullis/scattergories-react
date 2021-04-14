@@ -30,9 +30,6 @@ function getApolloClient() {
     uri: `ws://localhost:4000/graphql`,
     options: {
       reconnect: true,
-      connectionParams: {
-        authorization: `Bearer ${window.localStorage.getItem('sessionId')}`,
-      }
     }
   })
 
@@ -60,6 +57,16 @@ function getApolloClient() {
 
     return forward(operation)
   })
+
+  // This adds a session ID to the payload of every subscription. I need to do it this way rather than using
+  //    the connectionParams in the wsLink options because that does not update when the auth token updates.
+  const subscriptionAuthMiddleware = {
+    applyMiddleware(options, next) {
+      options.authorization = `Bearer ${window.localStorage.getItem('sessionId')}`
+      next()
+    }
+  }
+  wsLink.subscriptionClient.use([ subscriptionAuthMiddleware ])
 
   const defaultOptions = {
     watchQuery: {
