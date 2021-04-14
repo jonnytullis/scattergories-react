@@ -47,8 +47,7 @@ export const NEW_PROMPTS = gql`
 export const START_TIMER = gql`
     mutation {
         startTimer {
-            seconds
-            remaining
+            success
         }
     }
 `
@@ -56,8 +55,7 @@ export const START_TIMER = gql`
 export const PAUSE_TIMER = gql`
     mutation {
         pauseTimer {
-            seconds
-            remaining
+            success
         }
     }
 `
@@ -65,8 +63,7 @@ export const PAUSE_TIMER = gql`
 export const RESET_TIMER = gql`
     mutation {
         resetTimer {
-            seconds
-            remaining
+            success
         }
     }
 `

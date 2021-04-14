@@ -16,7 +16,8 @@ module.exports = {
     "sourceType": "module"
   },
   "plugins": [
-    "react"
+    "react",
+    "react-hooks"
   ],
   "rules": {
     "react/prop-types": "off",
@@ -24,6 +25,8 @@ module.exports = {
     "indent": [ "warn", 2 ],
     "object-curly-spacing": [ "warn", "always" ],
     "array-bracket-spacing": [ "warn", "always" ],
-    "func-call-spacing": [ "warn", "never" ]
+    "func-call-spacing": [ "warn", "never" ],
+    "react-hooks/rules-of-hooks": "error", // Checks rules of Hooks
+    "react-hooks/exhaustive-deps": "warn" // Checks effect dependencies
   }
 };

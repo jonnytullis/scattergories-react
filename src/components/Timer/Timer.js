@@ -2,63 +2,51 @@ import React, { useState, useEffect } from 'react'
 import { Button, IconButton, Typography, Grid } from '@material-ui/core'
 import { Pause, AlarmOn, AlarmOff, Refresh, NotificationsActiveOutlined, NotificationsOffOutlined } from '@material-ui/icons'
 import clsx from 'clsx'
-import { useTimer, useAlert } from '../../hooks'
-import useStyles from './Timer.styles'
+import { useMutation } from '@apollo/client'
 
+import { useAlert } from '../../hooks'
+import useStyles from './Timer.styles'
 import soundFileTicking from '../../assets/sounds/ticking.mp3'
 import soundFileAlarm from '../../assets/sounds/bell.mp3'
 import EditTime from './EditTime/EditTime'
+import { PAUSE_TIMER, RESET_TIMER, START_TIMER } from '../../GQL/mutations'
 
 // Declare audio outside of react lifecycle
 const tickingAudio = new Audio(soundFileTicking)
 const alarmAudio = new Audio(soundFileAlarm)
 
-export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsUpdate, onStart, onStop }) {
-  if (!gameId || !userId) {
-    throw new Error('Properties "gameId" and "userId" are required for Timer')
-  }
-  const { data, error, start, pause, reset } = useTimer(gameId)
+export default function Timer({ isHost, timer, secondsTotal, onSecondsUpdate, onStart, onStop }) {
+  const [ startTimer ] = useMutation(START_TIMER)
+  const [ pauseTimer ] = useMutation(PAUSE_TIMER)
+  const [ resetTimer ] = useMutation(RESET_TIMER)
   const { raiseAlert } = useAlert()
-  const [ seconds, setSeconds ] = useState(() => secondsTotal)
-  const [ isRunning, setIsRunning ] = useState(() => false)
-  const [ soundsOn, setPlaySounds ] = useState(() => window.localStorage.getItem('soundsOn') !== 'false')
-  const [ isHost ] = useState(() => userId === hostId)
+  const [ soundsOn, setSoundsOn ] = useState(() => window.localStorage.getItem('soundsOn') !== 'false')
   const classes = useStyles()
-
-  // Update the view when data from the subscription changes
-  useEffect(() => {
-    if (data) {
-      setSeconds(data.timer?.remaining)
-      setIsRunning(data.timer?.isRunning)
-    } else if (error) {
-      console.error('Oh no! There\'s an issue with the timer!', error)
-    }
-  }, [ data, error ])
 
   /** Manage audio sounds for timer **/
   useEffect(() => {
     // Ticking sound
-    if (tickingAudio.paused && isRunning && seconds <= 10) {
-      tickingAudio.currentTime = tickingAudio.duration - seconds
+    if (tickingAudio.paused && timer.isRunning && timer.seconds <= 10) {
+      tickingAudio.currentTime = tickingAudio.duration - timer.seconds
       tickingAudio.play()
-    } else if (!isRunning && !tickingAudio.paused) {
+    } else if (!timer.isRunning && !tickingAudio.paused) {
       tickingAudio.pause()
     }
 
     // Alarm sound
-    if (isRunning && seconds <= 0) {
+    if (timer.isRunning && timer.seconds <= 0) {
       alarmAudio.play()
     }
-  }, [ isRunning, seconds ])
+  }, [ timer.isRunning, timer.seconds ])
 
   useEffect(() => {
-    if (isRunning && typeof onStart === 'function') {
-      onStart(seconds)
+    if (timer.isRunning && typeof onStart === 'function') {
+      onStart(timer.seconds)
     }
-    if (!isRunning && typeof onStop === 'function') {
-      onStop(seconds)
+    if (!timer.isRunning && typeof onStop === 'function') {
+      onStop(timer.seconds)
     }
-  }, [ isRunning ])
+  }, [ timer, onStart, onStop ])
 
   /** Respond to sound options **/
   useEffect(() => {
@@ -74,26 +62,30 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
   }, [ soundsOn ])
 
   function formattedTime() {
-    const minutes = Math.floor(seconds / 60)
-    const remainingSeconds = (seconds % 60)
+    const minutes = Math.floor(timer.seconds / 60)
+    const remainingSeconds = (timer.seconds % 60)
     return `${minutes}:${remainingSeconds.toLocaleString('en-US', { minimumIntegerDigits: 2 })}`
   }
 
   function isPaused() {
-    return !isRunning && seconds > 0 && seconds < secondsTotal
+    return !timer.isRunning && timer.seconds > 0 && timer.seconds < secondsTotal
   }
 
   function doTimerAction(action) {
     if (typeof action === 'function') {
       action().catch(() => {
-        raiseAlert({ severity: 'error', message: 'We ran into an error with the timer. Please try again.' })
+        raiseAlert({
+          severity: 'error',
+          message: 'We ran into an error with the timer. Please try again.',
+          duration: 6000
+        })
       })
     }
   }
 
   async function onUpdate(seconds) {
     await onSecondsUpdate(seconds)
-    doTimerAction(reset)
+    doTimerAction(resetTimer)
   }
 
   return (
@@ -107,16 +99,16 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
         { formattedTime() }
       </Typography>
       {isHost ?
-        <IconButton color="primary" onClick={() => { setPlaySounds(!soundsOn) }} className={classes.soundBtnHost} >
+        <IconButton color="primary" onClick={() => { setSoundsOn(!soundsOn) }} className={classes.soundBtnHost} >
           {soundsOn ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
         </IconButton> :
-        <Button color="primary" onClick={() => { setPlaySounds(!soundsOn) }}>
+        <Button color="primary" onClick={() => { setSoundsOn(!soundsOn) }}>
           {soundsOn ? 'Sound' : 'Muted'}&nbsp;
           {soundsOn ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
         </Button>
       }
       {isHost &&
-        <EditTime className={classes.editBtn} seconds={secondsTotal} disabled={isRunning} onUpdate={onUpdate} />
+        <EditTime className={classes.editBtn} seconds={secondsTotal} disabled={timer.isRunning} onUpdate={onUpdate} />
       }
       <Grid
         container
@@ -127,27 +119,27 @@ export default function Timer({ gameId, userId, hostId, secondsTotal, onSecondsU
         <Grid item xs={6}>
           <Button
             color="primary"
-            onClick={() => {doTimerAction(reset)}}
+            onClick={() => {doTimerAction(resetTimer)}}
           >
             <Refresh />&nbsp; Reset
           </Button>
         </Grid>
-        <Grid item xs={6} className={clsx({ [classes.hide]: seconds <= 0 })}>
+        <Grid item xs={6} className={clsx({ [classes.hide]: timer.seconds <= 0 })}>
           <Button
             color="primary"
             className={clsx({
-              [classes.hide]: isRunning
+              [classes.hide]: timer.isRunning
             })}
-            onClick={() => {doTimerAction(start)}}
+            onClick={() => {doTimerAction(startTimer)}}
           >
-            <AlarmOn />&nbsp; { seconds < secondsTotal ? 'Resume' : 'Start' }
+            <AlarmOn />&nbsp; { timer.seconds < secondsTotal ? 'Resume' : 'Start' }
           </Button>
           <Button
             color="primary"
             className={clsx({
-              [classes.hide]: !isRunning
+              [classes.hide]: !timer.isRunning
             })}
-            onClick={() => {doTimerAction(pause)}}
+            onClick={() => {doTimerAction(pauseTimer)}}
           >
             <AlarmOff />&nbsp; Pause
           </Button>

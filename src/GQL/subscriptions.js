@@ -18,6 +18,10 @@ export const GAME_SUBSCRIPTION = gql`
                     timerSeconds
                     numPrompts
                 }
+                timer {
+                    seconds
+                    isRunning
+                }
             }
             status {
                 gameId

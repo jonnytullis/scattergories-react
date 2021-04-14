@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
 import clsx from 'clsx'
 import {
@@ -15,7 +15,12 @@ import { useSubscription, useMutation, useQuery } from '@apollo/client'
 import { useAlert } from '../../hooks'
 import { Timer, LoadingOverlay } from '../../components'
 import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
-import { LEAVE_GAME, NEW_LETTER, UPDATE_SETTINGS, NEW_PROMPTS } from '../../GQL/mutations'
+import {
+  LEAVE_GAME,
+  NEW_LETTER,
+  UPDATE_SETTINGS,
+  NEW_PROMPTS
+} from '../../GQL/mutations'
 import { USER } from '../../GQL/query'
 
 import useStyles from './GamePage.styles'
@@ -46,20 +51,31 @@ export default function GamePage({ match }) {
     variables: { gameId: match.params.gameId }
   })
 
+  const goToHome = useCallback(message => {
+    if (message) {
+      raiseAlert({
+        message,
+        severity: 'info',
+        duration: 3000
+      })
+    }
+    history.replace('/')
+  }, [ history, raiseAlert ])
+
   useEffect(() => {
     if (subscriptionError) {
-      console.log('Subscription ERROR:', subscriptionError)
       const message = subscriptionError?.message?.toLowerCase()
       if (message?.includes('unauthorized') || message?.includes('not found')) {
         goToHome()
       } else {
         raiseAlert({
           message: "We're having trouble connecting...",
-          severity: 'error'
+          severity: 'warning',
+          duration: 4000
         })
       }
     }
-  }, [ subscriptionError, raiseAlert ])
+  }, [ subscriptionError, raiseAlert, goToHome ])
 
   /** Use local storage to remember drawer open state **/
   useEffect(() => {
@@ -85,23 +101,14 @@ export default function GamePage({ match }) {
     if (status?.ended) {
       goToHome(status.message)
     }
-  }, [ gameData, setGame ])
-
-  function goToHome(message) {
-    if (message) {
-      raiseAlert({
-        message,
-        severity: 'info'
-      })
-    }
-    history.replace('/')
-  }
+  }, [ game?.prompts, gameData, goToHome, setGame ])
 
   function handleNewLetter() {
     getNewLetter().catch(() => {
       raiseAlert({
         message: 'Error getting new letter',
-        severity: 'error'
+        severity: 'error',
+        duration: 6000
       })
     })
   }
@@ -110,7 +117,8 @@ export default function GamePage({ match }) {
     await getNewPrompts().catch(() => {
       raiseAlert({
         message: 'Error getting new prompts',
-        severity: 'error'
+        severity: 'error',
+        duration: 6000
       })
     })
   }
@@ -120,7 +128,8 @@ export default function GamePage({ match }) {
     await updateSettings({ variables: { settings: { timerSeconds, numPrompts, numRounds } } }).catch(() => {
       raiseAlert({
         message: 'Error updating timer',
-        severity: 'error'
+        severity: 'error',
+        duration: 6000
       })
     })
   }
@@ -146,8 +155,8 @@ export default function GamePage({ match }) {
     setHidePrompts(false)
   }
 
-  const isHost = useCallback(() => {
-    return user.id === game.hostId
+  const isHost = useMemo(() => {
+    return user && game && user.id === game.hostId
   }, [ game, user ])
 
   return (
@@ -173,9 +182,9 @@ export default function GamePage({ match }) {
               {game.name}
             </Typography>
             <div className={classes.spacer} />
-            <LeaveGameButton isHost={isHost()} onLeave={async () => {
+            <LeaveGameButton isHost={isHost} onLeave={async () => {
               await leaveGame().catch()
-              goToHome(isHost() ? 'You ended the game' : 'You left the game')
+              goToHome(isHost ? 'You ended the game' : 'You left the game')
             }} />
           </Toolbar>
         </AppBar>
@@ -197,15 +206,14 @@ export default function GamePage({ match }) {
               <Grid container direction="column" spacing={2} justify="center">
                 <Grid item>
                   <Card className={classes.card}>
-                    <LetterView letter={game.letter} isHost={isHost()} disabled={isTimerRunning} onNewLetter={handleNewLetter} />
+                    <LetterView letter={game.letter} isHost={isHost} disabled={isTimerRunning} onNewLetter={handleNewLetter} />
                   </Card>
                 </Grid>
                 <Grid item>
                   <Card className={classes.card}>
                     <Timer
-                      gameId={game.id}
-                      userId={user.id}
-                      hostId={game.hostId}
+                      isHost={isHost}
+                      timer={game.timer}
                       secondsTotal={game.settings?.timerSeconds}
                       onSecondsUpdate={handleTimerSettingsUpdate}
                       onStart={handleTimerStart}
@@ -220,7 +228,7 @@ export default function GamePage({ match }) {
                 <PromptsView
                   prompts={game.prompts}
                   hidden={hidePrompts}
-                  isHost={isHost()}
+                  isHost={isHost}
                   disabled={isTimerRunning}
                   onNewPrompts={handleNewPrompts}
                   onSettingsUpdate={onPromptSettingsUpdate}

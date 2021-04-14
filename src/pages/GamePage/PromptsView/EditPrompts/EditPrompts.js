@@ -11,16 +11,16 @@ export default function EditPrompts({ numPrompts, disabled, className, onUpdate 
   const MIN_NUM = 3
   const MAX_NUM = 20
 
+  const resetData = useCallback(() => {
+    setNumPromptsInput(numPrompts)
+  }, [ numPrompts ])
+
   useEffect(() => {
     if (!openDialog) {
       // Allow some time for transition to finish
       setTimeout(resetData, 500)
     }
-  }, [ openDialog ])
-
-  function resetData() {
-    setNumPromptsInput(numPrompts)
-  }
+  }, [ openDialog, resetData ])
 
   const numPromptsError = useCallback(() => {
     if(Number(numPromptsInput) > MAX_NUM) {

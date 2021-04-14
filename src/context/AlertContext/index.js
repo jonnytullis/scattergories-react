@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react'
+import React, { createContext, useState, useCallback } from 'react'
 import { Alert } from '../../components'
 
 export default function AlertProvider({ children }) {
@@ -10,14 +10,14 @@ export default function AlertProvider({ children }) {
   })
 
   const contextValue = {
-    raiseAlert: ({ message, severity, milliseconds }) => {
+    raiseAlert: useCallback(({ message, severity, milliseconds }) => {
       setOptions({
         message: message || severity || 'success',
         severity: severity || 'success',
         milliseconds: milliseconds || 6000
       })
       setOpen(true)
-    }
+    }, [])
   }
 
   return (
