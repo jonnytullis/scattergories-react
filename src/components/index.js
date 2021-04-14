@@ -4,7 +4,6 @@ import InviteFriendsView from './InviteFriendsView/InviteFriendsView'
 import JoinGameForm from './JoinGameForm/JoinGameForm'
 import LoadingOverlay from './LoadingOverlay/LoadingOverlay'
 import PasswordTextField from './PasswordTextField/PasswordTextField'
-import Timer from './Timer/Timer'
 
 export {
   Alert,
@@ -12,6 +11,5 @@ export {
   InviteFriendsView,
   JoinGameForm,
   LoadingOverlay,
-  PasswordTextField,
-  Timer
+  PasswordTextField
 }

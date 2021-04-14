@@ -13,7 +13,7 @@ import { Group } from '@material-ui/icons'
 import { useSubscription, useMutation, useQuery } from '@apollo/client'
 
 import { useAlert } from '../../hooks'
-import { Timer, LoadingOverlay } from '../../components'
+import { LoadingOverlay } from '../../components'
 import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
 import {
   LEAVE_GAME,
@@ -28,6 +28,7 @@ import PromptsView from './PromptsView/PromptsView'
 import LeaveGameButton from './LeaveGameButton/LeaveGameButton'
 import PlayersDrawer from './PlayersDrawer/PlayersDrawer'
 import LetterView from './LetterView/LetterView'
+import Timer from './Timer/Timer'
 
 export default function GamePage({ match }) {
   const classes = useStyles()

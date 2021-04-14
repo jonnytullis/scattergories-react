@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/styles'
-import { colors } from '../../theme'
+import { colors } from '../../../theme'
 
 export default makeStyles(() => {
   return {

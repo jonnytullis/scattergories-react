@@ -4,16 +4,14 @@ import { Pause, AlarmOn, AlarmOff, Refresh, NotificationsActiveOutlined, Notific
 import clsx from 'clsx'
 import { useMutation } from '@apollo/client'
 
-import { useAlert } from '../../hooks'
+import { useAlert } from '../../../hooks'
 import useStyles from './Timer.styles'
-import soundFileTicking from '../../assets/sounds/ticking.mp3'
-import soundFileAlarm from '../../assets/sounds/bell.mp3'
+import timerSoundFile from '../../../assets/sounds/timer.mp3'
 import EditTime from './EditTime/EditTime'
-import { PAUSE_TIMER, RESET_TIMER, START_TIMER } from '../../GQL/mutations'
+import { PAUSE_TIMER, RESET_TIMER, START_TIMER } from '../../../GQL/mutations'
 
 // Declare audio outside of react lifecycle
-const tickingAudio = new Audio(soundFileTicking)
-const alarmAudio = new Audio(soundFileAlarm)
+const timerAudio = new Audio(timerSoundFile)
 
 export default function Timer({ isHost, timer, secondsTotal, onSecondsUpdate, onStart, onStop }) {
   const [ startTimer ] = useMutation(START_TIMER)
@@ -26,16 +24,11 @@ export default function Timer({ isHost, timer, secondsTotal, onSecondsUpdate, on
   /** Manage audio sounds for timer **/
   useEffect(() => {
     // Ticking sound
-    if (tickingAudio.paused && timer.isRunning && timer.seconds <= 10) {
-      tickingAudio.currentTime = tickingAudio.duration - timer.seconds
-      tickingAudio.play()
-    } else if (!timer.isRunning && !tickingAudio.paused) {
-      tickingAudio.pause()
-    }
-
-    // Alarm sound
-    if (timer.isRunning && timer.seconds <= 0) {
-      alarmAudio.play()
+    if (timerAudio.paused && timer.isRunning && timer.seconds <= 10) {
+      timerAudio.currentTime = timerAudio.duration - (timer.seconds + 3)
+      timerAudio.play()
+    } else if (!timer.isRunning && timer.seconds > 0) {
+      timerAudio.pause()
     }
   }, [ timer.isRunning, timer.seconds ])
 
@@ -50,13 +43,7 @@ export default function Timer({ isHost, timer, secondsTotal, onSecondsUpdate, on
 
   /** Respond to sound options **/
   useEffect(() => {
-    if (soundsOn) {
-      tickingAudio.volume = 1
-      alarmAudio.volume = 1
-    } else {
-      tickingAudio.volume = 0
-      alarmAudio.volume = 0
-    }
+    timerAudio.volume = soundsOn ? 1 : 0
 
     window.localStorage.setItem('soundsOn', String(soundsOn))
   }, [ soundsOn ])
