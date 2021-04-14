@@ -124,10 +124,10 @@ export default function GamePage({ match }) {
   }
 
   // Will update any props that are included
-  async function handleUpdateSettings({ timerSeconds, numPrompts, numRounds }) {
-    await updateSettings({ variables: { settings: { timerSeconds, numPrompts, numRounds } } }).catch(() => {
+  async function handleUpdateSettings(settings) {
+    await updateSettings({ variables: { settings } }).catch(() => {
       raiseAlert({
-        message: 'Error updating timer',
+        message: 'Error updating settings',
         severity: 'error',
         duration: 6000
       })
