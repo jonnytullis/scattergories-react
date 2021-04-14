@@ -61,7 +61,7 @@ export default function HomePage() {
     } catch(e) {
       raiseAlert({
         message: e.message,
-        milliseconds: 9000,
+        milliseconds: 6000,
         severity: 'error'
       })
     }
