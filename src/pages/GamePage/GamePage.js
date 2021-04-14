@@ -89,6 +89,7 @@ export default function GamePage({ match }) {
   useEffect(() => {
     const newGame = gameData?.gameUpdated?.game
     const status = gameData?.gameUpdated?.status
+
     if (newGame) {
       if (JSON.stringify(newGame.prompts) !== JSON.stringify(game?.prompts)) {
         setHidePrompts(true)
@@ -96,6 +97,7 @@ export default function GamePage({ match }) {
       setGame(newGame)
       document.title += newGame.name ? ` | ${newGame.name}` : ''
     }
+
     if (status?.ended) {
       goToHome(status.message)
     } else if (status?.message) {
@@ -104,7 +106,7 @@ export default function GamePage({ match }) {
         severity: 'info',
       })
     }
-  }, [ game?.prompts, gameData, goToHome, setGame ])
+  }, [ game?.prompts, gameData, goToHome, setGame, raiseAlert ])
 
   function handleNewLetter() {
     getNewLetter().catch(() => {
