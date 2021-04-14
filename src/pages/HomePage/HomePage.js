@@ -60,7 +60,7 @@ export default function HomePage() {
       }
     } catch(e) {
       raiseAlert({
-        message: 'Oops! Something went wrong when joining the game. Please try again.',
+        message: e.message,
         milliseconds: 9000,
         severity: 'error'
       })

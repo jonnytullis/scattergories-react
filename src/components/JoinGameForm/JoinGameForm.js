@@ -60,12 +60,12 @@ export default function JoinGameForm({ onCancel, onSubmit }) {
       <Grid container spacing={3} direction="row" className={classes.buttonRow}>
         <Grid item xs={6}>
           <Button variant="contained" size="large" onClick={onCancel} >
-                        Cancel
+            Cancel
           </Button>
         </Grid>
         <Grid item xs={6}>
           <Button color="primary" disabled={!isValidInput()} variant="contained" size="large" type="submit">
-                        Join
+            Join
           </Button>
         </Grid>
       </Grid>
