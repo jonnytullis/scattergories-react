@@ -18,8 +18,7 @@ import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
 import {
   LEAVE_GAME,
   NEW_LETTER,
-  UPDATE_SETTINGS,
-  NEW_PROMPTS
+  UPDATE_SETTINGS
 } from '../../GQL/mutations'
 import { USER } from '../../GQL/query'
 
@@ -40,13 +39,11 @@ export default function GamePage({ match }) {
   const [ game, setGame ] = useState(() => null)
   const [ user, setUser ] = useState(() => null)
   const [ isTimerRunning, setIsTimerRunning ] = useState(() => false)
-  const [ hidePrompts, setHidePrompts ] = useState(() => true) // FIXME this should come from the server, not local state
 
   // GQL
   const [ getNewLetter ] = useMutation(NEW_LETTER)
   const [ updateSettings ] = useMutation(UPDATE_SETTINGS)
   const [ leaveGame ] = useMutation(LEAVE_GAME)
-  const [ getNewPrompts ] = useMutation(NEW_PROMPTS)
   const { data: userData, loading: userLoading, error: userError } = useQuery(USER)
   const { data: gameData, error: subscriptionError } = useSubscription(GAME_SUBSCRIPTION, {
     variables: { gameId: match.params.gameId }
@@ -92,9 +89,6 @@ export default function GamePage({ match }) {
     const status = gameData?.gameUpdated?.status
 
     if (newGame) {
-      if (JSON.stringify(newGame.prompts) !== JSON.stringify(game?.prompts)) {
-        setHidePrompts(true)
-      }
       setGame(newGame)
       document.title += newGame.name ? ` | ${newGame.name}` : ''
     }
@@ -107,21 +101,12 @@ export default function GamePage({ match }) {
         severity: 'info',
       })
     }
-  }, [ game?.prompts, gameData, goToHome, setGame, raiseAlert ])
+  }, [ gameData, goToHome, setGame, raiseAlert ])
 
   function handleNewLetter() {
     getNewLetter().catch(() => {
       raiseAlert({
         message: 'Error getting new letter',
-        severity: 'error',
-      })
-    })
-  }
-
-  async function handleNewPrompts() {
-    await getNewPrompts().catch(() => {
-      raiseAlert({
-        message: 'Error getting new prompts',
         severity: 'error',
       })
     })
@@ -137,25 +122,16 @@ export default function GamePage({ match }) {
     })
   }
 
-  async function onPromptSettingsUpdate(options) {
-    await handleUpdateSettings(options)
-    await handleNewPrompts()
-  }
-
   async function handleTimerSettingsUpdate(seconds) {
     await handleUpdateSettings({ timerSeconds: seconds })
   }
 
-  function handleTimerStop(seconds) {
+  function handleTimerStop() {
     setIsTimerRunning(false)
-    if (Number(seconds) > 0) {
-      setHidePrompts(true)
-    }
   }
 
   function handleTimerStart() {
     setIsTimerRunning(true)
-    setHidePrompts(false)
   }
 
   const isHost = useMemo(() => {
@@ -229,12 +205,10 @@ export default function GamePage({ match }) {
             <Grid item>
               <Card className={clsx(classes.card, classes.promptsWrapper)}>
                 <PromptsView
-                  prompts={game.prompts}
-                  hidden={hidePrompts}
+                  prompts={game.prompts.list}
+                  hidden={game.prompts.hidden}
                   isHost={isHost}
                   disabled={isTimerRunning}
-                  onNewPrompts={handleNewPrompts}
-                  onSettingsUpdate={onPromptSettingsUpdate}
                 />
               </Card>
             </Grid>

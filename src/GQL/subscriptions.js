@@ -13,7 +13,10 @@ export const GAME_SUBSCRIPTION = gql`
                     name
                     color
                 }
-                prompts
+                prompts {
+                    hidden
+                    list
+                }
                 settings {
                     timerSeconds
                     numPrompts

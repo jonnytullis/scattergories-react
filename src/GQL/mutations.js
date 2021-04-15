@@ -36,10 +36,13 @@ export const NEW_LETTER = gql`
     }
 `
 
-export const NEW_PROMPTS = gql`
-    mutation {
-        newPrompts {
-            prompts
+export const UPDATE_PROMPTS = gql`
+    mutation($newPrompts:Boolean!, $hidden:Boolean) {
+        updatePrompts(newPrompts:$newPrompts, hidden:$hidden) {
+            prompts {
+                hidden
+                list
+            }
         }
     }
 `
