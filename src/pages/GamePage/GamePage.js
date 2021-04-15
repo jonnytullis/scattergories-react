@@ -18,8 +18,7 @@ import { LoadingOverlay } from '../../components'
 import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
 import {
   LEAVE_GAME,
-  NEW_LETTER,
-  UPDATE_SETTINGS
+  NEW_LETTER
 } from '../../GQL/mutations'
 import { USER } from '../../GQL/query'
 
@@ -29,6 +28,7 @@ import LeaveGameButton from './LeaveGameButton/LeaveGameButton'
 import PlayersDrawer from './PlayersDrawer/PlayersDrawer'
 import LetterView from './LetterView/LetterView'
 import Timer from './Timer/Timer'
+import Settings from './Settings/Settings'
 
 export default function GamePage({ match }) {
   const classes = useStyles()
@@ -43,7 +43,6 @@ export default function GamePage({ match }) {
 
   // GQL
   const [ getNewLetter ] = useMutation(NEW_LETTER)
-  const [ updateSettings ] = useMutation(UPDATE_SETTINGS)
   const [ leaveGame ] = useMutation(LEAVE_GAME)
   const { data: userData, loading: userLoading, error: userError } = useQuery(USER)
   const { data: gameData, error: subscriptionError } = useSubscription(GAME_SUBSCRIPTION, {
@@ -113,20 +112,6 @@ export default function GamePage({ match }) {
     })
   }
 
-  // Will update any props that are included
-  async function handleUpdateSettings(settings) {
-    await updateSettings({ variables: { settings } }).catch(() => {
-      raiseAlert({
-        message: 'Error updating settings',
-        severity: 'error',
-      })
-    })
-  }
-
-  async function handleTimerSettingsUpdate(seconds) {
-    await handleUpdateSettings({ timerSeconds: seconds })
-  }
-
   function handleTimerStop() {
     setIsTimerRunning(false)
   }
@@ -154,12 +139,13 @@ export default function GamePage({ match }) {
               aria-label="open drawer"
               onClick={() => {setDrawerOpen(true)}}
               edge="start"
-              className={clsx(classes.menuButton, drawerOpen && classes.hide)}
+              className={clsx(drawerOpen && classes.hide)}
             >
               <Group />
             </IconButton>
+            <Settings settings={game.settings} disabled={isTimerRunning} />
             <Hidden xsDown>
-              <Typography variant="h6" noWrap>{game.name}</Typography>
+              <Typography variant="h6" noWrap className={classes.appBarTitle}>{game.name}</Typography>
             </Hidden>
             <div className={classes.spacer} />
             <LeaveGameButton isHost={isHost} onLeave={async () => {
@@ -198,7 +184,6 @@ export default function GamePage({ match }) {
                       isHost={isHost}
                       timer={game.timer}
                       secondsTotal={game.settings?.timerSeconds}
-                      onSecondsUpdate={handleTimerSettingsUpdate}
                       onStart={handleTimerStart}
                       onStop={handleTimerStop}
                     />

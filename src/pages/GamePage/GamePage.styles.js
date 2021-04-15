@@ -19,6 +19,9 @@ export default makeStyles((theme) => ({
       }),
     }
   },
+  appBarTitle: {
+    paddingLeft: 12
+  },
   card: {
     padding: 12,
   },
@@ -47,12 +50,9 @@ export default makeStyles((theme) => ({
   hide: {
     display: 'none',
   },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
   mobileTitle: {
     textAlign:  'center',
-    marginBottom: 12
+    marginBottom: 20
   },
   pageLayout: {
     [theme.breakpoints.down('sm')]: {
@@ -61,6 +61,9 @@ export default makeStyles((theme) => ({
   },
   promptsWrapper: {
     width: '100%'
+  },
+  settingsButton: {
+    marginRight: 120
   },
   spacer: {
     flexGrow: 1,

@@ -3,30 +3,15 @@ import clsx from 'clsx'
 import { Button, Grid } from '@material-ui/core'
 import LoopIcon from '@material-ui/icons/Loop'
 import { useMutation } from '@apollo/client'
-import {
-  UPDATE_SETTINGS,
-  UPDATE_PROMPTS
-} from '../../../GQL/mutations'
+import { UPDATE_PROMPTS } from '../../../GQL/mutations'
 
 import useStyles from './PromptsView.styles'
 import { useAlert } from '../../../hooks'
-import EditPrompts from './EditPrompts/EditPrompts'
 
 export default function PromptsView({ prompts, hidden, isHost, disabled }) {
   const classes = useStyles()
   const { raiseAlert } = useAlert()
   const [ updatePrompts ] = useMutation(UPDATE_PROMPTS)
-  const [ updateSettings ] = useMutation(UPDATE_SETTINGS)
-
-  async function onSettingsUpdate(options) {
-    await updateSettings({ variables: { settings: options } }).catch(() => {
-      raiseAlert({
-        message: 'Error updating settings',
-        severity: 'error',
-      })
-    })
-    await doUpdatePrompts(true, hidden)
-  }
 
   async function doUpdatePrompts(newPrompts, hidden) {
     await updatePrompts({ variables: {
@@ -65,11 +50,6 @@ export default function PromptsView({ prompts, hidden, isHost, disabled }) {
         <Button disabled={disabled} style={{ alignSelf: 'center' }} onClick={() => { doUpdatePrompts(false, !hidden)}}>
           {hidden ? 'Show' : 'Hide'}
         </Button>
-        <EditPrompts
-          disabled={disabled}
-          numPrompts={prompts?.length || 0}
-          onUpdate={onSettingsUpdate}
-        />
       </Grid>}
     </div>
   )

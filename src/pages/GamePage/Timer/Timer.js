@@ -7,13 +7,12 @@ import { useMutation } from '@apollo/client'
 import { useAlert } from '../../../hooks'
 import useStyles from './Timer.styles'
 import timerSoundFile from '../../../assets/sounds/timer.mp3'
-import EditTime from './EditTime/EditTime'
 import { PAUSE_TIMER, RESET_TIMER, START_TIMER } from '../../../GQL/mutations'
 
 // Declare audio outside of react lifecycle
 const timerAudio = new Audio(timerSoundFile)
 
-export default function Timer({ isHost, timer, secondsTotal, onSecondsUpdate, onStart, onStop }) {
+export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) {
   const [ startTimer ] = useMutation(START_TIMER)
   const [ pauseTimer ] = useMutation(PAUSE_TIMER)
   const [ resetTimer ] = useMutation(RESET_TIMER)
@@ -69,11 +68,6 @@ export default function Timer({ isHost, timer, secondsTotal, onSecondsUpdate, on
     }
   }
 
-  async function onUpdate(seconds) {
-    await onSecondsUpdate(seconds)
-    doTimerAction(resetTimer)
-  }
-
   return (
     <div className={clsx(classes.center, isHost ? classes.padTop : {})}>
       <div className={ classes.pausedTextContainer }>
@@ -92,9 +86,6 @@ export default function Timer({ isHost, timer, secondsTotal, onSecondsUpdate, on
           {soundsOn ? 'Sound' : 'Muted'}&nbsp;
           {soundsOn ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
         </Button>
-      }
-      {isHost &&
-        <EditTime className={classes.editBtn} seconds={secondsTotal} disabled={timer.isRunning} onUpdate={onUpdate} />
       }
       <Grid
         container
