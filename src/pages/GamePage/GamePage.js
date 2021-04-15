@@ -7,6 +7,7 @@ import {
   Typography,
   IconButton,
   Grid,
+  Hidden,
   Card,
 } from '@material-ui/core'
 import { Group } from '@material-ui/icons'
@@ -90,7 +91,7 @@ export default function GamePage({ match }) {
 
     if (newGame) {
       setGame(newGame)
-      document.title += newGame.name ? ` | ${newGame.name}` : ''
+      document.title = newGame.name || 'Scattergories'
     }
 
     if (status?.ended) {
@@ -157,9 +158,9 @@ export default function GamePage({ match }) {
             >
               <Group />
             </IconButton>
-            <Typography variant="h6" noWrap>
-              {game.name}
-            </Typography>
+            <Hidden xsDown>
+              <Typography variant="h6" noWrap>{game.name}</Typography>
+            </Hidden>
             <div className={classes.spacer} />
             <LeaveGameButton isHost={isHost} onLeave={async () => {
               await leaveGame().catch()
@@ -180,6 +181,9 @@ export default function GamePage({ match }) {
           })}
         >
           <div className={classes.contentHeader} />
+          <Hidden smUp>
+            <Typography variant="h5" className={classes.mobileTitle}>{game.name}</Typography>
+          </Hidden>
           <Grid container spacing={2} direction="row" className={classes.pageLayout}>
             <Grid item>
               <Grid container direction="column" spacing={2} justify="center">

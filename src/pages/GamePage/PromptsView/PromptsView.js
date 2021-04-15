@@ -25,10 +25,10 @@ export default function PromptsView({ prompts, hidden, isHost, disabled }) {
         severity: 'error',
       })
     })
-    await doUpdatePrompts(true)
+    await doUpdatePrompts(true, hidden)
   }
 
-  async function doUpdatePrompts(newPrompts = true, hidden = hidden) {
+  async function doUpdatePrompts(newPrompts, hidden) {
     await updatePrompts({ variables: {
       newPrompts,
       hidden
@@ -59,7 +59,7 @@ export default function PromptsView({ prompts, hidden, isHost, disabled }) {
         )
       })}
       {isHost && <Grid container justify="space-between">
-        <Button disabled={disabled} style={{ alignSelf: 'center' }} onClick={() => { doUpdatePrompts(true) }}>
+        <Button disabled={disabled} style={{ alignSelf: 'center' }} onClick={() => { doUpdatePrompts(true, hidden) }}>
           <LoopIcon /> &nbsp; New
         </Button>
         <Button disabled={disabled} style={{ alignSelf: 'center' }} onClick={() => { doUpdatePrompts(false, !hidden)}}>

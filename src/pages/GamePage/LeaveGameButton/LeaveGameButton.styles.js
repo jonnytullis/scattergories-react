@@ -4,6 +4,7 @@ import { colors } from '../../../theme'
 export default makeStyles(() => ({
   leaveButton: {
     backgroundColor: colors.error,
+    whiteSpace: 'nowrap',
     color: colors.light,
     fontWeight: 'bold',
     '&:hover': {

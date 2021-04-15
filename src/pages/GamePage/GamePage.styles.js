@@ -1,5 +1,4 @@
 import { makeStyles } from '@material-ui/core/styles'
-import { colors } from '../../theme'
 
 const drawerWidth = 240
 
@@ -48,16 +47,12 @@ export default makeStyles((theme) => ({
   hide: {
     display: 'none',
   },
-  leaveButton: {
-    backgroundColor: colors.error,
-    color: colors.light,
-    fontWeight: 'bold',
-    '&:hover': {
-      backgroundColor: colors.secondary
-    }
-  },
   menuButton: {
     marginRight: theme.spacing(2),
+  },
+  mobileTitle: {
+    textAlign:  'center',
+    marginBottom: 12
   },
   pageLayout: {
     [theme.breakpoints.down('sm')]: {
@@ -68,7 +63,8 @@ export default makeStyles((theme) => ({
     width: '100%'
   },
   spacer: {
-    flexGrow: 1
+    flexGrow: 1,
+    minWidth: 4
   },
   wrapper: {
     display: 'flex'
