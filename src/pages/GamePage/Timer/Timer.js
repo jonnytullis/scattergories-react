@@ -105,9 +105,10 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
         <Grid item xs={6}>
           <Button
             color="primary"
+            startIcon={<Refresh />}
             onClick={() => {doTimerAction(resetTimer)}}
           >
-            <Refresh />&nbsp; Reset
+            Reset
           </Button>
         </Grid>
         <Grid item xs={6} className={clsx({ [classes.hide]: timer.seconds <= 0 })}>

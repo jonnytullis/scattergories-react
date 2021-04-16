@@ -9,8 +9,7 @@ export default makeStyles(() => {
     blank: {
       borderRadius: '8px',
       opacity: '0.7',
-      backgroundColor: colors.captionText,
-      padding: '0 8px'
+      backgroundColor: colors.captionText
     },
     lineWrapper: {
       width: 'fit-content'

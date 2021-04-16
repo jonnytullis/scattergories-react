@@ -49,16 +49,17 @@ export default function PromptsView({ prompts, hidden, isHost, disabled }) {
           color="primary"
           disabled={disabled}
           className={classes.actionButton}
+          startIcon={<LoopIcon />}
           onClick={() => { doUpdatePrompts(true, hidden) }}
         >
-          <LoopIcon /> &nbsp; New
+           New
         </Button>
         <Button
           color="primary"
           disabled={disabled}
           className={classes.actionButton}
-          onClick={() => { doUpdatePrompts(false, !hidden)}}
           startIcon={hidden ? <Visibility /> : <VisibilityOff />}
+          onClick={() => { doUpdatePrompts(false, !hidden)}}
         >
           {hidden ? 'Show' : 'Hide'}
         </Button>
