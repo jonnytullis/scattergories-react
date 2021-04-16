@@ -13,10 +13,10 @@ export default function LeaveGameButton({ isHost, onLeave, disabled }) {
         variant="contained"
         className={classes.leaveButton}
         classes={{ disabled: classes.disabledButton }}
+        endIcon={<ExitToApp />}
         onClick={() => {setDialogOpen(true)}}
       >
-        {isHost ? 'End' : 'Leave'} Game &nbsp;
-        <ExitToApp />
+        {isHost ? 'End' : 'Leave'} Game
       </Button>
       <Dialog open={!disabled && dialogOpen} className={classes.dialog} onClose={() => {setDialogOpen(false)}}>
         <DialogTitle>

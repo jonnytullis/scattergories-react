@@ -23,8 +23,8 @@ export default function LetterView({ letter, isHost, onNewLetter, disabled }) {
         </CardContent>
       </div>
       <div className={clsx(classes.buttonContainer, { [classes.hide]: !isHost })}>
-        <Button disabled={disabled} color="primary" onClick={getNewLetter}>
-          <LoopIcon /> &nbsp; New
+        <Button disabled={disabled} color="primary" onClick={getNewLetter} startIcon={<LoopIcon />}>
+           New
         </Button>
       </div>
     </div>

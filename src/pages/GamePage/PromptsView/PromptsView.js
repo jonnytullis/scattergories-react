@@ -1,6 +1,7 @@
 import React from 'react'
 import clsx from 'clsx'
 import { Button, Grid } from '@material-ui/core'
+import { Visibility, VisibilityOff } from '@material-ui/icons'
 import LoopIcon from '@material-ui/icons/Loop'
 import { useMutation } from '@apollo/client'
 import { UPDATE_PROMPTS } from '../../../GQL/mutations'
@@ -44,10 +45,21 @@ export default function PromptsView({ prompts, hidden, isHost, disabled }) {
         )
       })}
       {isHost && <Grid container justify="space-between">
-        <Button disabled={disabled} style={{ alignSelf: 'center' }} onClick={() => { doUpdatePrompts(true, hidden) }}>
+        <Button
+          color="primary"
+          disabled={disabled}
+          className={classes.actionButton}
+          onClick={() => { doUpdatePrompts(true, hidden) }}
+        >
           <LoopIcon /> &nbsp; New
         </Button>
-        <Button disabled={disabled} style={{ alignSelf: 'center' }} onClick={() => { doUpdatePrompts(false, !hidden)}}>
+        <Button
+          color="primary"
+          disabled={disabled}
+          className={classes.actionButton}
+          onClick={() => { doUpdatePrompts(false, !hidden)}}
+          startIcon={hidden ? <Visibility /> : <VisibilityOff />}
+        >
           {hidden ? 'Show' : 'Hide'}
         </Button>
       </Grid>}

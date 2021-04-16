@@ -3,6 +3,9 @@ import { colors } from '../../../theme'
 
 export default makeStyles(() => {
   return {
+    actionButton: {
+      alignSelf: 'center'
+    },
     blank: {
       borderRadius: '8px',
       opacity: '0.7',

@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { Button, IconButton, Typography, Grid } from '@material-ui/core'
-import { Pause, AlarmOn, AlarmOff, Refresh, NotificationsActiveOutlined, NotificationsOffOutlined } from '@material-ui/icons'
+import {
+  Pause,
+  AlarmOn,
+  AlarmOff,
+  Refresh,
+  NotificationsActiveOutlined,
+  NotificationsOffOutlined
+} from '@material-ui/icons'
 import clsx from 'clsx'
 import { useMutation } from '@apollo/client'
 
@@ -82,9 +89,11 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
         <IconButton color="primary" onClick={() => { setSoundsOn(!soundsOn) }} className={classes.soundBtnHost} >
           {soundsOn ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
         </IconButton> :
-        <Button color="primary" onClick={() => { setSoundsOn(!soundsOn) }}>
-          {soundsOn ? 'Sound' : 'Muted'}&nbsp;
-          {soundsOn ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
+        <Button
+          color="primary" onClick={() => { setSoundsOn(!soundsOn) }}
+          startIcon={soundsOn ? <NotificationsActiveOutlined /> : <NotificationsOffOutlined />}
+        >
+          {soundsOn ? 'Sound' : 'Muted'}
         </Button>
       }
       <Grid
@@ -104,21 +113,10 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
         <Grid item xs={6} className={clsx({ [classes.hide]: timer.seconds <= 0 })}>
           <Button
             color="primary"
-            className={clsx({
-              [classes.hide]: timer.isRunning
-            })}
-            onClick={() => {doTimerAction(startTimer)}}
+            onClick={() => {doTimerAction(timer.isRunning ? pauseTimer : startTimer)}}
+            startIcon={timer.isRunning ? <AlarmOff /> : <AlarmOn />}
           >
-            <AlarmOn />&nbsp; { timer.seconds < secondsTotal ? 'Resume' : 'Start' }
-          </Button>
-          <Button
-            color="primary"
-            className={clsx({
-              [classes.hide]: !timer.isRunning
-            })}
-            onClick={() => {doTimerAction(pauseTimer)}}
-          >
-            <AlarmOff />&nbsp; Pause
+            {timer.isRunning ? 'Pause' : timer.seconds < secondsTotal ? 'Resume' : 'Start'}
           </Button>
         </Grid>
       </Grid>
