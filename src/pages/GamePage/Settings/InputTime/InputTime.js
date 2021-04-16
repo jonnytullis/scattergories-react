@@ -7,15 +7,15 @@ export default function InputTime({ seconds, setSeconds, setError }) {
   const classes = useStyles()
   const MAX_MINUTES = 10
 
-  const [ minutesInput, setMinutesInput ] = useState(() => getTimeSplit(seconds).minutes)
-  const [ secondsInput, setSecondsInput ] = useState(() => getTimeSplit(seconds).seconds)
-
-  function getTimeSplit(seconds) {
+  const timeSplit = useMemo(() => {
     return {
       minutes: String(Math.floor(seconds / 60)).padStart(2, '0'),
       seconds: String(seconds - (Math.floor(seconds / 60) * 60)).padStart(2, '0')
     }
-  }
+  }, [ seconds ])
+
+  const [ minutesInput, setMinutesInput ] = useState(() => timeSplit.minutes)
+  const [ secondsInput, setSecondsInput ] = useState(() => timeSplit.seconds)
 
   const minutesError = useMemo(() => {
     if (Number(minutesInput) > MAX_MINUTES) {
@@ -59,43 +59,41 @@ export default function InputTime({ seconds, setSeconds, setError }) {
 
   return (
     <>
-      {seconds &&
-        <div className={classes.inputsWrapper}>
-          <TextField
-            value={minutesInput}
-            fullWidth
-            margin="dense"
-            type="number"
-            variant="outlined"
-            label="Minutes"
-            inputProps={{
-              min: 0,
-              max: 10,
-            }}
-            error={!!minutesError || !!inputError}
-            helperText={minutesError || ' '}
-            onInput={({ target }) => setMinutesInput(target.value?.slice(0, 2))}
-            onBlur={({ target }) => setMinutesInput(target.value?.padStart(2, '0'))}
-          />
-          <div className={classes.spacer} />
-          <TextField
-            value={secondsInput}
-            fullWidth
-            margin="dense"
-            type="number"
-            variant="outlined"
-            label="Seconds"
-            inputProps={{
-              min: Number(minutesInput) <= 0 ? 30 : 0,
-              max: Number(minutesInput) >= MAX_MINUTES ? 0 : 59,
-            }}
-            error={!!secondsError || !!inputError}
-            helperText={secondsError || inputError || ' '}
-            onInput={({ target }) => setSecondsInput(target.value?.slice(0, 2))}
-            onBlur={({ target }) => setSecondsInput(target.value?.padStart(2, '0'))}
-          />
-        </div>
-      }
+      <div className={classes.inputsWrapper}>
+        <TextField
+          value={minutesInput}
+          fullWidth
+          margin="dense"
+          type="number"
+          variant="outlined"
+          label="Minutes"
+          inputProps={{
+            min: 0,
+            max: 10,
+          }}
+          error={!!minutesError || !!inputError}
+          helperText={minutesError || ' '}
+          onInput={({ target }) => setMinutesInput(target.value?.slice(0, 2))}
+          onBlur={({ target }) => setMinutesInput(target.value?.padStart(2, '0'))}
+        />
+        <div className={classes.spacer} />
+        <TextField
+          value={secondsInput}
+          fullWidth
+          margin="dense"
+          type="number"
+          variant="outlined"
+          label="Seconds"
+          inputProps={{
+            min: Number(minutesInput) <= 0 ? 30 : 0,
+            max: Number(minutesInput) >= MAX_MINUTES ? 0 : 59,
+          }}
+          error={!!secondsError || !!inputError}
+          helperText={secondsError || inputError || ' '}
+          onInput={({ target }) => setSecondsInput(target.value?.slice(0, 2))}
+          onBlur={({ target }) => setSecondsInput(target.value?.padStart(2, '0'))}
+        />
+      </div>
     </>
   )
 }
