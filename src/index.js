@@ -51,7 +51,7 @@ function getApolloClient() {
   const authMiddleware = new ApolloLink((operation, forward) => {
     operation.setContext({
       headers: {
-        authorization: `Bearer ${window.localStorage.getItem('sessionId')}`,
+        authorization: `Bearer ${window.sessionStorage.getItem('sessionId')}`,
       }
     })
 
@@ -62,7 +62,7 @@ function getApolloClient() {
   //    the connectionParams in the wsLink options because that does not update when the auth token updates.
   const subscriptionAuthMiddleware = {
     applyMiddleware(options, next) {
-      options.authorization = `Bearer ${window.localStorage.getItem('sessionId')}`
+      options.authorization = `Bearer ${window.sessionStorage.getItem('sessionId')}`
       next()
     }
   }

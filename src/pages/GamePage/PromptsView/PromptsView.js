@@ -50,7 +50,7 @@ export default function PromptsView({ prompts, hidden, isHost, disabled }) {
           disabled={disabled}
           className={classes.actionButton}
           startIcon={<LoopIcon />}
-          onClick={() => { doUpdatePrompts(true, true) }}
+          onClick={() => doUpdatePrompts(true, true)}
         >
            New
         </Button>
