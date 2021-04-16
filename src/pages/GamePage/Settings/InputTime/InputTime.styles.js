@@ -5,7 +5,4 @@ export default makeStyles(() => ({
   spacer: {
     flexGrow: 1
   },
-  textInput: {
-    minHeight: 65
-  }
 }))

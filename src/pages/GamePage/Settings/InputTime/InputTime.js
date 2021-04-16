@@ -1,9 +1,9 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { TextField } from '@material-ui/core'
 
 import useStyles from './InputTime.styles'
 
-export default function InputTime({ seconds }) {
+export default function InputTime({ seconds, setSeconds, setError }) {
   const classes = useStyles()
   const MAX_MINUTES = 10
 
@@ -47,13 +47,22 @@ export default function InputTime({ seconds }) {
     return ''
   }, [ minutesInput, secondsInput ])
 
+  // Update the total seconds value when any input changes
+  useEffect(() => {
+    if (!minutesError || secondsError || inputError) {
+      setError(false)
+      setSeconds(Number(minutesInput * 60) + Number(secondsInput))
+    } else {
+      setError(true)
+    }
+  }, [ secondsInput, minutesInput, minutesError, secondsError, inputError, setSeconds, setError ])
+
   return (
     <>
       {seconds &&
         <div className={classes.inputsWrapper}>
           <TextField
             value={minutesInput}
-            className={classes.textInput}
             fullWidth
             margin="dense"
             type="number"
@@ -64,14 +73,13 @@ export default function InputTime({ seconds }) {
               max: 10,
             }}
             error={!!minutesError || !!inputError}
-            helperText={minutesError}
+            helperText={minutesError || ' '}
             onInput={({ target }) => setMinutesInput(target.value?.slice(0, 2))}
             onBlur={({ target }) => setMinutesInput(target.value?.padStart(2, '0'))}
           />
           <div className={classes.spacer} />
           <TextField
             value={secondsInput}
-            className={classes.textInput}
             fullWidth
             margin="dense"
             type="number"
@@ -82,7 +90,7 @@ export default function InputTime({ seconds }) {
               max: Number(minutesInput) >= MAX_MINUTES ? 0 : 59,
             }}
             error={!!secondsError || !!inputError}
-            helperText={secondsError || inputError}
+            helperText={secondsError || inputError || ' '}
             onInput={({ target }) => setSecondsInput(target.value?.slice(0, 2))}
             onBlur={({ target }) => setSecondsInput(target.value?.padStart(2, '0'))}
           />

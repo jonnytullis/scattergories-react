@@ -19,7 +19,7 @@ export default function PromptsView({ prompts, hidden, isHost, disabled }) {
       hidden
     } }).catch(() => {
       raiseAlert({
-        message: 'Error getting new prompts',
+        message: 'Error getting new prompts. Please try again.',
         severity: 'error',
       })
     })

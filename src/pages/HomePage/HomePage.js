@@ -37,7 +37,7 @@ export default function HomePage() {
       goToGame({ gameId, userId })
     } catch(e) {
       raiseAlert({
-        message: 'Oops! Something went wrong when creating your game. Please try again.',
+        message: 'Error creating your game. Please try again.',
         milliseconds: 6000,
         severity: 'error'
       })

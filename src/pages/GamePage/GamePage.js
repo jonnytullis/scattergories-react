@@ -106,7 +106,7 @@ export default function GamePage({ match }) {
   function handleNewLetter() {
     getNewLetter().catch(() => {
       raiseAlert({
-        message: 'Error getting new letter',
+        message: 'Error getting new letter. Please try again.',
         severity: 'error',
       })
     })

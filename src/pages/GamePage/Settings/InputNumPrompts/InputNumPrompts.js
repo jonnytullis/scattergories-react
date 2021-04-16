@@ -1,13 +1,13 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { TextField } from '@material-ui/core'
 
-export default function InputNumPrompts({ numPrompts }) {
+export default function InputNumPrompts({ numPrompts, setNumPrompts, setError }) {
   const [ input, setInput ] = useState(() => numPrompts)
 
   const MIN_NUM = 3
   const MAX_NUM = 20
 
-  const numPromptsError = useCallback(() => {
+  const numPromptsError = useMemo(() => {
     if(Number(input) > MAX_NUM) {
       return '20 Maximum'
     } else if(Number(input) < MIN_NUM) {
@@ -15,6 +15,15 @@ export default function InputNumPrompts({ numPrompts }) {
     }
     return ''
   }, [ input ])
+
+  useEffect(() => {
+    if (!numPromptsError) {
+      setError(false)
+      setNumPrompts(Number(input))
+    } else {
+      setError(true)
+    }
+  }, [ input, numPromptsError, setError, setNumPrompts ])
 
   return (
     <>
@@ -25,8 +34,8 @@ export default function InputNumPrompts({ numPrompts }) {
         type="number"
         label="Number of Prompts"
         variant="outlined"
-        error={!!numPromptsError()}
-        helperText={numPromptsError()}
+        error={!!numPromptsError}
+        helperText={numPromptsError || ' '}
         inputProps={{
           min: MIN_NUM,
           max: MAX_NUM

@@ -47,6 +47,17 @@ export const UPDATE_PROMPTS = gql`
     }
 `
 
+export const UPDATE_SETTINGS = gql`
+    mutation($settings:SettingsInput!) {
+        updateSettings(settings:$settings) {
+            settings {
+                timerSeconds
+                numPrompts
+            }
+        }
+    }
+`
+
 export const START_TIMER = gql`
     mutation {
         startTimer {
@@ -67,17 +78,6 @@ export const RESET_TIMER = gql`
     mutation {
         resetTimer {
             success
-        }
-    }
-`
-
-export const UPDATE_SETTINGS = gql`
-    mutation($settings:SettingsInput!) {
-        updateSettings(settings:$settings) {
-            settings {
-                timerSeconds
-                numPrompts
-            }
         }
     }
 `
