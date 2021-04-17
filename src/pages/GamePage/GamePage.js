@@ -61,8 +61,8 @@ export default function GamePage({ match }) {
 
   useEffect(() => {
     if (subscriptionError) {
-      const message = subscriptionError?.message?.toLowerCase()
-      if (message?.includes('unauthorized') || message?.includes('not found')) {
+      const errorCodes = subscriptionError.graphQLErrors?.map(error => error.extensions?.code?.toUpperCase())
+      if (errorCodes?.includes('FORBIDDEN')) {
         goToHome()
       } else {
         raiseAlert({
