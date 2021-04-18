@@ -49,6 +49,10 @@ export default function GamePage({ match }) {
     variables: { gameId: match.params.gameId }
   })
 
+  const isHost = useMemo(() => {
+    return user?.id && game?.hostId && user.id === game.hostId
+  }, [ game?.hostId, user?.id ])
+
   const goToHome = useCallback(message => {
     if (message) {
       raiseAlert({
@@ -112,18 +116,6 @@ export default function GamePage({ match }) {
     })
   }
 
-  function handleTimerStop() {
-    setIsTimerRunning(false)
-  }
-
-  function handleTimerStart() {
-    setIsTimerRunning(true)
-  }
-
-  const isHost = useMemo(() => {
-    return user && game && user.id === game.hostId
-  }, [ game, user ])
-
   return (
     <div>
       {game && user && <div className={classes.wrapper}>
@@ -149,7 +141,7 @@ export default function GamePage({ match }) {
             </Hidden>
             <div className={classes.spacer} />
             <LeaveGameButton isHost={isHost} onLeave={async () => {
-              await leaveGame().catch()
+              await leaveGame().catch(() => {})
               goToHome(isHost ? 'You ended the game' : 'You left the game')
             }} />
           </Toolbar>
@@ -184,8 +176,8 @@ export default function GamePage({ match }) {
                       isHost={isHost}
                       timer={game.timer}
                       secondsTotal={game.settings?.timerSeconds}
-                      onStart={handleTimerStart}
-                      onStop={handleTimerStop}
+                      onStart={() => setIsTimerRunning(true)}
+                      onStop={() => setIsTimerRunning(false)}
                     />
                   </Card>
                 </Grid>
