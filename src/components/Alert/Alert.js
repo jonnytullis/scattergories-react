@@ -1,6 +1,6 @@
 import React from 'react'
 import { Snackbar } from '@material-ui/core'
-import MuiAlert from '@material-ui/lab/alert'
+import { Alert as MuiAlert } from '@material-ui/lab'
 
 export default function Alert({ open, onClose, message, duration, severity }) {
   if (!(onClose instanceof Function)) {
