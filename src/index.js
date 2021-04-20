@@ -21,7 +21,7 @@ ReactDOM.render(
 )
 
 function getApolloClient() {
-  const API_URL = process.env.NODE_ENV === 'development' ? 'localhost:4000' : process.env.API_URL
+  const API_URL = process.env.NODE_ENV === 'development' ? 'localhost:4000' : process.env.REACT_APP_API_URL
 
   // Queries and mutations will use HTTP as normal, and subscriptions will use WebSocket.
   const httpLink = new HttpLink({
