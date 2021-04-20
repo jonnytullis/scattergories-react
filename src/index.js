@@ -21,12 +21,7 @@ ReactDOM.render(
 )
 
 function getApolloClient() {
-  const LOCAL_API_URL = 'localhost:4000'
-  const DEV_API_URL = 'scattergories-api-dev.eba-2sd37swy.us-west-2.elasticbeanstalk.com'
-  const PRD_API_URL = 'Scattergories-api-prd.eba-2sd37swy.us-west-2.elasticbeanstalk.com'
-
-  const API_URL = process.env.NODE_ENV === 'development' ?
-    (process.env.REACT_APP_LOCAL ? LOCAL_API_URL : DEV_API_URL) : PRD_API_URL
+  const API_URL = process.env.NODE_ENV === 'development' ? 'localhost:4000' : process.env.API_URL
 
   // Queries and mutations will use HTTP as normal, and subscriptions will use WebSocket.
   const httpLink = new HttpLink({

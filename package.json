@@ -27,7 +27,6 @@
     "eslint-plugin-react-hooks": "^4.2.0"
   },
   "scripts": {
-    "dev": "REACT_APP_LOCAL=true npm start",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
