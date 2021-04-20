@@ -25,11 +25,11 @@ function getApolloClient() {
 
   // Queries and mutations will use HTTP as normal, and subscriptions will use WebSocket.
   const httpLink = new HttpLink({
-    uri: `http://${API_URL}/graphql`
+    uri: `https://${API_URL}/graphql`
   })
 
   const wsLink = new WebSocketLink({
-    uri: `ws://${API_URL}/graphql`,
+    uri: `wss://${API_URL}/graphql`,
     options: {
       reconnect: true,
     }
@@ -83,7 +83,7 @@ function getApolloClient() {
 
   return new ApolloClient({
     link: concat(authMiddleware, splitLink),
-    uri: `http://${API_URL}/graphql`, // URI for graphql server
+    uri: `https://${API_URL}/graphql`, // URI for graphql server
     cache: new InMemoryCache(),
     defaultOptions
   })
