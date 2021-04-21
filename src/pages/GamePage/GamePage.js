@@ -49,26 +49,6 @@ export default function GamePage({ match }) {
     variables: { gameId: match.params.gameId }
   })
 
-  /* Warn the user before leaving the page. leaveGame mutation is called by
-  *     the server when the WebSocket disconnects */
-  useEffect(() => {
-    let onHistoryChange = () => {
-      if (history.action === 'POP') {
-        // FIXME this happens twice if user joins game and clicks back arrow
-        alert('You are leaving the game')
-        onHistoryChange = () => {}
-      }
-    }
-    history.listen(() => {
-      onHistoryChange()
-    })
-
-    window.onbeforeunload = () => true
-    return function onUnmount() {
-      window.onbeforeunload = undefined
-    }
-  }, [ history ])
-
   const isHost = useMemo(() => {
     return user?.id && game?.hostId && user.id === game.hostId
   }, [ game?.hostId, user?.id ])

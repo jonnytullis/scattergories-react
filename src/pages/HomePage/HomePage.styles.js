@@ -9,14 +9,14 @@ export default makeStyles((theme) => ({
     fontWeight: 'bold !important',
     color: 'white !important'
   },
-  buttonRow: {
-    padding: '56px 0'
-  },
   center: {
     textAlign: 'center'
   },
   container: {
-    padding: `56px 12px`
+    padding: `56px 12px`,
+    [theme.breakpoints.down('sm')]: {
+      padding: '36px 12px'
+    }
   },
   dialog: {
     paddingBottom: 24
@@ -33,24 +33,15 @@ export default makeStyles((theme) => ({
       borderRadius: 24,
     },
     [theme.breakpoints.up('sm')] : {
-      height: 250,
-      width: 250,
+      height: 200,
+      width: 200,
       borderRadius: 40,
     },
     [theme.breakpoints.up('md')] : {
-      width: 300,
-      height: 300,
+      width: 250,
+      height: 250,
       borderRadius: 46,
     },
     margin: '36px auto'
   },
-  logoText: {
-    [theme.breakpoints.down('xs')] : {
-      height: 70
-    },
-    [theme.breakpoints.up('sm')] : {
-      height: 115
-    },
-    margin: '-40px 0'
-  }
 }))

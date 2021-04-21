@@ -21,15 +21,19 @@ ReactDOM.render(
 )
 
 function getApolloClient() {
-  const API_URL = process.env.NODE_ENV === 'development' ? 'localhost:4000' : process.env.REACT_APP_API_URL
+  const API_URL = process.env.NODE_ENV === 'development' ? 'localhost:4000' : process.env.REACT_APP_API_DOMAIN
+
+  // SSL is only enabled in deployed environments
+  const WS = process.env.NODE_ENV === 'development' ? 'ws' : 'wss'
+  const HTTP = process.env.NODE_ENV === 'development' ? 'http' : 'https'
 
   // Queries and mutations will use HTTP as normal, and subscriptions will use WebSocket.
   const httpLink = new HttpLink({
-    uri: `https://${API_URL}/graphql`
+    uri: `${HTTP}://${API_URL}/graphql`
   })
 
   const wsLink = new WebSocketLink({
-    uri: `wss://${API_URL}/graphql`,
+    uri: `${WS}://${API_URL}/graphql`,
     options: {
       reconnect: true,
     }
@@ -83,7 +87,7 @@ function getApolloClient() {
 
   return new ApolloClient({
     link: concat(authMiddleware, splitLink),
-    uri: `https://${API_URL}/graphql`, // URI for graphql server
+    uri: `${HTTP}://${API_URL}/graphql`, // URI for graphql server
     cache: new InMemoryCache(),
     defaultOptions
   })

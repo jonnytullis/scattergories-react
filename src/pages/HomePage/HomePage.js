@@ -1,15 +1,13 @@
 import React, { useState } from 'react'
 import { Grid, Container, Box, Button, Dialog, DialogTitle, DialogContent } from '@material-ui/core'
-import Typography from '@material-ui/core/Typography'
 import { useMutation } from '@apollo/client'
 import { useHistory } from 'react-router-dom'
 
 import { useAlert } from '../../hooks'
 import useStyles from './HomePage.styles'
-import LogoImage from '../../assets/images/logo-image.png'
-import LogoText from '../../assets/images/logo-text.gif'
-import { CreateGameForm, JoinGameForm } from '../../components'
+import { CreateGameForm, JoinGameForm, Logo } from '../../components'
 import { CREATE_GAME, JOIN_GAME } from '../../GQL/mutations'
+import LogoImage from '../../assets/images/logo-image.png'
 
 export default function HomePage() {
   const classes = useStyles()
@@ -74,17 +72,14 @@ export default function HomePage() {
   return (
     <Container className={classes.container}>
       <Box>
-        <Box m="auto" className={classes.center}>
-          <img src={LogoText} className={classes.logoText} alt="Scattergories" />
-          <Box className={classes.logoImage}>
-            <img src={LogoImage} className={classes.logoImageWrapper}  alt="Logo" />
+        <Box className={classes.center}>
+          <Logo />
+          <Box className={classes.logoImageWrapper}>
+            <img src={LogoImage} className={classes.logoImage}  alt="Logo" />
           </Box>
-          <Typography variant="h5">
-            This is a subtitle if needed
-          </Typography>
         </Box>
       </Box>
-      <Grid container spacing={5} className={`${classes.center} ${classes.buttonRow}`}>
+      <Grid container spacing={5} className={`${classes.center}`} style={{ marginTop: 'auto' }} direction="row">
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
           <Button
             variant="contained"
