@@ -49,11 +49,11 @@ export default function InputTime({ seconds, setSeconds, setError }) {
 
   // Update the total seconds value when any input changes
   useEffect(() => {
-    if (!minutesError || secondsError || inputError) {
+    if (minutesError || secondsError || inputError) {
+      setError(true)
+    } else {
       setError(false)
       setSeconds(Number(minutesInput * 60) + Number(secondsInput))
-    } else {
-      setError(true)
     }
   }, [ secondsInput, minutesInput, minutesError, secondsError, inputError, setSeconds, setError ])
 

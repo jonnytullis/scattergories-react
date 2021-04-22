@@ -1,6 +1,16 @@
 import React, { useState, useMemo } from 'react'
 import SettingsIcon from '@material-ui/icons/Settings'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Grid } from '@material-ui/core'
+import {
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Grid
+} from '@material-ui/core'
+import { Check } from '@material-ui/icons'
 import { useMutation } from '@apollo/client'
 
 import { UPDATE_SETTINGS } from '../../../GQL/mutations'
@@ -15,6 +25,7 @@ export default function Settings({ disabled, settings }) {
   const { raiseAlert } = useAlert()
   const [ updateSettings ] = useMutation(UPDATE_SETTINGS)
   const [ dialogOpen, setDialogOpen ] = useState(() => false)
+  const [ loading, setLoading ] = useState(() => false)
 
   // Settings values
   const [ timerSeconds, setTimerSeconds ] = useState(() => settings.timerSeconds)
@@ -29,6 +40,7 @@ export default function Settings({ disabled, settings }) {
   }, [ timerSecondsError, numPromptsError ])
 
   async function onSubmit() {
+    setLoading(true)
     try {
       await updateSettings({ variables: {
         settings: {
@@ -43,6 +55,7 @@ export default function Settings({ disabled, settings }) {
         severity: 'error',
       })
     }
+    setLoading(false)
   }
 
   return (
@@ -72,7 +85,13 @@ export default function Settings({ disabled, settings }) {
             <Button onClick={() => {setDialogOpen(false)}}>
               Cancel
             </Button>
-            <Button variant="contained" color="primary" disabled={isError} onClick={onSubmit}>
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={isError}
+              startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Check /> }
+              onClick={onSubmit}
+            >
               Save
             </Button>
           </Grid>
