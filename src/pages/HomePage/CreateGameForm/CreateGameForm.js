@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import useStyles from './CreateGameForm.styles'
-import { Container, Button, Grid, /*Checkbox,*/ TextField } from '@material-ui/core'
+import { Container, CircularProgress, Button, Grid, /*Checkbox,*/ TextField } from '@material-ui/core'
+import { Add } from '@material-ui/icons'
 // import PasswordTextField from '../PasswordTextField/PasswordTextField'
 
 export default function CreateGameForm({ onCancel, onSubmit }) {
@@ -11,6 +12,7 @@ export default function CreateGameForm({ onCancel, onSubmit }) {
   const classes = useStyles()
   const [ hostName, setHostName ] = useState(window.localStorage.getItem('hostName') || '')
   const [ gameName, setGameName ] = useState(window.localStorage.getItem('gameName') || '')
+  const [ loading, setLoading ] = useState(() => false)
   // const [passwordRequired, setPasswordRequired] = useState(false)
   // const [password, setPassword] = useState('')
 
@@ -24,9 +26,11 @@ export default function CreateGameForm({ onCancel, onSubmit }) {
     event.preventDefault()
     window.localStorage.setItem('hostName', hostName)
     window.localStorage.setItem('gameName', gameName)
-    onSubmit({
+    setLoading(true)
+    await onSubmit({
       hostName, gameName
     })
+    setLoading(false)
   }
 
   return (
@@ -83,12 +87,19 @@ export default function CreateGameForm({ onCancel, onSubmit }) {
           {/*</Grid>*/}
           <Grid container spacing={3} direction="row" className={classes.buttonRow}>
             <Grid item xs={6}>
-              <Button variant="contained" size="large" onClick={() => (onCancel())} >
+              <Button size="large" onClick={() => (onCancel())} >
                 Cancel
               </Button>
             </Grid>
             <Grid item xs={6}>
-              <Button color="primary" disabled={!isValidData()} variant="contained" size="large" type="submit">
+              <Button
+                color="primary"
+                disabled={!isValidData()}
+                startIcon={loading ? <CircularProgress color="inherit" size={20} /> : <Add />}
+                variant="contained"
+                size="large"
+                type="submit"
+              >
                 Create
               </Button>
             </Grid>

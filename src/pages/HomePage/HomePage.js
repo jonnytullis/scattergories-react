@@ -107,7 +107,6 @@ export default function HomePage() {
             :
             <JoinGameForm onCancel={() => {setDialog(false)}} onSubmit={joinGameFormSubmitted} />}
         </DialogContent>
-
       </Dialog>
     </Container>
   )

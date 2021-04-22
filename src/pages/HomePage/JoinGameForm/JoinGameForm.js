@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import useStyles from './JoinGameForm.styles'
-import { Button, Grid, TextField, Typography } from '@material-ui/core'
+import { Button, CircularProgress, Grid, TextField, Typography } from '@material-ui/core'
+import { Check } from '@material-ui/icons'
 
 export default function JoinGameForm({ onCancel, onSubmit }) {
   const classes = useStyles()
@@ -9,6 +10,7 @@ export default function JoinGameForm({ onCancel, onSubmit }) {
   }
 
   const [ gameId, setGameId ] = useState('')
+  const [ loading, setLoading ] = useState(() => false)
   const [ userName, setUserName ] = useState(
     window.localStorage.getItem('userName') ||
     window.localStorage.getItem('hostName') ||
@@ -21,10 +23,12 @@ export default function JoinGameForm({ onCancel, onSubmit }) {
     return validGameId && validName
   }
 
-  function onFormSubmit(event) {
+  async function onFormSubmit(event) {
     event.preventDefault()
     window.localStorage.setItem('userName', userName)
-    onSubmit({ gameId, userName })
+    setLoading(true)
+    await onSubmit({ gameId, userName })
+    setLoading(false)
   }
 
   return (
@@ -59,12 +63,19 @@ export default function JoinGameForm({ onCancel, onSubmit }) {
       />
       <Grid container spacing={3} direction="row" className={classes.buttonRow}>
         <Grid item xs={6}>
-          <Button variant="contained" size="large" onClick={onCancel} >
+          <Button size="large" onClick={onCancel}>
             Cancel
           </Button>
         </Grid>
         <Grid item xs={6}>
-          <Button color="primary" disabled={!isValidInput()} variant="contained" size="large" type="submit">
+          <Button
+            color="primary"
+            disabled={!isValidInput()}
+            variant="contained"
+            startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <Check />}
+            size="large"
+            type="submit"
+          >
             Join
           </Button>
         </Grid>
