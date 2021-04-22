@@ -33,7 +33,9 @@ export default function GamePage({ match }) {
   const { raiseAlert } = useAlert()
 
   // State
-  const [ drawerOpen, setDrawerOpen ] = useState(() => window.localStorage.getItem('playersDrawerOpen') !== 'false')
+  const [ drawerOpen, setDrawerOpen ] = useState(() => {
+    return window.localStorage.getItem('playersDrawerOpen') === 'true' || window.innerWidth > 400
+  })
   const [ game, setGame ] = useState(() => null)
   const [ user, setUser ] = useState(() => null)
   const [ isTimerRunning, setIsTimerRunning ] = useState(() => false)
@@ -41,7 +43,7 @@ export default function GamePage({ match }) {
   // GQL
   const [ leaveGame ] = useMutation(LEAVE_GAME)
   const { data: userData, loading: userLoading, error: userError } = useQuery(USER)
-  const { data: gameData, error: subscriptionError } = useSubscription(GAME_SUBSCRIPTION, {
+  const { data: gameData, loading: gameLoading, error: gameError } = useSubscription(GAME_SUBSCRIPTION, {
     variables: { gameId: match.params.gameId }
   })
 
@@ -60,8 +62,8 @@ export default function GamePage({ match }) {
   }, [ history, raiseAlert ])
 
   useEffect(() => {
-    if (subscriptionError) {
-      const errorCodes = subscriptionError.graphQLErrors?.map(error => error.extensions?.code?.toUpperCase())
+    if (gameError) {
+      const errorCodes = gameError.graphQLErrors?.map(error => error.extensions?.code?.toUpperCase())
       if (errorCodes?.includes('FORBIDDEN')) {
         goToHome()
       } else {
@@ -71,7 +73,7 @@ export default function GamePage({ match }) {
         })
       }
     }
-  }, [ subscriptionError, raiseAlert, goToHome ])
+  }, [ gameError, raiseAlert, goToHome ])
 
   /** Use local storage to remember drawer open state **/
   useEffect(() => {
@@ -183,7 +185,7 @@ export default function GamePage({ match }) {
           </Grid>
         </main>
       </div>}
-      <LoadingOverlay open={userLoading} />
+      <LoadingOverlay open={userLoading || gameLoading} />
     </div>
   )
 }
