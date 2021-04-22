@@ -23,7 +23,7 @@ export default makeStyles((theme) => ({
     paddingLeft: 12
   },
   card: {
-    padding: 12,
+    padding: 10,
   },
   content: {
     flexGrow: 1,

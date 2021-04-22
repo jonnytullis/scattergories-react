@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import useStyles from './LetterView.styles'
-import { Button, CardContent } from '@material-ui/core'
+import { Button, CardContent, CircularProgress } from '@material-ui/core'
 import LoopIcon from '@material-ui/icons/Loop'
 import clsx from 'clsx'
 import { useMutation } from '@apollo/client'
@@ -12,14 +12,19 @@ export default function LetterView({ letter, isHost, disabled }) {
   const classes = useStyles()
   const { raiseAlert } = useAlert()
   const [ getNewLetter ] = useMutation(NEW_LETTER)
+  const [ loading, setLoading ] = useState(() => false)
 
-  function doGetNewLetter() {
-    getNewLetter().catch(() => {
+  async function doGetNewLetter() {
+    setLoading(true)
+    try {
+      await getNewLetter()
+    } catch(e) {
       raiseAlert({
         message: 'Error getting new letter. Please try again.',
         severity: 'error',
       })
-    })
+    }
+    setLoading(false)
   }
 
   return (
@@ -32,7 +37,12 @@ export default function LetterView({ letter, isHost, disabled }) {
         </CardContent>
       </div>
       <div className={clsx(classes.buttonContainer, { [classes.hide]: !isHost })}>
-        <Button disabled={disabled} color="primary" onClick={doGetNewLetter} startIcon={<LoopIcon />}>
+        <Button
+          disabled={disabled}
+          color="primary"
+          onClick={doGetNewLetter}
+          startIcon={loading ? <CircularProgress size={20} /> : <LoopIcon />}
+        >
            New
         </Button>
       </div>

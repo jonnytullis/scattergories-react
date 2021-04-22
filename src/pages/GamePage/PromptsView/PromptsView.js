@@ -1,18 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
 import clsx from 'clsx'
-import { Button, Grid } from '@material-ui/core'
+import { Button, Grid, CircularProgress } from '@material-ui/core'
 import { Visibility, VisibilityOff } from '@material-ui/icons'
 import LoopIcon from '@material-ui/icons/Loop'
 import { useMutation } from '@apollo/client'
-import { UPDATE_PROMPTS } from '../../../GQL/mutations'
 
+import { UPDATE_PROMPTS } from '../../../GQL/mutations'
 import useStyles from './PromptsView.styles'
 import { useAlert } from '../../../hooks'
+
+const LOADING = {
+  showHide: 'showHide',
+  newPrompts: 'newPrompts',
+  none: 'none'
+}
 
 export default function PromptsView({ prompts, hidden, isHost, disabled }) {
   const classes = useStyles()
   const { raiseAlert } = useAlert()
   const [ updatePrompts ] = useMutation(UPDATE_PROMPTS)
+  const [ loading, setLoading ] = useState(() => LOADING.none)
 
   async function doUpdatePrompts(newPrompts, hidden) {
     await updatePrompts({ variables: {
@@ -24,6 +31,18 @@ export default function PromptsView({ prompts, hidden, isHost, disabled }) {
         severity: 'error',
       })
     })
+  }
+
+  async function handleNewPrompts() {
+    setLoading(LOADING.newPrompts)
+    await doUpdatePrompts(true, true)
+    setLoading(LOADING.none)
+  }
+
+  async function handleShowHide() {
+    setLoading(LOADING.showHide)
+    await doUpdatePrompts(false, !hidden)
+    setLoading(LOADING.none)
   }
 
   return (
@@ -49,8 +68,8 @@ export default function PromptsView({ prompts, hidden, isHost, disabled }) {
           color="primary"
           disabled={disabled}
           className={classes.actionButton}
-          startIcon={<LoopIcon />}
-          onClick={() => doUpdatePrompts(true, true)}
+          startIcon={loading === LOADING.newPrompts ? <CircularProgress size={20} /> : <LoopIcon />}
+          onClick={handleNewPrompts}
         >
            New
         </Button>
@@ -58,8 +77,9 @@ export default function PromptsView({ prompts, hidden, isHost, disabled }) {
           color="primary"
           disabled={disabled}
           className={classes.actionButton}
-          startIcon={hidden ? <Visibility /> : <VisibilityOff />}
-          onClick={() => { doUpdatePrompts(false, !hidden)}}
+          startIcon={loading === LOADING.showHide ? <CircularProgress size={20} /> :
+            hidden ? <Visibility /> : <VisibilityOff />}
+          onClick={handleShowHide}
         >
           {hidden ? 'Show' : 'Hide'}
         </Button>

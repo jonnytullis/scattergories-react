@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Button, IconButton, Typography, Grid } from '@material-ui/core'
+import { Button, CircularProgress, IconButton, Typography, Grid } from '@material-ui/core'
 import {
   Pause,
   AlarmOn,
@@ -19,10 +19,17 @@ import { PAUSE_TIMER, RESET_TIMER, START_TIMER } from '../../../GQL/mutations'
 // Declare audio outside of react lifecycle
 const timerAudio = new Audio(timerSoundFile)
 
+const LOADING = {
+  reset: 'reset',
+  start: 'start',
+  none: 'none'
+}
+
 export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) {
   const [ startTimer ] = useMutation(START_TIMER)
   const [ pauseTimer ] = useMutation(PAUSE_TIMER)
   const [ resetTimer ] = useMutation(RESET_TIMER)
+  const [ loading, setLoading ] = useState(() => LOADING.none)
   const { raiseAlert } = useAlert()
   const [ soundsOn, setSoundsOn ] = useState(() => window.localStorage.getItem('soundsOn') !== 'false')
   const classes = useStyles()
@@ -64,15 +71,25 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
     return !timer.isRunning && timer.seconds > 0 && timer.seconds < secondsTotal
   }
 
-  function doTimerAction(action) {
-    if (typeof action === 'function') {
-      action().catch(() => {
-        raiseAlert({
-          severity: 'error',
-          message: 'We ran into an error with the timer. Please try again.',
-        })
+  async function doTimerAction(action) {
+    if (action === startTimer || action === pauseTimer) {
+      setLoading(LOADING.start)
+    } else if (action === resetTimer) {
+      setLoading(LOADING.reset)
+    } else {
+      return
+    }
+
+    try {
+      await action()
+    } catch(e) {
+      raiseAlert({
+        severity: 'error',
+        message: 'We ran into an error with the timer. Please try again.',
       })
     }
+
+    setLoading(LOADING.none)
   }
 
   return (
@@ -105,7 +122,7 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
         <Grid item xs={6}>
           <Button
             color="primary"
-            startIcon={<Refresh />}
+            startIcon={loading === LOADING.reset ? <CircularProgress size={20} /> : <Refresh />}
             onClick={() => {doTimerAction(resetTimer)}}
           >
             Reset
@@ -115,7 +132,8 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
           <Button
             color="primary"
             onClick={() => {doTimerAction(timer.isRunning ? pauseTimer : startTimer)}}
-            startIcon={timer.isRunning ? <AlarmOff /> : <AlarmOn />}
+            startIcon={loading === LOADING.start ? <CircularProgress size={20} /> :
+              timer.isRunning ? <AlarmOff /> : <AlarmOn />}
           >
             {timer.isRunning ? 'Pause' : timer.seconds < secondsTotal ? 'Resume' : 'Start'}
           </Button>
