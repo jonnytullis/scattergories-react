@@ -72,10 +72,8 @@ export default function HomePage() {
 
   return (
     <Container className={classes.container}>
-      <Box>
-        <Box className={classes.center}>
-          <Logo />
-        </Box>
+      <Box m="auto" className={classes.logoWrapper}>
+        <Logo />
       </Box>
       <Grid container spacing={5} className={`${classes.center}`} style={{ marginTop: 'auto' }} direction="row">
         <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>

@@ -21,4 +21,7 @@ export default makeStyles((theme) => ({
   dialog: {
     paddingBottom: 24
   },
+  logoWrapper: {
+    marginBottom: 56
+  },
 }))

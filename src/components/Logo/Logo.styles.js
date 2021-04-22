@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles'
 
 const colors = {
-  circle: '#c70039',
+  textBackground: '#c70039',
   text: '#ffe2e9',
   shadow: '#7f0021'
 }
@@ -23,8 +23,8 @@ export default makeStyles((theme) => ({
       textShadow: dropShadowCss(40, colors.shadow),
     }
   },
-  circle: {
-    backgroundColor: colors.circle,
+  textBackground: {
+    backgroundColor: colors.textBackground,
     borderRadius: '50%',
     padding: 'calc(1rem + 2vw)',
     width: 'fit-content'

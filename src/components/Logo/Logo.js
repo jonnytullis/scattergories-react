@@ -10,7 +10,7 @@ export default function Logo() {
 
   return (
     <>
-      <Box m="auto" className={classes.circle}>
+      <Box m="auto" className={classes.textBackground}>
         <Box className={classes.text}>
           Scattergories
         </Box>
