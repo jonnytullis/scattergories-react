@@ -28,6 +28,29 @@ export default makeStyles((theme) => ({
     borderRadius: '50%',
     padding: 'calc(1rem + 2vw)',
     width: 'fit-content'
+  },
+  logoImage: {
+    height: '100%'
+  },
+  logoImageWrapper: {
+    boxShadow: '5px 8px 18px #888888',
+    borderRadius: 50,
+    [theme.breakpoints.down('xs')] : {
+      height: 150,
+      width: 150,
+      borderRadius: 24,
+    },
+    [theme.breakpoints.up('sm')] : {
+      height: 200,
+      width: 200,
+      borderRadius: 40,
+    },
+    [theme.breakpoints.up('md')] : {
+      width: 250,
+      height: 250,
+      borderRadius: 46,
+    },
+    margin: '36px auto'
   }
 }))
 

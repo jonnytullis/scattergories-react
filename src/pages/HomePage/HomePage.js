@@ -9,7 +9,6 @@ import { Logo } from '../../components'
 import JoinGameForm from './JoinGameForm/JoinGameForm'
 import CreateGameForm from './CreateGameForm/CreateGameForm'
 import { CREATE_GAME, JOIN_GAME } from '../../GQL/mutations'
-import LogoImage from '../../assets/images/logo-image.png'
 
 export default function HomePage() {
   const classes = useStyles()
@@ -76,9 +75,6 @@ export default function HomePage() {
       <Box>
         <Box className={classes.center}>
           <Logo />
-          <Box className={classes.logoImageWrapper}>
-            <img src={LogoImage} className={classes.logoImage}  alt="Logo" />
-          </Box>
         </Box>
       </Box>
       <Grid container spacing={5} className={`${classes.center}`} style={{ marginTop: 'auto' }} direction="row">
