@@ -16,10 +16,7 @@ import { useSubscription, useMutation, useQuery } from '@apollo/client'
 import { useAlert } from '../../hooks'
 import { LoadingOverlay } from '../../components'
 import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
-import {
-  LEAVE_GAME,
-  NEW_LETTER
-} from '../../GQL/mutations'
+import { LEAVE_GAME } from '../../GQL/mutations'
 import { USER } from '../../GQL/query'
 
 import useStyles from './GamePage.styles'
@@ -42,7 +39,6 @@ export default function GamePage({ match }) {
   const [ isTimerRunning, setIsTimerRunning ] = useState(() => false)
 
   // GQL
-  const [ getNewLetter ] = useMutation(NEW_LETTER)
   const [ leaveGame ] = useMutation(LEAVE_GAME)
   const { data: userData, loading: userLoading, error: userError } = useQuery(USER)
   const { data: gameData, error: subscriptionError } = useSubscription(GAME_SUBSCRIPTION, {
@@ -107,15 +103,6 @@ export default function GamePage({ match }) {
     }
   }, [ gameData, goToHome, setGame, raiseAlert ])
 
-  function handleNewLetter() {
-    getNewLetter().catch(() => {
-      raiseAlert({
-        message: 'Error getting new letter. Please try again.',
-        severity: 'error',
-      })
-    })
-  }
-
   return (
     <div>
       {game && user && <div className={classes.wrapper}>
@@ -167,7 +154,7 @@ export default function GamePage({ match }) {
               <Grid container direction="column" spacing={2} justify="center">
                 <Grid item>
                   <Card className={classes.card}>
-                    <LetterView letter={game.letter} isHost={isHost} disabled={isTimerRunning} onNewLetter={handleNewLetter} />
+                    <LetterView letter={game.letter} isHost={isHost} disabled={isTimerRunning} />
                   </Card>
                 </Grid>
                 <Grid item>

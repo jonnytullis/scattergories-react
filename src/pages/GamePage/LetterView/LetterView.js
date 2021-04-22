@@ -3,14 +3,23 @@ import useStyles from './LetterView.styles'
 import { Button, CardContent } from '@material-ui/core'
 import LoopIcon from '@material-ui/icons/Loop'
 import clsx from 'clsx'
+import { useMutation } from '@apollo/client'
 
-export default function LetterView({ letter, isHost, onNewLetter, disabled }) {
+import { useAlert } from '../../../hooks'
+import { NEW_LETTER } from '../../../GQL/mutations'
+
+export default function LetterView({ letter, isHost, disabled }) {
   const classes = useStyles()
+  const { raiseAlert } = useAlert()
+  const [ getNewLetter ] = useMutation(NEW_LETTER)
 
-  const getNewLetter = () => {
-    if (typeof onNewLetter === 'function') {
-      onNewLetter()
-    }
+  function doGetNewLetter() {
+    getNewLetter().catch(() => {
+      raiseAlert({
+        message: 'Error getting new letter. Please try again.',
+        severity: 'error',
+      })
+    })
   }
 
   return (
@@ -23,7 +32,7 @@ export default function LetterView({ letter, isHost, onNewLetter, disabled }) {
         </CardContent>
       </div>
       <div className={clsx(classes.buttonContainer, { [classes.hide]: !isHost })}>
-        <Button disabled={disabled} color="primary" onClick={getNewLetter} startIcon={<LoopIcon />}>
+        <Button disabled={disabled} color="primary" onClick={doGetNewLetter} startIcon={<LoopIcon />}>
            New
         </Button>
       </div>
