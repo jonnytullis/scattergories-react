@@ -5,7 +5,9 @@ import { useHistory } from 'react-router-dom'
 
 import { useAlert } from '../../hooks'
 import useStyles from './HomePage.styles'
-import { CreateGameForm, JoinGameForm, Logo } from '../../components'
+import { Logo } from '../../components'
+import JoinGameForm from './JoinGameForm/JoinGameForm'
+import CreateGameForm from './CreateGameForm/CreateGameForm'
 import { CREATE_GAME, JOIN_GAME } from '../../GQL/mutations'
 import LogoImage from '../../assets/images/logo-image.png'
 

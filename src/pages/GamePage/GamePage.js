@@ -11,12 +11,11 @@ import {
   Card,
 } from '@material-ui/core'
 import { Group } from '@material-ui/icons'
-import { useSubscription, useMutation, useQuery } from '@apollo/client'
+import { useSubscription, useQuery } from '@apollo/client'
 
 import { useAlert } from '../../hooks'
 import { LoadingOverlay } from '../../components'
 import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
-import { LEAVE_GAME } from '../../GQL/mutations'
 import { USER } from '../../GQL/query'
 
 import useStyles from './GamePage.styles'
@@ -41,7 +40,6 @@ export default function GamePage({ match }) {
   const [ isTimerRunning, setIsTimerRunning ] = useState(() => false)
 
   // GQL
-  const [ leaveGame ] = useMutation(LEAVE_GAME)
   const { data: userData, loading: userLoading, error: userError } = useQuery(USER)
   const { data: gameData, loading: gameLoading, error: gameError } = useSubscription(GAME_SUBSCRIPTION, {
     variables: { gameId: match.params.gameId }
@@ -60,6 +58,10 @@ export default function GamePage({ match }) {
     }
     history.replace('/')
   }, [ history, raiseAlert ])
+
+  async function doLeaveGame() {
+    goToHome(isHost ? 'You ended the game' : 'You left the game')
+  }
 
   useEffect(() => {
     if (gameError) {
@@ -129,10 +131,7 @@ export default function GamePage({ match }) {
               <Typography variant="h6" noWrap className={classes.appBarTitle}>{game.name}</Typography>
             </Hidden>
             <div className={classes.spacer} />
-            <LeaveGameButton isHost={isHost} onLeave={async () => {
-              await leaveGame().catch(() => {})
-              goToHome(isHost ? 'You ended the game' : 'You left the game')
-            }} />
+            <LeaveGameButton isHost={isHost} onLeave={doLeaveGame} />
           </Toolbar>
         </AppBar>
         <PlayersDrawer
