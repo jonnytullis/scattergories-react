@@ -73,6 +73,7 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
 
   async function doTimerAction(action) {
     if (action === startTimer || action === pauseTimer) {
+      timerAudio.load()
       setLoading(loadingTypes.start)
     } else if (action === resetTimer) {
       setLoading(loadingTypes.reset)
