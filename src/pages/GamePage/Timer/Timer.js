@@ -19,7 +19,7 @@ import { PAUSE_TIMER, RESET_TIMER, START_TIMER } from '../../../GQL/mutations'
 // Declare audio outside of react lifecycle
 const timerAudio = new Audio(timerSoundFile)
 
-const LOADING = {
+const loadingTypes = {
   reset: 'reset',
   start: 'start',
   none: 'none'
@@ -29,10 +29,15 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
   const [ startTimer ] = useMutation(START_TIMER)
   const [ pauseTimer ] = useMutation(PAUSE_TIMER)
   const [ resetTimer ] = useMutation(RESET_TIMER)
-  const [ loading, setLoading ] = useState(() => LOADING.none)
+  const [ loading, setLoading ] = useState(() => loadingTypes.none)
   const { raiseAlert } = useAlert()
   const [ soundsOn, setSoundsOn ] = useState(() => window.localStorage.getItem('soundsOn') !== 'false')
   const classes = useStyles()
+
+  useEffect(() => {
+    // If waiting for reset to complete
+    setLoading(loadingTypes.none)
+  }, [ timer.seconds ])
 
   /** Manage audio sounds for timer **/
   useEffect(() => {
@@ -73,9 +78,9 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
 
   async function doTimerAction(action) {
     if (action === startTimer || action === pauseTimer) {
-      setLoading(LOADING.start)
+      setLoading(loadingTypes.start)
     } else if (action === resetTimer) {
-      setLoading(LOADING.reset)
+      setLoading(loadingTypes.reset)
     } else {
       return
     }
@@ -89,7 +94,9 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
       })
     }
 
-    setLoading(LOADING.none)
+    if (action !== resetTimer) {
+      setLoading(loadingTypes.none)
+    }
   }
 
   return (
@@ -122,7 +129,7 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
         <Grid item xs={6}>
           <Button
             color="primary"
-            startIcon={loading === LOADING.reset ? <CircularProgress size={20} /> : <Refresh />}
+            startIcon={loading === loadingTypes.reset ? <CircularProgress size={20} /> : <Refresh />}
             onClick={() => {doTimerAction(resetTimer)}}
           >
             Reset
@@ -132,7 +139,7 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
           <Button
             color="primary"
             onClick={() => {doTimerAction(timer.isRunning ? pauseTimer : startTimer)}}
-            startIcon={loading === LOADING.start ? <CircularProgress size={20} /> :
+            startIcon={loading === loadingTypes.start ? <CircularProgress size={20} /> :
               timer.isRunning ? <AlarmOff /> : <AlarmOn />}
           >
             {timer.isRunning ? 'Pause' : timer.seconds < secondsTotal ? 'Resume' : 'Start'}

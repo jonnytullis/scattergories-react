@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import clsx from 'clsx'
 import { Button, Grid, CircularProgress } from '@material-ui/core'
 import { Visibility, VisibilityOff } from '@material-ui/icons'
@@ -9,7 +9,7 @@ import { UPDATE_PROMPTS } from '../../../GQL/mutations'
 import useStyles from './PromptsView.styles'
 import { useAlert } from '../../../hooks'
 
-const LOADING = {
+const loadingTypes = {
   showHide: 'showHide',
   newPrompts: 'newPrompts',
   none: 'none'
@@ -19,7 +19,11 @@ export default function PromptsView({ prompts, hidden, isHost, disabled }) {
   const classes = useStyles()
   const { raiseAlert } = useAlert()
   const [ updatePrompts ] = useMutation(UPDATE_PROMPTS)
-  const [ loading, setLoading ] = useState(() => LOADING.none)
+  const [ loading, setLoading ] = useState(() => loadingTypes.none)
+
+  useEffect(() => {
+    setLoading(loadingTypes.none)
+  }, [ hidden, prompts ])
 
   async function doUpdatePrompts(newPrompts, hidden) {
     await updatePrompts({ variables: {
@@ -34,15 +38,13 @@ export default function PromptsView({ prompts, hidden, isHost, disabled }) {
   }
 
   async function handleNewPrompts() {
-    setLoading(LOADING.newPrompts)
+    setLoading(loadingTypes.newPrompts)
     await doUpdatePrompts(true, true)
-    setLoading(LOADING.none)
   }
 
   async function handleShowHide() {
-    setLoading(LOADING.showHide)
+    setLoading(loadingTypes.showHide)
     await doUpdatePrompts(false, !hidden)
-    setLoading(LOADING.none)
   }
 
   return (
@@ -68,7 +70,7 @@ export default function PromptsView({ prompts, hidden, isHost, disabled }) {
           color="primary"
           disabled={disabled}
           className={classes.actionButton}
-          startIcon={loading === LOADING.newPrompts ? <CircularProgress size={20} /> : <LoopIcon />}
+          startIcon={loading === loadingTypes.newPrompts ? <CircularProgress size={20} /> : <LoopIcon />}
           onClick={handleNewPrompts}
         >
            New
@@ -77,7 +79,7 @@ export default function PromptsView({ prompts, hidden, isHost, disabled }) {
           color="primary"
           disabled={disabled}
           className={classes.actionButton}
-          startIcon={loading === LOADING.showHide ? <CircularProgress size={20} /> :
+          startIcon={loading === loadingTypes.showHide ? <CircularProgress size={20} /> :
             hidden ? <Visibility /> : <VisibilityOff />}
           onClick={handleShowHide}
         >

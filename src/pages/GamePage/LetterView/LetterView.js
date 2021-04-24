@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import useStyles from './LetterView.styles'
 import { Button, CardContent, CircularProgress } from '@material-ui/core'
 import LoopIcon from '@material-ui/icons/Loop'
@@ -14,6 +14,10 @@ export default function LetterView({ letter, isHost, disabled }) {
   const [ getNewLetter ] = useMutation(NEW_LETTER)
   const [ loading, setLoading ] = useState(() => false)
 
+  useEffect(() => {
+    setLoading(false)
+  }, [ letter ])
+
   async function doGetNewLetter() {
     setLoading(true)
     try {
@@ -24,7 +28,6 @@ export default function LetterView({ letter, isHost, disabled }) {
         severity: 'error',
       })
     }
-    setLoading(false)
   }
 
   return (
