@@ -34,11 +34,6 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
   const [ soundsOn, setSoundsOn ] = useState(() => window.localStorage.getItem('soundsOn') !== 'false')
   const classes = useStyles()
 
-  useEffect(() => {
-    // If waiting for reset to complete
-    setLoading(loadingTypes.none)
-  }, [ timer.seconds ])
-
   /** Manage audio sounds for timer **/
   useEffect(() => {
     // Ticking sound
@@ -94,9 +89,7 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
       })
     }
 
-    if (action !== resetTimer) {
-      setLoading(loadingTypes.none)
-    }
+    setLoading(loadingTypes.none)
   }
 
   return (
