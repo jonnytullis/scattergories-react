@@ -126,7 +126,7 @@ export default function GamePage({ match }) {
             >
               <Group />
             </IconButton>
-            <Settings settings={game.settings} disabled={isTimerRunning} />
+            {isHost && <Settings settings={game.settings} disabled={isTimerRunning} />}
             <Hidden xsDown>
               <Typography variant="h6" noWrap className={classes.appBarTitle}>{game.name}</Typography>
             </Hidden>
