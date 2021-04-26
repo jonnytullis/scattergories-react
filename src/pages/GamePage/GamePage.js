@@ -16,7 +16,7 @@ import { useSubscription, useQuery } from '@apollo/client'
 import { useAlert } from '../../hooks'
 import { LoadingOverlay } from '../../components'
 import { GAME_SUBSCRIPTION } from '../../GQL/subscriptions'
-import { USER } from '../../GQL/query'
+import { USER, GAME } from '../../GQL/query'
 
 import useStyles from './GamePage.styles'
 import PromptsView from './PromptsView/PromptsView'
@@ -41,7 +41,8 @@ export default function GamePage({ match }) {
 
   // GQL
   const { data: userData, loading: userLoading, error: userError } = useQuery(USER)
-  const { data: gameData, loading: gameLoading, error: gameError } = useSubscription(GAME_SUBSCRIPTION, {
+  const { data: initialGame, loading: initialLoading, error: initialError } = useQuery(GAME)
+  const { data: gameData, error: gameError } = useSubscription(GAME_SUBSCRIPTION, {
     variables: { gameId: match.params.gameId }
   })
 
@@ -63,6 +64,18 @@ export default function GamePage({ match }) {
   async function doLeaveGame() {
     goToHome(isHost ? 'You ended the game' : 'You left the game')
   }
+
+  useEffect(() => {
+    if (initialGame) {
+      setGame(initialGame.game)
+      document.title = initialGame.game?.name || 'Scattergories'
+    } else if (initialError) {
+      raiseAlert({
+        message: "Error retrieving the game... Refresh the page and try again.",
+        severity: 'error',
+      })
+    }
+  }, [ initialGame, initialError, raiseAlert ])
 
   useEffect(() => {
     if (gameError) {
@@ -90,12 +103,11 @@ export default function GamePage({ match }) {
   }, [ userData, userLoading, userError ])
 
   useEffect(() => {
-    const newGame = gameData?.gameUpdated?.game
+    const gameUpdate = gameData?.gameUpdated?.gameUpdate
     const status = gameData?.gameUpdated?.status
 
-    if (newGame) {
-      setGame(newGame)
-      document.title = newGame.name || 'Scattergories'
+    if (gameUpdate) {
+      setGame({ ...game, ...gameUpdate })
     }
 
     if (status?.ended) {
@@ -188,7 +200,7 @@ export default function GamePage({ match }) {
           </Grid>
         </main>
       </div>}
-      <LoadingOverlay open={userLoading || gameLoading} />
+      <LoadingOverlay open={userLoading || initialLoading} />
     </div>
   )
 }

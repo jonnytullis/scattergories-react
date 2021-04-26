@@ -3,11 +3,8 @@ import { gql } from '@apollo/client'
 export const GAME_SUBSCRIPTION = gql`
     subscription($gameId:ID!) {
         gameUpdated(gameId:$gameId) {
-            game {
-                id
-                name
+            gameUpdate {
                 letter
-                hostId
                 players {
                     id
                     name

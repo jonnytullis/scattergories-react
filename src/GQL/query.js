@@ -8,3 +8,31 @@ export const USER = gql`
         }
     }
 `
+
+export const GAME = gql`
+    query {
+        game {
+            id
+            name
+            hostId
+            players {
+                id
+                name
+                color
+            }
+            letter
+            prompts {
+                hidden
+                list
+            }
+            settings {
+                numPrompts
+                timerSeconds
+            }
+            timer {
+                seconds
+                isRunning
+            }
+        }
+    }
+`
