@@ -32,7 +32,7 @@ export default function PlayersDrawer({ open, onClose, players, hostId, userId }
       classes={{
         paper: classes.drawerPaper,
       }}
-      onClick={onClose}
+      onClose={onClose}
     >
       <div className={classes.drawerHeader}>
         <Typography className={classes.title} variant="subtitle1">
