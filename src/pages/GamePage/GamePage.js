@@ -33,7 +33,7 @@ export default function GamePage({ match }) {
 
   // State
   const [ drawerOpen, setDrawerOpen ] = useState(() => {
-    return window.localStorage.getItem('playersDrawerOpen') === 'true' || window.innerWidth > 400
+    return window.localStorage.getItem('playersDrawerOpen') !== 'false'
   })
   const [ game, setGame ] = useState(() => null)
   const [ user, setUser ] = useState(() => null)
@@ -50,6 +50,7 @@ export default function GamePage({ match }) {
   }, [ game?.hostId, user?.id ])
 
   const goToHome = useCallback(message => {
+    window.localStorage.setItem('playersDrawerOpen', 'true') // Default to true when starting new game
     if (message) {
       raiseAlert({
         message,

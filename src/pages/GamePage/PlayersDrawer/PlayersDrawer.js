@@ -1,10 +1,14 @@
 import React from 'react'
-import useStyles from './PlayersDrawer.styles'
 import { Divider, Drawer, IconButton, List, ListItem, Typography } from '@material-ui/core'
-import PlayerItem from '../PlayerItem/PlayerItem'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
+import { useTheme, useMediaQuery } from '@material-ui/core'
+
+import PlayerItem from '../PlayerItem/PlayerItem'
+import useStyles from './PlayersDrawer.styles'
 
 export default function PlayersDrawer({ open, onClose, players, hostId, userId }) {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('xs'))
   const classes = useStyles()
   players.sort((a, b) => b.id === userId ? 1 : b.id === hostId && a.id !== userId ? 1 : -1)
 
@@ -22,12 +26,13 @@ export default function PlayersDrawer({ open, onClose, players, hostId, userId }
   return (
     <Drawer
       className={classes.drawer}
-      variant="persistent"
+      variant={isMobile ? 'temporary' : 'persistent' }
       anchor="left"
       open={open}
       classes={{
         paper: classes.drawerPaper,
       }}
+      onClick={onClose}
     >
       <div className={classes.drawerHeader}>
         <Typography className={classes.title} variant="subtitle1">

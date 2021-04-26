@@ -28,11 +28,13 @@ export default makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: -drawerWidth
+    [theme.breakpoints.up('sm')]: {
+      transition: theme.transitions.create('margin', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+      marginLeft: -drawerWidth
+    }
   },
   contentShift: {
     [theme.breakpoints.up('sm')]: {
@@ -61,9 +63,6 @@ export default makeStyles((theme) => ({
   },
   promptsWrapper: {
     width: '100%'
-  },
-  settingsButton: {
-    marginRight: 120
   },
   spacer: {
     flexGrow: 1,
