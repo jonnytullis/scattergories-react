@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import deepEqual from 'deep-equal'
 import { useHistory } from 'react-router-dom'
 import clsx from 'clsx'
 import {
@@ -41,8 +42,8 @@ export default function GamePage({ match }) {
 
   // GQL
   const { data: userData, loading: userLoading, error: userError } = useQuery(USER)
-  const { data: initialGame, loading: initialLoading, error: initialError } = useQuery(GAME)
-  const { data: gameData, error: gameError } = useSubscription(GAME_SUBSCRIPTION, {
+  const { data: gameData, loading: gameLoading, error: gameError } = useQuery(GAME)
+  const { data: subscriptionData, error: subscriptionError } = useSubscription(GAME_SUBSCRIPTION, {
     variables: { gameId: match.params.gameId }
   })
 
@@ -65,21 +66,35 @@ export default function GamePage({ match }) {
     goToHome(isHost ? 'You ended the game' : 'You left the game')
   }
 
+  /** Get the initial game data **/
   useEffect(() => {
-    if (initialGame) {
-      setGame(initialGame.game)
-      document.title = initialGame.game?.name || 'Scattergories'
-    } else if (initialError) {
+    if (gameData && !gameError) {
+      setGame(gameData.game)
+      document.title = gameData.game?.name || 'Scattergories'
+    } else if (gameError) {
       raiseAlert({
-        message: "Error retrieving the game... Refresh the page and try again.",
+        message: "Error retrieving the game... Try refreshing the page.",
         severity: 'error',
       })
     }
-  }, [ initialGame, initialError, raiseAlert ])
+  }, [ gameData, gameError, raiseAlert ])
 
+  /** Get the initial user data **/
   useEffect(() => {
-    if (gameError) {
-      const errorCodes = gameError.graphQLErrors?.map(error => error.extensions?.code?.toUpperCase())
+    if (userData && !userError) {
+      setUser(userData.user)
+    } else if (userError) {
+      raiseAlert({
+        message: "Error retrieving data... Try refreshing the page.",
+        severity: 'error',
+      })
+    }
+  }, [ userData, userError, raiseAlert ])
+
+  /** Handle subscription error **/
+  useEffect(() => {
+    if (subscriptionError) {
+      const errorCodes = subscriptionError.graphQLErrors?.map(error => error.extensions?.code?.toUpperCase())
       if (errorCodes?.includes('FORBIDDEN')) {
         goToHome()
       } else {
@@ -89,25 +104,28 @@ export default function GamePage({ match }) {
         })
       }
     }
-  }, [ gameError, raiseAlert, goToHome ])
+  }, [ subscriptionError, raiseAlert, goToHome ])
 
-  /** Use local storage to remember drawer open state **/
+  /** Handle subscription updates **/
   useEffect(() => {
-    window.localStorage.setItem('playersDrawerOpen', String(drawerOpen))
-  }, [ drawerOpen ])
+    const gameUpdates = subscriptionData?.gameUpdated?.updates
+    const status = subscriptionData?.gameUpdated?.status
 
-  useEffect(() => {
-    if (userData && !userLoading && !userError) {
-      setUser(userData.user)
-    }
-  }, [ userData, userLoading, userError ])
+    if (game && gameUpdates) {
+      Object.keys(gameUpdates).forEach(k => gameUpdates[k] == null && delete gameUpdates[k]) // Remove null values
 
-  useEffect(() => {
-    const gameUpdate = gameData?.gameUpdated?.gameUpdate
-    const status = gameData?.gameUpdated?.status
+      const shouldUpdate = () => {
+        for (const k of Object.keys(gameUpdates)) {
+          if (!deepEqual(game[k], gameUpdates[k])) {
+            return true
+          }
+        }
+        return false
+      }
 
-    if (gameUpdate) {
-      setGame({ ...game, ...gameUpdate })
+      if (shouldUpdate()) {
+        setGame({ ...game, ...gameUpdates })
+      }
     }
 
     if (status?.ended) {
@@ -118,7 +136,12 @@ export default function GamePage({ match }) {
         severity: 'info',
       })
     }
-  }, [ gameData, goToHome, setGame, raiseAlert ])
+  }, [ subscriptionData, goToHome, setGame, raiseAlert, game ])
+
+  /** Use local storage to remember drawer open state **/
+  useEffect(() => {
+    window.localStorage.setItem('playersDrawerOpen', String(drawerOpen))
+  }, [ drawerOpen ])
 
   return (
     <div>
@@ -200,7 +223,7 @@ export default function GamePage({ match }) {
           </Grid>
         </main>
       </div>}
-      <LoadingOverlay open={userLoading || initialLoading} />
+      <LoadingOverlay open={userLoading || gameLoading} />
     </div>
   )
 }
