@@ -49,6 +49,14 @@ export default makeStyles((theme) => ({
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
   },
+  drawerIconBadge: {
+    position: 'absolute',
+    textAlign: 'center',
+    width: 14,
+    fontSize: 12,
+    top: 4,
+    right: 4,
+  },
   hide: {
     display: 'none',
   },

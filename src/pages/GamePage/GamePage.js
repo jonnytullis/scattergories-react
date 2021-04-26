@@ -126,6 +126,9 @@ export default function GamePage({ match }) {
               className={clsx(drawerOpen && classes.hide)}
             >
               <Group />
+              <div className={classes.drawerIconBadge}>
+                {game.players?.length || ''}
+              </div>
             </IconButton>
             {isHost && <Settings settings={game.settings} disabled={isTimerRunning} />}
             <Hidden xsDown>
