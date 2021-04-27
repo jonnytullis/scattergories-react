@@ -10,6 +10,7 @@ import {
   Grid,
   Hidden,
   Card,
+  Divider,
 } from '@material-ui/core'
 import { Group } from '@material-ui/icons'
 import { useSubscription, useQuery } from '@apollo/client'
@@ -187,7 +188,10 @@ export default function GamePage({ match }) {
         >
           <div className={classes.contentHeader} />
           <Hidden smUp>
-            <Typography variant="h5" className={classes.mobileTitle}>{game.name}</Typography>
+            <div className={classes.mobileTitle}>
+              <Typography variant="h5">{game.name}</Typography>
+              <Divider style={{ marginTop: 8 }} />
+            </div>
           </Hidden>
           <Grid container spacing={2} direction="row" className={classes.pageLayout}>
             <Grid item>
