@@ -175,6 +175,7 @@ export default function GamePage({ match }) {
           </Toolbar>
         </AppBar>
         <PlayersDrawer
+          gameId={game.id}
           players={game.players}
           hostId={game.hostId}
           userId={user.id}

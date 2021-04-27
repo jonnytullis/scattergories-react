@@ -1,12 +1,13 @@
 import React from 'react'
-import { Divider, Drawer, IconButton, List, ListItem, Typography } from '@material-ui/core'
+import { AppBar, Divider, Drawer, IconButton, List, ListItem, Typography } from '@material-ui/core'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import { useTheme, useMediaQuery } from '@material-ui/core'
 
 import PlayerItem from '../PlayerItem/PlayerItem'
 import useStyles from './PlayersDrawer.styles'
+import InviteFriends from '../InviteFriends/InviteFriends'
 
-export default function PlayersDrawer({ open, onClose, players, hostId, userId }) {
+export default function PlayersDrawer({ gameId, open, onClose, players, hostId, userId }) {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('xs'))
   const classes = useStyles()
@@ -42,7 +43,7 @@ export default function PlayersDrawer({ open, onClose, players, hostId, userId }
           <ChevronLeftIcon />
         </IconButton>
       </div>
-      <List>
+      <List className={classes.list}>
         {players.map(person => (
           <div key={person.id}>
             <ListItem className={classes.listItem}>
@@ -56,6 +57,9 @@ export default function PlayersDrawer({ open, onClose, players, hostId, userId }
           </div>
         ))}
       </List>
+      <AppBar className={classes.footerBar} position="relative">
+        <InviteFriends gameId={gameId} />
+      </AppBar>
     </Drawer>
   )
 }

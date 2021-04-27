@@ -29,6 +29,14 @@ export default makeStyles((theme) => {
       left: 0,
       zIndex: theme.zIndex.drawer + 1,
     },
+    footerBar: {
+      top: 'auto',
+      bottom: 0
+    },
+    list: {
+      height: '100%',
+      overflowY: 'auto'
+    },
     listItem: {
       marginBottom: 4,
       paddingLeft: 8
