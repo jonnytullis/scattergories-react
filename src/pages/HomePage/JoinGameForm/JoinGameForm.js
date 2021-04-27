@@ -3,13 +3,13 @@ import useStyles from './JoinGameForm.styles'
 import { Button, CircularProgress, Grid, TextField, Typography } from '@material-ui/core'
 import { Check } from '@material-ui/icons'
 
-export default function JoinGameForm({ onCancel, onSubmit }) {
+export default function JoinGameForm({ onCancel, joinCode, onSubmit }) {
   const classes = useStyles()
   if (typeof onCancel !== 'function' || typeof onSubmit !== 'function') {
     throw new Error('Invalid props in JoinGameForm. "onCancel" and "onGameJoined" are required and must be of type Function.')
   }
 
-  const [ gameId, setGameId ] = useState('')
+  const [ gameId, setGameId ] = useState(() => joinCode || '')
   const [ loading, setLoading ] = useState(() => false)
   const [ userName, setUserName ] = useState(
     window.localStorage.getItem('userName') ||
@@ -41,7 +41,7 @@ export default function JoinGameForm({ onCancel, onSubmit }) {
         variant="outlined"
         type="text"
         inputProps={{ className: classes.gameIdInput }}
-        autoFocus
+        autoFocus={!joinCode}
         onChange={(e) => {
           const text = e.target.value
           if (!text) {
@@ -58,6 +58,7 @@ export default function JoinGameForm({ onCancel, onSubmit }) {
         variant="outlined"
         type="text"
         size="small"
+        autoFocus={!!joinCode}
         className={classes.nameInput}
         onChange={(e) => setUserName(e.target.value)}
       />

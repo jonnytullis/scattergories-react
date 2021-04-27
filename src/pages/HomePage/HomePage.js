@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Grid, Container, Box, Button, Dialog, DialogTitle, DialogContent } from '@material-ui/core'
 import { useMutation } from '@apollo/client'
 import { useHistory } from 'react-router-dom'
 
-import { useAlert } from '../../hooks'
+import { useAlert, useQuery } from '../../hooks'
 import useStyles from './HomePage.styles'
 import { Logo } from '../../components'
 import JoinGameForm from './JoinGameForm/JoinGameForm'
@@ -13,6 +13,7 @@ import { CREATE_GAME, JOIN_GAME } from '../../GQL/mutations'
 export default function HomePage() {
   const classes = useStyles()
   const history = useHistory()
+  const { queryParams } = useQuery()
   const { raiseAlert } = useAlert()
   const [ dialog, setDialog ] = useState(false)
   const [ dialogTitle, setDialogTitle ] = useState('')
@@ -43,11 +44,18 @@ export default function HomePage() {
     }
   }
 
-  function joinGameClicked() {
+  const joinGameClicked = useCallback(() => {
     setDialogTitle('Join a Game')
     setDialogType(dialogTypes.join)
     setDialog(true)
-  }
+  }, [ dialogTypes.join ])
+
+  /** Open the joing dialog if joinCode is in query params **/
+  useEffect(() => {
+    if (queryParams.joinCode) {
+      joinGameClicked()
+    }
+  }, [])
 
   async function joinGameFormSubmitted({ gameId, userName }) {
     try {
@@ -103,7 +111,11 @@ export default function HomePage() {
           {dialogType === dialogTypes.create ?
             <CreateGameForm onCancel={() => {setDialog(false)}} onSubmit={createGameFormSubmitted} />
             :
-            <JoinGameForm onCancel={() => {setDialog(false)}} onSubmit={joinGameFormSubmitted} />}
+            <JoinGameForm
+              onCancel={() => {setDialog(false)}}
+              joinCode={queryParams.joinCode}
+              onSubmit={joinGameFormSubmitted}
+            />}
         </DialogContent>
       </Dialog>
     </Container>
