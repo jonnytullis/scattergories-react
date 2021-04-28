@@ -124,7 +124,8 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
           <Button
             color="primary"
             startIcon={loading === loadingTypes.reset ? <CircularProgress size={20} /> : <Refresh />}
-            onClick={() => {doTimerAction(resetTimer)}}
+            disabled={loading === loadingTypes.reset}
+            onClick={() => doTimerAction(resetTimer)}
           >
             Reset
           </Button>
@@ -132,9 +133,10 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
         <Grid item xs={6} className={clsx({ [classes.hide]: timer.seconds <= 0 })}>
           <Button
             color="primary"
-            onClick={() => {doTimerAction(timer.isRunning ? pauseTimer : startTimer)}}
             startIcon={loading === loadingTypes.start ? <CircularProgress size={20} /> :
               timer.isRunning ? <AlarmOff /> : <AlarmOn />}
+            disabled={loading === loadingTypes.start}
+            onClick={() => doTimerAction(timer.isRunning ? pauseTimer : startTimer)}
           >
             {timer.isRunning ? 'Pause' : timer.seconds < secondsTotal ? 'Resume' : 'Start'}
           </Button>

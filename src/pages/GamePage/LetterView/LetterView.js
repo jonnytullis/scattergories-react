@@ -41,7 +41,7 @@ export default function LetterView({ letter, isHost, disabled }) {
       </div>
       <div className={clsx(classes.buttonContainer, { [classes.hide]: !isHost })}>
         <Button
-          disabled={disabled}
+          disabled={disabled || loading}
           color="primary"
           onClick={doGetNewLetter}
           startIcon={loading ? <CircularProgress size={20} /> : <LoopIcon />}

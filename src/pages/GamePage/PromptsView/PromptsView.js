@@ -68,7 +68,7 @@ export default function PromptsView({ prompts, hidden, isHost, disabled }) {
       {isHost && <Grid container justify="space-between">
         <Button
           color="primary"
-          disabled={disabled}
+          disabled={disabled || loading === loadingTypes.newPrompts}
           className={classes.actionButton}
           startIcon={loading === loadingTypes.newPrompts ? <CircularProgress size={20} /> : <LoopIcon />}
           onClick={handleNewPrompts}
@@ -77,7 +77,7 @@ export default function PromptsView({ prompts, hidden, isHost, disabled }) {
         </Button>
         <Button
           color="primary"
-          disabled={disabled}
+          disabled={disabled || loading === loadingTypes.showHide}
           className={classes.actionButton}
           startIcon={loading === loadingTypes.showHide ? <CircularProgress size={20} /> :
             hidden ? <Visibility /> : <VisibilityOff />}
