@@ -14,7 +14,7 @@ function createQueryParamsObject(location) {
   return [ ...queryObject?.entries() ].reduce((acc, [ key, value ]) => ({ ...acc, [key]: value }), {})
 }
 
-export default function useQuery() {
+export default function useQueryParams() {
   const history = useHistory()
 
   return {

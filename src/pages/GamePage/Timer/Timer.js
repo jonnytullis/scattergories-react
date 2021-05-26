@@ -38,7 +38,7 @@ export default function Timer({ isHost, timer, secondsTotal, onStart, onStop }) 
   useEffect(() => {
     // Ticking sound
     if (timerAudio.paused && timer.isRunning && timer.seconds <= 10) {
-      timerAudio.currentTime = timerAudio.duration - (timer.seconds + 3)
+      timerAudio.currentTime = Number(timerAudio.duration - (timer.seconds + 3)) || 0
       timerAudio.play()
     } else if (!timer.isRunning && timer.seconds > 0) {
       timerAudio.pause()

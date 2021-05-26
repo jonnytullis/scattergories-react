@@ -3,7 +3,7 @@ import { Grid, Container, Box, Button, Dialog, DialogTitle, DialogContent } from
 import { useMutation } from '@apollo/client'
 import { useHistory } from 'react-router-dom'
 
-import { useAlert, useQuery } from '../../hooks'
+import { useAlert, useQueryParams } from '../../hooks'
 import useStyles from './HomePage.styles'
 import { Logo } from '../../components'
 import JoinGameForm from './JoinGameForm/JoinGameForm'
@@ -13,7 +13,7 @@ import { CREATE_GAME, JOIN_GAME } from '../../GQL/mutations'
 export default function HomePage() {
   const classes = useStyles()
   const history = useHistory()
-  const { queryParams } = useQuery()
+  const { queryParams } = useQueryParams()
   const { raiseAlert } = useAlert()
   const [ dialog, setDialog ] = useState(false)
   const [ dialogTitle, setDialogTitle ] = useState('')

@@ -1,7 +1,7 @@
 import useAlert from './useAlert'
-import useQuery from './useQuery'
+import useQueryParams from './useQueryParams'
 
 export {
   useAlert,
-  useQuery
+  useQueryParams
 }
